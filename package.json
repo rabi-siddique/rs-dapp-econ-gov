@@ -1,5 +1,6 @@
 {
-  "name": "@agoric/dapp-governance",
+  "name": "@agoric/dapp-econ-gov",
+  "description": "Governance UI for Inter Protocol economic committee",
   "private": true,
   "version": "0.0.1",
   "type": "module",

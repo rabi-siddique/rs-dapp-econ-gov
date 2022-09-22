@@ -1,2 +1,3 @@
-# dapp-psm
-UI for Inter Protocol PSM
+# dapp-governance
+
+UI for Governance of Inter Protocol
