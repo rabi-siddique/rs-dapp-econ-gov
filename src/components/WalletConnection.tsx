@@ -18,7 +18,7 @@ const WalletConnection = () => {
   const onWalletState = useCallback(
     (ev: any) => {
       const { walletConnection, state } = ev.detail;
-      console.log('wallet:', state);
+      console.debug('wallet:', state);
       // FIXME: Better state management, including in the web component level.
       switch (state) {
         case 'idle': {

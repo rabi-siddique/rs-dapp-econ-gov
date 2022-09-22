@@ -6,10 +6,10 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   optimizeDeps: {
     include: ['@endo/init'],
-    esbuildOptions: { target: 'es2020', supported: { bigint: true } },
+    esbuildOptions: { target: 'es2022', supported: { bigint: true } },
   },
   plugins: [react(), tsconfigPaths()],
   build: {
-    target: 'es2020',
+    target: 'es2022',
   },
 });
