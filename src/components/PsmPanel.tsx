@@ -1,20 +1,27 @@
 import { Listbox } from '@headlessui/react';
+import { useAtom } from 'jotai';
 import { WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
+import { selectedAnchorPetnameAtom } from 'store/swap';
 import AcceptInvitation from './AcceptInvitation';
 import PsmGovernance from './PsmGovernance';
 
 // TODO fetch list from RPC
-const instances = ['psm-IST-AUSD', 'psm-IST-ELLIE'];
+const anchors = ['AUSD'];
 
 interface Props {}
 
 export default function PsmPanel(props: Props) {
+  const [anchorName, setAnchorName] = useState(anchors[0]);
   const walletUtils = useContext(WalletContext);
   const invitationRecord = walletUtils.invitationLike(
     'PSM charter member invitation'
   );
-  console.log({ invitationRecord });
+  const [selectedAnchorBrandPetname, _setSelectedAnchorBrandPetname] = useAtom(
+    selectedAnchorPetnameAtom
+  );
+
+  console.log({ invitationRecord, selectedAnchorBrandPetname });
   if (!invitationRecord) {
     return (
       <p>You must first have received an invitation to the PSM Charter.</p>
@@ -35,25 +42,23 @@ export default function PsmPanel(props: Props) {
   }
   const previousOfferId = invitationRecord.acceptedIn;
 
-  const [selectedInstance, setSelectedInstance] = useState(instances[0]);
-
   return (
     <div>
       <p>
         You may vote using the invitation makers from offer{' '}
         <code>{previousOfferId}</code>
       </p>
-      <Listbox value={selectedInstance} onChange={setSelectedInstance}>
-        <Listbox.Button>{selectedInstance}</Listbox.Button>
+      <Listbox value={anchorName} onChange={setAnchorName}>
+        <Listbox.Button>{anchorName}</Listbox.Button>
         <Listbox.Options>
-          {instances.map(name => (
+          {anchors.map(name => (
             <Listbox.Option key={name} value={name}>
               {name}
             </Listbox.Option>
           ))}
         </Listbox.Options>
 
-        <PsmGovernance instanceName={selectedInstance} />
+        <PsmGovernance anchorName={anchorName} />
       </Listbox>
     </div>
   );

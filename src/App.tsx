@@ -1,9 +1,9 @@
+import './installSesLockdown';
 import { motion } from 'framer-motion';
-import { useAtom } from 'jotai';
 import { useEffect } from 'react';
+import { useAtom } from 'jotai';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './installSesLockdown';
 
 import { INTER_LOGO } from 'assets/assets';
 import WalletConnection from 'components/WalletConnection';

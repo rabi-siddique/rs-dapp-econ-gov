@@ -22,8 +22,10 @@ const WalletConnection = () => {
       // FIXME: Better state management, including in the web component level.
       switch (state) {
         case 'idle': {
+          // XXX scope not right, maybe ignored?
           const bridge = E(walletConnection).getScopedBridge(CONTRACT_NAME);
           // You should reconstruct all state here.
+          // @ts-expect-error ???
           setWallet(bridge);
           break;
         }

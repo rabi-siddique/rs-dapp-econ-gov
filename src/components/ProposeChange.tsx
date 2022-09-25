@@ -1,17 +1,36 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/anchor-has-content */
-import clsx from 'clsx';
+import { useAtomValue } from 'jotai';
+import { displayFunctionsAtom } from 'store/app';
+import { ParameterValue } from './PsmGovernance';
 
 interface Props {
-  paramName: string;
+  name: string;
+  currentValue: ParameterValue;
 }
 
-export default function GovernanceTools(props: Props) {
+export default function ProposeChange(props: Props) {
+  const { displayAmount } = useAtomValue(displayFunctionsAtom);
+  const { currentValue, name } = props;
+  let changer = <i>{currentValue.type} not supported</i>;
+  switch (currentValue.type) {
+    case 'amount':
+      changer = (
+        <div>
+          <p>Current value: {displayAmount(currentValue.value, 2)}</p>
+          <p>
+            Proposed new value: <input type="number" />
+          </p>
+        </div>
+      );
+      break;
+  }
   return (
     <fieldset>
-      <legend>PROPOSE CHANGE: {props.paramName}</legend>
-      Current value: ??? Proposed new value: <input type="number" />
-      <button>Submit proposal</button>
+      <legend>
+        <h3>{name}</h3>
+      </legend>
+      {changer}
     </fieldset>
   );
 }

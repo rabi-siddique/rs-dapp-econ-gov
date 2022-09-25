@@ -7,7 +7,15 @@ import { makeInteractiveSigner } from './keyManagement.js';
 import { boardSlottingMarshaller, networkConfig } from './rpc';
 import { makeRpcUtils } from './rpc.js';
 
+import { Amount } from '@agoric/ertp';
+import { Ratio } from '@agoric/zoe/src/contractSupport';
+
 const marshaller = boardSlottingMarshaller();
+
+const psmCharterInvitationSpec = {
+  instanceName: 'psmCharter',
+  description: 'PSM charter member invitation',
+};
 
 export const makeWalletUtils = async (agoricNet: string) => {
   const { keplr } = window as import('@keplr-wallet/types').Window;
@@ -45,25 +53,46 @@ export const makeWalletUtils = async (agoricNet: string) => {
   const chainKit = await makeChainKit(agoricNet);
   console.log({ chainKit });
 
-  const walletKey = await keplr.getKey(chainKit.chainInfo.chainId);
-
   const unserializer = boardSlottingMarshaller(fromBoard.convertSlotToVal);
 
-  const follower = await makeFollower(
-    `:published.wallet.${walletKey.bech32Address}`,
-    chainKit.leader,
-    {
+  // XXX factor out of wallet
+  const follow = (path: string) =>
+    makeFollower(path, chainKit.leader, {
       unserializer,
-    }
-  );
+    });
+
+  const walletKey = await keplr.getKey(chainKit.chainInfo.chainId);
+  const follower = await follow(`:published.wallet.${walletKey.bech32Address}`);
 
   // xxx mutable
   let state:
     | Awaited<ReturnType<typeof coalesceWalletState>>['state']
     | undefined;
 
+  function invitationLike(descriptionSubstr: string) {
+    const map = state.invitationsReceived as Map<
+      string,
+      {
+        acceptedIn: number;
+        description: string;
+        instance: { boardId: string };
+      }
+    >;
+    const match = Array.from(map.values()).find(r =>
+      r.description.includes(descriptionSubstr)
+    );
+    return match;
+  }
+
+  // TODO query RPC for the high water mark
+  const nextOfferId = () => {
+    // xxx some message was sent in milliseconds so the high water got very high
+    return Date.now();
+  };
+
   return {
     chainKit,
+    follow,
     async isWalletProvisioned() {
       state = await coalesceWalletState(follower);
 
@@ -71,23 +100,10 @@ export const makeWalletUtils = async (agoricNet: string) => {
 
       return !!state;
     },
-    invitationLike(descriptionSubstr) {
-      const map = state.invitationsReceived as Map<
-        string,
-        {
-          acceptedIn: number;
-          description: string;
-          instance: { boardId: string };
-        }
-      >;
-      const match = Array.from(map.values()).find(r =>
-        r.description.includes(descriptionSubstr)
-      );
-      return match;
-    },
     getWalletAddress() {
       return walletKey.bech32Address;
     },
+    invitationLike,
     makeOfferToAcceptInvitation(
       sourceContractName: string,
       description: string
@@ -95,13 +111,9 @@ export const makeWalletUtils = async (agoricNet: string) => {
       const sourceContract = agoricNames.instance[sourceContractName];
       assert(sourceContract, `missing contract ${sourceContractName}`);
 
-      // TODO query RPC for the high water mark
-      // xxx some message was sent in milliseconds so the high water got very high
-      const id = Date.now();
-
       /** @type {import('../lib/psm.js').OfferSpec} */
       return {
-        id,
+        id: nextOfferId(),
         invitationSpec: {
           source: 'purse',
           instance: sourceContract,
@@ -119,12 +131,65 @@ export const makeWalletUtils = async (agoricNet: string) => {
         description: 'Voter0',
       };
     },
-    makeOfferToProposeChange() {
-      // TODO query RPC to get the previous offer ID that endowed the wallet with invitationMakers for voting
-      // i.e. the offerStatus that has matching invitationSpec
-      const previousInvitationSpec = {
-        instanceName: 'psmCharter',
-        description: 'PSM charter member invitation',
+    makeVoteOnParamChange(
+      changedParams: Record<string, Amount | Ratio>,
+      relativeDeadlineMin: number
+    ) {
+      const instance =
+        agoricNames.instance[psmCharterInvitationSpec.instanceName];
+      assert(instance, `missing contract psmCharter`);
+
+      const invitationRecord = invitationLike(
+        psmCharterInvitationSpec.description
+      );
+      assert(
+        invitationRecord,
+        'cannot makeOffer without PSM charter membership'
+      );
+
+      const deadline = BigInt(
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000)
+      );
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: invitationRecord.acceptedIn,
+          invitationMakerName: 'VoteOnParamChange',
+          invitationArgs: [instance, changedParams, deadline],
+        },
+        proposal: {},
+      };
+    },
+    makeVoteOnPauseOffers(
+      anchorName: string,
+      toPause: string[],
+      relativeDeadlineMin: number
+    ) {
+      const psmInstance = agoricNames.instance[`psm-IST-${anchorName}`];
+      assert(psmInstance, `no PSM contract instance for IST.${anchorName}`);
+
+      const invitationRecord = invitationLike(
+        psmCharterInvitationSpec.description
+      );
+      assert(
+        invitationRecord,
+        'cannot makeOffer without PSM charter membership'
+      );
+
+      const deadline = BigInt(
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000)
+      );
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: invitationRecord.acceptedIn,
+          invitationMakerName: 'VoteOnPauseOffers',
+          invitationArgs: [psmInstance, toPause, deadline],
+        },
+        proposal: {},
       };
     },
     prepareToSign() {
@@ -147,6 +212,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
       };
 
       const capData = marshaller.serialize(payload);
+      console.log('submitting spend action', capData, 'for offer', offer);
       const message = JSON.stringify(capData);
 
       return chainKit.signer.submitSpendAction(message);

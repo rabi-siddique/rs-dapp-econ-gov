@@ -46,7 +46,8 @@ export enum SwapDirection {
   TO_ANCHOR,
 }
 
-export const selectedAnchorPetnameAtom = atom<string | null>(null);
+// XXX default AUSD
+export const selectedAnchorPetnameAtom = atom<string | null>('AUSD');
 
 export const anchorBrandAtom = atom(
   get => get(metricsAtom)?.anchorPoolBalance?.brand

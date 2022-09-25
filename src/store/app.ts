@@ -33,9 +33,9 @@ export type Metrics = {
 export const metricsIndexAtom = mapAtom<string, Metrics>();
 
 export type GovernedParams = {
-  GiveStableFee: Ratio;
-  MintLimit: Amount;
-  WantStableFee: Ratio;
+  GiveStableFee: { type: 'ratio'; value: Ratio };
+  MintLimit: { type: 'amount'; value: Amount };
+  WantStableFee: { type: 'ratio'; value: Ratio };
 };
 
 /** A map of anchor brand petnames to their instancess' governed params. */

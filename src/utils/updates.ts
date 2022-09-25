@@ -22,14 +22,7 @@ const watchGovernance = async (
   const f = makeFollower(spec, leader, { unserializer });
 
   for await (const { value } of iterateLatest(f)) {
-    const current = value.current;
-    const GiveStableFee = current.GiveMintedFee.value;
-    const MintLimit = current.MintLimit.value;
-    const WantStableFee = current.WantMintedFee.value;
-
-    setGovernedParamsIndex([
-      [anchorPetname, { GiveStableFee, MintLimit, WantStableFee }],
-    ]);
+    setGovernedParamsIndex([[anchorPetname, value.current]]);
   }
 };
 
