@@ -64,11 +64,6 @@ const makeChainInfo = (networkConfig, rpcAddr, chainId, caption) => {
     currencies: [stakeCurrency, stableCurrency],
     feeCurrencies: [stableCurrency],
     features: ['stargate', 'ibc-transfer'],
-    gasPriceStep: {
-      low: 0,
-      average: 0,
-      high: 0,
-    },
   };
 };
 
