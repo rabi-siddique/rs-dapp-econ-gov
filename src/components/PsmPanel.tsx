@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import { selectedAnchorPetnameAtom } from 'store/swap';
 import AcceptInvitation from './AcceptInvitation';
 import PsmGovernance from './PsmGovernance';
+import ProposePauseOffers from './ProposePauseOffers';
 
 // TODO fetch list from RPC
 const anchors = ['AUSD', 'ELLIE'];
@@ -73,6 +74,7 @@ export default function PsmPanel(_props: Props) {
           </Listbox.Options>
 
           <PsmGovernance anchorName={anchorName} />
+          <ProposePauseOffers anchorName={anchorName} />
         </Listbox>
       </div>
     </div>

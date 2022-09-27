@@ -10,7 +10,7 @@ export default function ProposePauseOffers(props: Props) {
   // read the initial state from rpc?
   const [checked, setChecked] = useState({
     wantMinted: false,
-    wantStable: false,
+    giveMinted: false,
   });
 
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);

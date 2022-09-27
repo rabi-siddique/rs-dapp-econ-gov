@@ -4,7 +4,6 @@ import { WalletContext } from 'lib/wallet';
 import { useContext } from 'react';
 import { governedParamsIndexAtom } from 'store/app';
 import ProposeChange from './ProposeChange';
-import ProposePauseOffers from './ProposePauseOffers';
 
 interface Props {
   anchorName: string;
@@ -53,7 +52,6 @@ export default function PsmGovernance(props: Props) {
           Propose param change
         </button>
       </div>
-      <ProposePauseOffers anchorName={props.anchorName} />
     </div>
   );
 }
