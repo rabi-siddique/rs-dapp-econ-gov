@@ -6,6 +6,8 @@ declare module '@agoric/web-components/react' {
 
 declare module '@agoric/notifier' {
   export const makeAsyncIterableFromNotifier;
+  export const observeIteration;
+  export const subscribeEach;
 }
 
 declare module '@agoric/casting' {

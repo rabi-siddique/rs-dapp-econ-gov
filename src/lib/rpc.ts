@@ -6,8 +6,13 @@
  * @typedef {{boardId: string, iface: string}} RpcRemote
  */
 
-export const networkConfigUrl = agoricNetSubdomain =>
-  `https://${agoricNetSubdomain}.agoric.net/network-config`;
+export const networkConfigUrl = (agoricNetName: string) => {
+  if (agoricNetName === 'local') {
+    return 'http://0.0.0.0:3000/wallet/network-config';
+  } else {
+    return `https://${agoricNetName}.agoric.net/network-config`;
+  }
+};
 export const rpcUrl = agoricNetSubdomain =>
   `https://${agoricNetSubdomain}.rpc.agoric.net:443`;
 
