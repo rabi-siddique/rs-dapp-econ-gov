@@ -21,7 +21,10 @@ export default function PsmPanel(props: Props) {
     selectedAnchorPetnameAtom
   );
 
-  console.log({ invitationRecord, selectedAnchorBrandPetname });
+  console.log('rendering PsmPanel', {
+    invitationRecord,
+    selectedAnchorBrandPetname,
+  });
   if (!invitationRecord) {
     return (
       <p>You must first have received an invitation to the PSM Charter.</p>

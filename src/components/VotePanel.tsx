@@ -1,14 +1,14 @@
 import { WalletContext } from 'lib/wallet';
 import { useContext } from 'react';
 import AcceptInvitation from './AcceptInvitation';
-import OpenQuestions from './OpenQuestions';
+import OpenQuestions from './LatestQuestion';
 
 interface Props {}
 
 export default function VotePanel(props: Props) {
   const walletUtils = useContext(WalletContext);
   const invitationRecord = walletUtils.invitationLike('Voter');
-  console.log({ invitationRecord });
+  console.log('rendering VotePanel', { invitationRecord });
   if (!invitationRecord) {
     return (
       <p>

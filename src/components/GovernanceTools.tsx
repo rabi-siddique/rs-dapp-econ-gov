@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
+import LatestQuestion from './LatestQuestion';
 import PsmPanel from './PsmPanel';
 import VotePanel from './VotePanel';
 
@@ -17,7 +18,7 @@ export default function GovernanceTools() {
 
   return (
     <div className="w-full max-w-md px-2 py-16 sm:px-0">
-      <Tab.Group defaultIndex={2}>
+      <Tab.Group defaultIndex={0}>
         <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
           <Tab key="history" className={tabClassname}>
             History
@@ -38,6 +39,7 @@ export default function GovernanceTools() {
             )}
           >
             This will show proposed changes and their outcomes.
+            <LatestQuestion />
           </Tab.Panel>
           <Tab.Panel key="vote">
             <VotePanel />
