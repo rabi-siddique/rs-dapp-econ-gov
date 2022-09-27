@@ -243,6 +243,7 @@ export const WalletContext = React.createContext(localWalleUtils);
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { useContext, useEffect, useState } from 'react';
+import { coalesceWalletState } from './smart-wallet-utils.js';
 
 export const usePublishedDatum = (path: string) => {
   const [status, setStatus] = useState('idle');
@@ -266,25 +267,4 @@ export const usePublishedDatum = (path: string) => {
   }, [path, walletUtils]);
 
   return { status, data };
-};
-
-// XXX get from @agoric/smart-wallet
-/**
- *
- * @param {import('@agoric/casting').Follower<import('@agoric/casting').ValueFollowerElement<import('./smartWallet').UpdateRecord>>} follower
- */
-export const coalesceWalletState = async follower => {
-  // values with oldest last
-  const history = [];
-  for await (const followerElement of iterateReverse(follower)) {
-    history.push(followerElement.value);
-  }
-
-  const coalescer = makeWalletStateCoalescer();
-  // update with oldest first
-  for (const record of history.reverse()) {
-    coalescer.update(record);
-  }
-
-  return coalescer.state;
 };
