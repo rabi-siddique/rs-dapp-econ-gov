@@ -149,12 +149,12 @@ export const makeWalletUtils = async (agoricNet: string) => {
       };
     },
     makeVoteOnParamChange(
+      anchorName: string,
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number
     ) {
-      const instance =
-        agoricNames.instance[psmCharterInvitationSpec.instanceName];
-      assert(instance, `missing contract psmCharter`);
+      const psmInstance = agoricNames.instance[`psm-IST-${anchorName}`];
+      assert(psmInstance, `no PSM contract instance for IST.${anchorName}`);
 
       const invitationRecord = invitationLike(
         psmCharterInvitationSpec.description
@@ -173,7 +173,11 @@ export const makeWalletUtils = async (agoricNet: string) => {
           source: 'continuing',
           previousOffer: invitationRecord.acceptedIn,
           invitationMakerName: 'VoteOnParamChange',
-          invitationArgs: [instance, changedParams, deadline],
+        },
+        offerArgs: {
+          instance: psmInstance,
+          params: changedParams,
+          deadline,
         },
         proposal: {},
       };
@@ -258,6 +262,7 @@ export const usePublishedDatum = (path: string) => {
   useEffect(() => {
     const { follow } = walletUtils;
     const fetchData = async () => {
+      console.log('usePublishedDatum following', `:published.${path}`);
       const follower = await follow(`:published.${path}`);
       const iterable: AsyncIterable<Record<string, unknown>> =
         await follower.getLatestIterable();

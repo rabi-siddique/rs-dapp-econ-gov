@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { useAtomValue } from 'jotai';
 import { displayFunctionsAtom } from 'store/app';
-import { ParameterValue } from './PsmGovernance';
+import { ParameterValue } from './ProposeParamChange';
 
 interface Props {
   name: string;

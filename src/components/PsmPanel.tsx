@@ -4,7 +4,7 @@ import { WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { selectedAnchorPetnameAtom } from 'store/swap';
 import AcceptInvitation from './AcceptInvitation';
-import PsmGovernance from './PsmGovernance';
+import ProposeParamChange from './ProposeParamChange';
 import ProposePauseOffers from './ProposePauseOffers';
 
 // TODO fetch list from RPC
@@ -73,7 +73,7 @@ export default function PsmPanel(_props: Props) {
             ))}
           </Listbox.Options>
 
-          <PsmGovernance anchorName={anchorName} />
+          <ProposeParamChange anchorName={anchorName} />
           <ProposePauseOffers anchorName={anchorName} />
         </Listbox>
       </div>

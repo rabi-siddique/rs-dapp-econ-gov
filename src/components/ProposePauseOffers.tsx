@@ -69,7 +69,7 @@ export default function ProposePauseOffers(props: Props) {
 
       <input
         type="submit"
-        value="Propose pausing offers"
+        value="Propose set to pause"
         className="btn-primary p-1 rounded mt-2"
       />
     </form>

@@ -50,10 +50,10 @@ export function VoteOnLatestQuestion() {
             Positions
           </RadioGroup.Label>
           <div className="space-y-2">
-            {data.positions.map(pos => (
+            {data.positions.map((pos, index) => (
               <RadioGroup.Option
                 value={pos}
-                key={JSON.stringify(pos)}
+                key={index}
                 className={({ active, checked }) =>
                   `${
                     active
@@ -66,7 +66,7 @@ export function VoteOnLatestQuestion() {
               >
                 {({ checked }) => (
                   <span className={checked ? 'bg-blue-200' : ''}>
-                    {JSON.stringify(pos)}
+                    {bigintStringify(pos)}
                   </span>
                 )}
               </RadioGroup.Option>

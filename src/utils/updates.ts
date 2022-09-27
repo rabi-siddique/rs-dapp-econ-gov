@@ -19,6 +19,7 @@ const watchGovernance = async (
 ) => {
   // E.g. ':published.psm.IST.AUSD.governance'
   const spec = dappConfig.INSTANCE_PREFIX + anchorPetname + '.governance';
+  console.log('watchGovernance following', spec);
   const f = makeFollower(spec, leader, { unserializer });
 
   for await (const { value } of iterateLatest(f)) {
