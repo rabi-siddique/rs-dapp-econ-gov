@@ -16,7 +16,7 @@ export default function GovernanceTools() {
     );
 
   return (
-    <div className="w-full max-w-md px-2 py-16 sm:px-0">
+    <div className="w-full max-w-xl px-2 py-16 sm:px-0">
       <Tab.Group defaultIndex={0}>
         <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
           <Tab key="history" className={tabClassname}>

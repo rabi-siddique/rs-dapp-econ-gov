@@ -35,23 +35,24 @@ export default function PsmGovernance(props: Props) {
 
   return (
     <div>
-      <h2>{props.anchorName}</h2>
-      <h3>VoteOnParamChange</h3>
-      {Object.entries(params).map(([name, value]) => (
-        <ProposeChange key={name} name={name} currentValue={value} />
-      ))}
-      <button
-        onClick={() => {
-          const offer = walletUtils.makeVoteOnParamChange(
-            // @ts-expect-error FIXME
-            { MintLimit: { brand: 'hi', value: 100n } },
-            1
-          );
-          console.log('offer to send', offer);
-        }}
-      >
-        Propose param change
-      </button>
+      <div className="block mt-16">
+        <h2>VoteOnParamChange</h2>
+        {Object.entries(params).map(([name, value]) => (
+          <ProposeChange key={name} name={name} currentValue={value} />
+        ))}
+        <button
+          onClick={() => {
+            const offer = walletUtils.makeVoteOnParamChange(
+              // @ts-expect-error FIXME
+              { MintLimit: { brand: 'hi', value: 100n } },
+              1
+            );
+            console.log('offer to send', offer);
+          }}
+        >
+          Propose param change
+        </button>
+      </div>
       <ProposePauseOffers anchorName={props.anchorName} />
     </div>
   );

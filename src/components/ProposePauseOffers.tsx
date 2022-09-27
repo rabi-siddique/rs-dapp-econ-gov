@@ -36,34 +36,42 @@ export default function ProposePauseOffers(props: Props) {
     event.preventDefault();
   }
 
+  // styling examples https://tailwindcss-forms.vercel.app/
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>VoteOnPauseOffers</h3>
+    <form className="mt-16" onSubmit={handleSubmit}>
+      <h2>VoteOnPauseOffers</h2>
 
-      <div>
+      <div className="block mt-2">
         {Object.keys(checked).map(str => (
-          <label key={str}>
-            {str}
-            <input
-              type="checkbox"
-              name={str}
-              checked={checked[str]}
-              onChange={handleCheckChange}
-            />
-          </label>
+          <div key={str}>
+            <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                name={str}
+                checked={checked[str]}
+                onChange={handleCheckChange}
+              />
+              <span className="ml-2">{str}</span>
+            </label>
+          </div>
         ))}
       </div>
 
-      <label>
-        Minutes until close:
+      <label className="block">
+        <span className="text-gray-700">Minutes until close of vote</span>
         <input
           type="number"
+          className="mt-1 block w-full"
           value={minutesUntilClose}
           onChange={e => setMinutesUntilClose(e.target.valueAsNumber)}
         />
       </label>
 
-      <input type="submit" value="Propose pausing offers" />
+      <input
+        type="submit"
+        value="Propose pausing offers"
+        className="btn-primary p-1 rounded mt-2"
+      />
     </form>
   );
 }

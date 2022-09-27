@@ -22,7 +22,10 @@ const psmCharterInvitationSpec = {
 
 export const makeWalletUtils = async (agoricNet: string) => {
   const { keplr } = window as import('@keplr-wallet/types').Window;
-  assert(keplr, 'Missing keplr');
+  if (!keplr) {
+    window.alert('requires Keplr extension');
+    assert.fail('missing keplr');
+  }
 
   const { agoricNames, fromBoard } = await makeRpcUtils({
     agoricNet,
