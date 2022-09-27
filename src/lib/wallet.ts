@@ -1,5 +1,5 @@
-import { makeFollower, makeLeader } from '@agoric/casting';
-import { coalesceWalletState } from '@agoric/smart-wallet/src/utils.js';
+import { iterateReverse, makeFollower, makeLeader } from '@agoric/casting';
+import { makeWalletStateCoalescer } from '@agoric/smart-wallet/src/utils.js';
 import { SigningStargateClient as AmbientClient } from '@cosmjs/stargate';
 import React from 'react';
 import { suggestChain } from './chainInfo.js';
@@ -266,4 +266,25 @@ export const usePublishedDatum = (path: string) => {
   }, [path, walletUtils]);
 
   return { status, data };
+};
+
+// XXX get from @agoric/smart-wallet
+/**
+ *
+ * @param {import('@agoric/casting').Follower<import('@agoric/casting').ValueFollowerElement<import('./smartWallet').UpdateRecord>>} follower
+ */
+export const coalesceWalletState = async follower => {
+  // values with oldest last
+  const history = [];
+  for await (const followerElement of iterateReverse(follower)) {
+    history.push(followerElement.value);
+  }
+
+  const coalescer = makeWalletStateCoalescer();
+  // update with oldest first
+  for (const record of history.reverse()) {
+    coalescer.update(record);
+  }
+
+  return coalescer.state;
 };

@@ -5,7 +5,7 @@ import { VoteOnLatestQuestion } from './questions';
 
 interface Props {}
 
-export default function VotePanel(props: Props) {
+export default function VotePanel(_props: Props) {
   const walletUtils = useContext(WalletContext);
   const invitationRecord = walletUtils.invitationLike('Voter');
   console.log('rendering VotePanel', { invitationRecord });

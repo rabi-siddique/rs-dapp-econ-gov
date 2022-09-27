@@ -12,6 +12,7 @@ declare module '@agoric/casting' {
   export type Leader = any;
   export const makeFollower;
   export const iterateLatest;
+  export const iterateReverse;
   export const makeLeader;
 }
 

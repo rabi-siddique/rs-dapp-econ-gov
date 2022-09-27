@@ -11,7 +11,7 @@ const anchors = ['AUSD'];
 
 interface Props {}
 
-export default function PsmPanel(props: Props) {
+export default function PsmPanel(_props: Props) {
   const [anchorName, setAnchorName] = useState(anchors[0]);
   const walletUtils = useContext(WalletContext);
   const invitationRecord = walletUtils.invitationLike(

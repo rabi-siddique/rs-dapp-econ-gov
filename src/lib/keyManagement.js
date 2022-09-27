@@ -1,35 +1,24 @@
 // TODO source from sdk
 // @ts-check
-import { fromBech32, toBech32, fromBase64, toBase64 } from '@cosmjs/encoding';
-import { DirectSecp256k1Wallet, Registry } from '@cosmjs/proto-signing';
+import { fromBase64, fromBech32, toBase64, toBech32 } from '@cosmjs/encoding';
+import { Registry } from '@cosmjs/proto-signing';
 import {
   AminoTypes,
-  defaultRegistryTypes,
-  QueryClient,
-  createProtobufRpcClient,
   assertIsDeliverTxSuccess,
-  createBankAminoConverters,
   createAuthzAminoConverters,
+  createBankAminoConverters,
+  defaultRegistryTypes,
 } from '@cosmjs/stargate';
 
-// import { GenericAuthorization } from 'cosmjs-types/cosmos/authz/v1beta1/authz.js';
-// import { QueryClientImpl } from 'cosmjs-types/cosmos/authz/v1beta1/query.js';
+import { MsgWalletAction, MsgWalletSpendAction } from './cosmicProtoMessages';
 
-import {
-  MsgWalletAction,
-  MsgWalletSpendAction,
-} from '@agoric/cosmic-proto/swingset/msgs.js';
-
-import { stableCurrency, bech32Config } from './chainInfo';
 import { GenericAuthorization } from 'cosmjs-types/cosmos/authz/v1beta1/authz.js';
-import { QueryClientImpl } from 'cosmjs-types/cosmos/authz/v1beta1/query.js';
+import { bech32Config, stableCurrency } from './chainInfo';
 
 /** @type {(address: string) => Uint8Array} */
 export function toAccAddress(address) {
   return fromBech32(address).data;
 }
-
-const KEY_SIZE = 32; // as in bech32
 
 /**
  * The typeUrl of a message pairs a package name with a message name.
@@ -147,78 +136,6 @@ const SwingsetConverters = {
   },
 };
 
-export const BROWSER_STORAGE_KEY = 'agoric.wallet.backgroundSignerKey';
-
-/**
- * Maintain a key for signing non-spending messages in localStorage.
- *
- * See also `delegateWalletAction()` below.
- *
- * @param {object} io
- * @param {typeof window.localStorage} io.localStorage
- * @param {typeof import('@cosmjs/crypto').Random.getBytes} io.csprng
- */
-export const makeBackgroundSigner = async ({ localStorage, csprng }) => {
-  const provideLocalKey = () => {
-    const stored = localStorage.getItem(BROWSER_STORAGE_KEY);
-    if (stored) {
-      return fromBase64(stored);
-    }
-    console.debug(
-      `localStorage.setItem(${BROWSER_STORAGE_KEY}, Random.getBytes(${KEY_SIZE}))`
-    );
-    const seed = csprng(KEY_SIZE);
-    localStorage.setItem(BROWSER_STORAGE_KEY, toBase64(seed));
-    return seed;
-  };
-  const seed = provideLocalKey();
-  const wallet = await DirectSecp256k1Wallet.fromKey(
-    seed,
-    bech32Config.bech32PrefixAccAddr
-  );
-
-  const accounts = await wallet.getAccounts();
-  console.debug('device account(s):', accounts);
-
-  const [{ address }] = accounts;
-
-  /**
-   * Query grants for granter / grantee pair
-   *
-   * For example, to check whether `delegateWalletAction()` is necessary.
-   *
-   * @param {string} granter address
-   * @param {import('@cosmjs/tendermint-rpc').Tendermint34Client} rpcClient
-   * @returns {Promise<GenericAuthorization[]>}
-   */
-  const queryGrants = async (granter, rpcClient) => {
-    const base = QueryClient.withExtensions(rpcClient);
-    const rpc = createProtobufRpcClient(base);
-    const queryService = new QueryClientImpl(rpc);
-    console.log('query Grants', { granter, grantee: address });
-    const result = await queryService.Grants({
-      granter,
-      grantee: address,
-      msgTypeUrl: '', // wildcard
-    });
-
-    const decoded = result.grants.flatMap(grant =>
-      grant.authorization
-        ? [GenericAuthorization.decode(grant.authorization.value)]
-        : []
-    );
-
-    return decoded;
-  };
-
-  return harden({
-    address,
-    registry: SwingsetRegistry,
-    wallet,
-    queryGrants,
-  });
-};
-
 /**
  * @param {string} granter bech32 address
  * @param {string} grantee bech32 address
@@ -243,68 +160,6 @@ const makeGrantWalletActionMessage = (granter, grantee, seconds) => {
       },
     },
   };
-};
-
-/**
- * TODO: test this, once we have a solution for cosmjs/issues/1155
- *
- * @param {string} granter bech32 address
- * @param {string} grantee bech32 address
- * @param {string} allowance number of uist (TODO: fix uist magic string denom)
- * @param {number} seconds expiration as seconds (Date.now() / 1000)
- */
-const makeFeeGrantMessage = (granter, grantee, allowance, seconds) => {
-  return {
-    typeUrl: CosmosMessages.feegrant.MsgGrantAllowance.typeUrl,
-    value: {
-      granter,
-      grantee,
-      allowance: {
-        typeUrl: CosmosMessages.feegrant.BasicAllowance.typeUrl,
-        value: {
-          spendLimit: [{ denom: 'uist', amount: allowance }],
-          expiration: { seconds },
-        },
-      },
-    },
-  };
-};
-
-/**
- * @param {string} grantee
- * @param {EncodeObject[]} msgObjs
- * @param {import('@cosmjs/proto-signing').Registry} registry
- * @typedef {import('@cosmjs/proto-signing').EncodeObject} EncodeObject
- */
-const makeExecMessage = (grantee, msgObjs, registry) => {
-  const msgs = msgObjs.map(obj => ({
-    typeUrl: obj.typeUrl,
-    value: registry.encode(obj),
-  }));
-  return {
-    typeUrl: CosmosMessages.authz.MsgExec.typeUrl,
-    value: { grantee, msgs },
-  };
-};
-
-/**
- * Make Exec messages for grantee to do WalletAction on behalf of granter
- *
- * @param {string} granter in the authz sense
- * @param {string} grantee in the authz sense
- * @param {string} action MsgWalletAction.action
- * @returns {EncodeObject[]}
- */
-export const makeExecActionMessages = (granter, grantee, action) => {
-  const act1 = {
-    typeUrl: SwingsetMsgs.MsgWalletAction.typeUrl,
-    value: {
-      owner: toBase64(toAccAddress(granter)),
-      action,
-    },
-  };
-  const msgs = [makeExecMessage(grantee, [act1], SwingsetRegistry)];
-  return msgs;
 };
 
 /**
@@ -360,13 +215,10 @@ export const makeInteractiveSigner = async (
      */
     delegateWalletAction: async (grantee, t0) => {
       const expiration = t0 / 1000 + 4 * 60 * 60;
-      // TODO: parameterize allowance?
-      const allowance = '250000'; // 0.25 IST
 
       // TODO: support for fee-account in MsgExec
       console.warn(
         'cannot yet makeFeeGrantMessage',
-        makeFeeGrantMessage(address, grantee, allowance, expiration),
         '(using feeGrantWorkAround)'
       );
 
@@ -379,7 +231,7 @@ export const makeInteractiveSigner = async (
         },
       };
 
-      /** @type {EncodeObject[]} */
+      /** @type {import('@cosmjs/proto-signing').EncodeObject[]} */
       const msgs = [
         // TODO: makeFeeGrantMessage(address, grantee, allowance, expiration),
         feeGrantWorkAround,

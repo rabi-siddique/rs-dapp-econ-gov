@@ -4,14 +4,6 @@ UI for Governance of Inter Protocol
 
 # Development
 
-Link to agoric-sdk working tree and refresh vite deps:
-
-```
-yarn link @agoric/notifier
-yarn link @agoric/smart-wallet
-rm -rf node_modules/.vite/deps
-```
-
 Start a wallet client server for network-config:
 
 ```

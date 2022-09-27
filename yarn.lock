@@ -16,7 +16,7 @@
   resolved "https://registry.yarnpkg.com/@agoric/assert/-/assert-0.5.1-dev-a75543d.0.tgz#4d160759c7b48a2af0ee88d82e6f50c9e9b31a61"
   integrity sha512-is45svX8mOf726pTwDuU4yX6oHpGHMcoCJ33flqoh7yCqt7OWf/hroVkRso7OZbwxzn56gNerCVX4Jh3IJy0SA==
 
-"@agoric/assert@^0.5.0":
+"@agoric/assert@^0.5.0", "@agoric/assert@~0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@agoric/assert/-/assert-0.5.0.tgz#84ffffb70d975c44fda56241ed56eda415112eb7"
   integrity sha512-R9MJkxvaQtln1mrwPLIaCcR8TzfvODZXjn4k2eKTTs1tDpziuwW0E1vUIm9BykFTb7b7e6aJRSngG1GawBZgcw==
@@ -42,8 +42,10 @@
     "@endo/far" "^0.2.10"
     "@endo/marshal" "^0.7.4"
 
-"@agoric/casting@../agoric-sdk/packages/casting", "@agoric/casting@^0.2.0":
+"@agoric/casting@^0.2.0", "@agoric/casting@~0.2.0":
   version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@agoric/casting/-/casting-0.2.0.tgz#2cc5deda6b4ae85b4d21034908dc286e8ecfab62"
+  integrity sha512-9/0JLr1lYM3rEojuotztIn4O7QpBhB+v/wPQ2BTTt7XMs8iWZHUcfWMHG1a40zbixNm0WIhUfHIaVBFhjZkQ/A==
   dependencies:
     "@agoric/notifier" "^0.5.0"
     "@agoric/spawner" "^0.6.0"
@@ -58,8 +60,10 @@
     "@endo/promise-kit" "^0.2.48"
     node-fetch "^2.6.0"
 
-"@agoric/cosmic-proto@../agoric-sdk/packages/cosmic-proto", "@agoric/cosmic-proto@^0.2.0":
+"@agoric/cosmic-proto@^0.2.0", "@agoric/cosmic-proto@~0.2.0":
   version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@agoric/cosmic-proto/-/cosmic-proto-0.2.0.tgz#07f97bf4456873be8635ce98002d82bab4011adb"
+  integrity sha512-WUa5bJansm0qVcVA8vH8v8HDvu+6ofFXHFc+tdFoYc3Z38bQIpouOax014RUILV2Kdvmnp0XZXQoemEfysZ58A==
   dependencies:
     protobufjs "^7.0.0"
 
@@ -79,7 +83,7 @@
     "@endo/marshal" "^0.7.4"
     "@endo/promise-kit" "^0.2.48"
 
-"@agoric/ertp@^0.15.0":
+"@agoric/ertp@^0.15.0", "@agoric/ertp@~0.15.0":
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/@agoric/ertp/-/ertp-0.15.0.tgz#de4034c8dcb1473fac6c37d08e4cad926264021d"
   integrity sha512-YwkGJaoKzTENibLSi7utHvfd3a5ncYTz5dv1afr0VdVDeZFk+2e0Isssaweb6IODgi2+8gnjYYl20d6du9XAMw==
@@ -173,7 +177,7 @@
     "@endo/marshal" "^0.7.4"
     "@endo/promise-kit" "^0.2.48"
 
-"@agoric/notifier@^0.5.0":
+"@agoric/notifier@^0.5.0", "@agoric/notifier@~0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@agoric/notifier/-/notifier-0.5.0.tgz#93734d1674695a83a02f3e45737508c5b2822d75"
   integrity sha512-WdsCh9w/I1MuPTFWqH7IRjeedgZ9RCHQye0QpbFCfaq7NxSz1My+TOgx+icpKjaSL0f15anHH5yrBgoKD2pefA==
@@ -356,7 +360,7 @@
     microtime "^3.1.0"
     semver "^6.3.0"
 
-"@agoric/ui-components@^0.3.0":
+"@agoric/ui-components@~0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@agoric/ui-components/-/ui-components-0.3.0.tgz#3efc341a6c37799f07b8744c92f2e01089df48d6"
   integrity sha512-xKvHmed73d4Dd5Wwi+aX6GYy36zmw5vS2as5m0pU8BFtbXlTsXTPpry/4HPOzLk3khlbhaVDacV0HXHS7Q7Azg==
@@ -431,7 +435,7 @@
     "@endo/promise-kit" "^0.2.48"
     import-meta-resolve "^1.1.1"
 
-"@agoric/wallet@^0.14.0":
+"@agoric/wallet@~0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@agoric/wallet/-/wallet-0.14.0.tgz#64a9582149ee863362603a9708214dd5d49b165c"
   integrity sha512-3PVOiMYqDH0ZIwST6oFXwryu6SElPEGc0EeUVFfL87pByRs9DZBOXFk2PJKAFaUohIh69l9z7NceATdpts8JHw==
@@ -441,8 +445,10 @@
     eslint-plugin-eslint-comments "^3.1.2"
     import-meta-resolve "^1.1.1"
 
-"@agoric/web-components@../agoric-sdk/packages/web-components":
+"@agoric/web-components@~0.3.0":
   version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@agoric/web-components/-/web-components-0.3.0.tgz#713043a066b68788a7a7822d7edcb19b67c431a4"
+  integrity sha512-5PJynhM/PlapnSftv5kW4lOsBazOarhPMmjtrO4dK4doeHRrIscRNb84SNicANbitxCNVTWtu9ukHbBhnxyiLA==
   dependencies:
     "@agoric/assert" "^0.5.0"
     "@agoric/cache" "^0.2.0"
@@ -926,7 +932,7 @@
     bech32 "^1.1.4"
     readonly-date "^1.0.0"
 
-"@cosmjs/encoding@^0.29.0":
+"@cosmjs/encoding@^0.29.0", "@cosmjs/encoding@~0.29.0":
   version "0.29.0"
   resolved "https://registry.yarnpkg.com/@cosmjs/encoding/-/encoding-0.29.0.tgz#75b1b41a2f31f71fcb0982cd1b210d6410739fd0"
   integrity sha512-6HDBtid/YLbyXapY6PdMMIigAtGKyD1w0dUCLU1dOIkPf1q3y43kqoA7WnLkRw0g0/lZY1VGM2fX+2RWU0wxYg==
@@ -1013,7 +1019,7 @@
     long "^4.0.0"
     protobufjs "~6.10.2"
 
-"@cosmjs/proto-signing@^0.29.0":
+"@cosmjs/proto-signing@^0.29.0", "@cosmjs/proto-signing@~0.29.0":
   version "0.29.0"
   resolved "https://registry.yarnpkg.com/@cosmjs/proto-signing/-/proto-signing-0.29.0.tgz#4d9c10fc3a5c64b454bd2d9b407861fcffdfbbe0"
   integrity sha512-zAdgDz5vRGAfJ5yyKYuTL7qg5UNUT7v4iV1/ZP8ZQn2fLh9QVxViAIovF4r/Y3EEI4JS5uYj/f8UeHMHQSu8hw==
@@ -1064,7 +1070,7 @@
     protobufjs "~6.11.3"
     xstream "^11.14.0"
 
-"@cosmjs/stargate@^0.29.0":
+"@cosmjs/stargate@~0.29.0":
   version "0.29.0"
   resolved "https://registry.yarnpkg.com/@cosmjs/stargate/-/stargate-0.29.0.tgz#55263ed9d414f2c3073a451527576e4c3d6f04a6"
   integrity sha512-BsV3iA3vMclMm/B1LYO0djBYCALr/UIvL6u9HGvM7QvpdtpQiAvskuS4PieVO/gtF9iCCBJLPqa0scwFIgvDyg==
@@ -1112,7 +1118,7 @@
     readonly-date "^1.0.0"
     xstream "^11.14.0"
 
-"@cosmjs/tendermint-rpc@^0.29.0":
+"@cosmjs/tendermint-rpc@^0.29.0", "@cosmjs/tendermint-rpc@~0.29.0":
   version "0.29.0"
   resolved "https://registry.yarnpkg.com/@cosmjs/tendermint-rpc/-/tendermint-rpc-0.29.0.tgz#db71e743d2ee8dde706c09bc92ac47cc6197f672"
   integrity sha512-G+42oGh+tw8/KV0gLAGzNCTe/6mkf7VUE5noSTbsxbeliFR7Lt4i6H2aqvWzmlZFeRxunR7AsQr4wakvlVNWyg==
@@ -1285,7 +1291,7 @@
   resolved "https://registry.yarnpkg.com/@endo/eventual-send/-/eventual-send-0.16.4.tgz#6757c63485febc2de0c72e01d8baf8de4c0fbf89"
   integrity sha512-nyL+FpIjrwTiFrEJKfESvtUJ/tPYtr7uGv5JuAX4jat+5P1Auk8A9VQokZAvdlFFl7UP02I6FiFR7t0/HozSEA==
 
-"@endo/eventual-send@^0.16.5":
+"@endo/eventual-send@^0.16.5", "@endo/eventual-send@~0.16.5":
   version "0.16.5"
   resolved "https://registry.yarnpkg.com/@endo/eventual-send/-/eventual-send-0.16.5.tgz#39f2e21b5331cd9e423a8440f9e74e28fea6701e"
   integrity sha512-tWmia2jv+beGf4oVOxUqcHc358PX3Gssz4qUD3BA7D6d7AW75Pk34ArWsi29E9w6aNMrnhnpX+EaRBWoj/Q1PA==
@@ -3185,7 +3191,7 @@ eslint@^8.22.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-"esm@github:agoric-labs/esm#Agoric-built":
+esm@agoric-labs/esm#Agoric-built:
   version "3.2.25"
   resolved "https://codeload.github.com/agoric-labs/esm/tar.gz/3603726ad4636b2f865f463188fcaade6375638e"
 

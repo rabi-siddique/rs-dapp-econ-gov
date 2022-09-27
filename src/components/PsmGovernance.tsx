@@ -43,6 +43,7 @@ export default function PsmGovernance(props: Props) {
       <button
         onClick={() => {
           const offer = walletUtils.makeVoteOnParamChange(
+            // @ts-expect-error FIXME
             { MintLimit: { brand: 'hi', value: 100n } },
             1
           );

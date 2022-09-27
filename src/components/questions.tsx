@@ -1,9 +1,9 @@
 import { bigintStringify } from '@agoric/wallet-backend/src/bigintStringify.js';
 import { RadioGroup } from '@headlessui/react';
-import { makeWalletUtils, usePublishedDatum, WalletContext } from 'lib/wallet';
+import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 
-export function QuestionDetails(props: Props) {
+export function QuestionDetails(props: { details: any }) {
   const { details } = props;
   return (
     <>
@@ -13,7 +13,7 @@ export function QuestionDetails(props: Props) {
             <tr key={k}>
               <th>{k}</th>
               <td>
-                <tt>{bigintStringify(v)}</tt>
+                <pre>{bigintStringify(v)}</pre>
               </td>
             </tr>
           ))}
@@ -23,7 +23,7 @@ export function QuestionDetails(props: Props) {
   );
 }
 
-export function VoteOnLatestQuestion(props) {
+export function VoteOnLatestQuestion() {
   const walletUtils = useContext(WalletContext);
   const { status, data } = usePublishedDatum(
     'committees.Initial_Economic_Committee.latestQuestion'
