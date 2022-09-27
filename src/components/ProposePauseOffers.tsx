@@ -1,7 +1,5 @@
-import { useAtomValue } from 'jotai';
 import { WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
-import { instanceIdsAtom } from 'store/app';
 
 interface Props {
   anchorName: string;

@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
-import LatestQuestion from './LatestQuestion';
 import PsmPanel from './PsmPanel';
 import VotePanel from './VotePanel';
 
@@ -39,7 +38,6 @@ export default function GovernanceTools() {
             )}
           >
             This will show proposed changes and their outcomes.
-            <LatestQuestion />
           </Tab.Panel>
           <Tab.Panel key="vote">
             <VotePanel />

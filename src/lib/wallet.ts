@@ -56,6 +56,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
   const unserializer = boardSlottingMarshaller(fromBoard.convertSlotToVal);
 
   // XXX factor out of wallet
+  // XXX memoize on path
   const follow = (path: string) =>
     makeFollower(path, chainKit.leader, {
       unserializer,
@@ -122,13 +123,26 @@ export const makeWalletUtils = async (agoricNet: string) => {
         proposal: {},
       };
     },
-    makeOfferToVote() {
-      // TODO query RPC to get the previous offer ID that endowed the wallet with invitationMakers for voting
-      // i.e. the offerStatus that has matching invitationSpec
-      const previousInvitationSpec = {
-        instanceName: 'economicCommittee',
-        // FIXME hard-coded
-        description: 'Voter0',
+    makeOfferToVote(chosenPositions: unknown[], questionHandle) {
+      const ecInstance = agoricNames.instance['economicCommittee'];
+      assert(ecInstance, 'no contract instance for economicCommittee');
+
+      const invitationRecord = invitationLike('Voter');
+      assert(
+        invitationRecord,
+        'cannot makeOffer without economicCommittee membership'
+      );
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: invitationRecord.acceptedIn,
+          invitationMakerName: 'makeVoteInvitation',
+          // (positionList, questionHandle)
+          invitationArgs: harden([chosenPositions, questionHandle]),
+        },
+        proposal: {},
       };
     },
     makeVoteOnParamChange(
@@ -225,3 +239,31 @@ export const makeWalletUtils = async (agoricNet: string) => {
 export const localWalleUtils = await makeWalletUtils('local');
 
 export const WalletContext = React.createContext(localWalleUtils);
+
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/anchor-has-content */
+import { useContext, useEffect, useState } from 'react';
+
+export const usePublishedDatum = (path: string) => {
+  const [status, setStatus] = useState('idle');
+  const [data, setData] = useState({} as any);
+  const walletUtils = useContext(WalletContext);
+
+  // XXX cleanup? await next?
+  useEffect(() => {
+    const { follow } = walletUtils;
+    const fetchData = async () => {
+      const follower = await follow(`:published.${path}`);
+      const iterable: AsyncIterable<Record<string, unknown>> =
+        await follower.getLatestIterable();
+      const iterator = iterable[Symbol.asyncIterator]();
+      setStatus('waiting');
+      const { value: publishedValue } = await iterator.next();
+      setData(publishedValue.value);
+      setStatus('received');
+    };
+    fetchData().catch(e => console.error('useEffect error', e));
+  }, [path, walletUtils]);
+
+  return { status, data };
+};

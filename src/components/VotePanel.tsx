@@ -1,7 +1,7 @@
 import { WalletContext } from 'lib/wallet';
 import { useContext } from 'react';
 import AcceptInvitation from './AcceptInvitation';
-import OpenQuestions from './LatestQuestion';
+import { VoteOnLatestQuestion } from './questions';
 
 interface Props {}
 
@@ -37,7 +37,7 @@ export default function VotePanel(props: Props) {
         You may vote using the invitation makers from offer{' '}
         <code>{previousOfferId}</code>
       </p>
-      <OpenQuestions />
+      <VoteOnLatestQuestion />
     </div>
   );
 }
