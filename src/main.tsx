@@ -1,5 +1,4 @@
 import './installSesLockdown';
-import 'ses';
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';

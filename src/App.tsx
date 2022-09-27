@@ -1,5 +1,3 @@
-import './installSesLockdown';
-
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
