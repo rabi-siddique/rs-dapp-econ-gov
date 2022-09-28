@@ -3,22 +3,81 @@ import { RadioGroup } from '@headlessui/react';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 
-export function QuestionDetails(props: { details: any }) {
-  const { details } = props;
+import {
+  QuestionDetails as IQuestionDetails,
+  OfferFilterSpec,
+  OutcomeRecord,
+} from '../govTypes.js';
+
+export function OfferId(props: { id: number }) {
+  const { id } = props;
+
+  let title = '';
+  try {
+    title = new Date(id).toISOString();
+  } catch (err) {
+    console.debug('not a timestamp', id, err);
+  }
+  return <code title={title}>{id}</code>;
+}
+
+export function ZoeTime(props: { seconds: bigint }) {
+  const { seconds } = props;
+
+  const when = new Date(Number(seconds) * 1000).toISOString();
+  return <strong>{when}</strong>;
+}
+
+const choice = (label: string, _name: string, val: string) => (
+  <label>
+    {label} <b>{val}</b>
+  </label>
+);
+
+function FilterIssueOutcome(
+  { issue }: OfferFilterSpec,
+  outcome?: OutcomeRecord
+) {
   return (
     <>
-      <table>
-        <tbody>
-          {Object.entries(details).map(([k, v]) => (
-            <tr key={k}>
-              <th>{k}</th>
-              <td>
-                <pre>{bigintStringify(v)}</pre>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      Proposal: set filtered offers to{' '}
+      <code>{bigintStringify(issue.strings)}</code>
+      <br />
+      {outcome ? (
+        outcome.outcome === 'win' ? (
+          <>
+            <strong>PASS</strong>. updated filters:{' '}
+            {bigintStringify(outcome.position.strings)}
+          </>
+        ) : (
+          'FAIL'
+        )
+      ) : (
+        ''
+      )}
+    </>
+  );
+}
+
+export function QuestionDetails(props: {
+  details: IQuestionDetails;
+  outcome?: OutcomeRecord;
+}) {
+  const { details, outcome } = props;
+  console.debug('QuestionDetails', details);
+  return (
+    <>
+      Deadline: <ZoeTime seconds={details.closingRule.deadline} />
+      <br />
+      <small>
+        {choice('Type', 'electionType', details.electionType)}{' '}
+        {choice('Quorum', 'quorumRule', details.quorumRule)}{' '}
+        {choice('Method', 'method', details.method)}
+      </small>
+      <br />
+      {details.electionType === 'offer_filter'
+        ? FilterIssueOutcome(details, outcome)
+        : '???'}
     </>
   );
 }
@@ -66,6 +125,7 @@ export function VoteOnLatestQuestion() {
               >
                 {({ checked }) => (
                   <span className={checked ? 'bg-blue-200' : ''}>
+                    {index === 0 ? 'YES: ' : ''}
                     {bigintStringify(pos)}
                   </span>
                 )}
