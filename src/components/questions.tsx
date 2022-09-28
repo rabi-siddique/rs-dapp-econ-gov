@@ -41,6 +41,25 @@ const choice = (label: string, _name: string, val: string) => (
   </label>
 );
 
+/**
+ * a Ratio is "safe" iff
+ *   - it's dimentionless; i.e. brands cancel out
+ *   - values are safe integers
+ */
+const isSafeRatio = (value: Amount | Ratio) => {
+  if (!('numerator' in value && 'denominator' in value)) {
+    return false;
+  }
+  const { numerator, denominator } = value;
+  if (numerator.brand !== denominator.brand) {
+    return false;
+  }
+  return (
+    Number.isSafeInteger(Number(numerator.value)) &&
+    Number.isSafeInteger(Number(denominator.value))
+  );
+};
+
 function ParamChanges(props: { changes: Record<string, unknown> }) {
   const { getDecimalPlaces } = useAtomValue(displayFunctionsAtom);
   const { changes } = props;
@@ -55,8 +74,13 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
         decimalPlaces
       );
       return <>{numeral}</>;
+    } else if (isSafeRatio(value)) {
+      const { numerator, denominator } = value;
+      const pct = (100 * Number(numerator.value)) / Number(denominator.value);
+      return <>{pct}%</>;
     }
-    throw Error('not impl');
+    // fallback
+    return bigintStringify(value);
   };
   return (
     <ul>
