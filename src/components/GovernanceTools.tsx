@@ -4,6 +4,7 @@ import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
 import PsmPanel from './PsmPanel';
 import VotePanel from './VotePanel';
+import HistoryPanel from './HistoryPanel';
 
 export default function GovernanceTools() {
   const tabClassname = ({ selected }) =>
@@ -30,14 +31,8 @@ export default function GovernanceTools() {
           </Tab>
         </Tab.List>
         <Tab.Panels className="mt-2">
-          <Tab.Panel
-            key="history"
-            className={clsx(
-              'rounded-xl bg-white p-3',
-              'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
-            )}
-          >
-            This will show proposed changes and their outcomes.
+          <Tab.Panel key="history">
+            <HistoryPanel />
           </Tab.Panel>
           <Tab.Panel key="vote">
             <VotePanel />
