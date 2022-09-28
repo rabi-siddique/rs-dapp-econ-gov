@@ -5,6 +5,9 @@ import { QuestionDetails } from './questions.js';
 interface Props {}
 
 export default function VotePanel(_props: Props) {
+  const { status: instanceStatus, data: instance } = usePublishedDatum(
+    'agoricNames.instance'
+  );
   const { status: qStatus, data: qData } = usePublishedDatum(
     'committees.Initial_Economic_Committee.latestQuestion'
   );
@@ -18,7 +21,7 @@ export default function VotePanel(_props: Props) {
         'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
       )}
     >
-      {qStatus === 'received' ? (
+      {qStatus === 'received' && instanceStatus === 'received' ? (
         <QuestionDetails
           details={qData}
           outcome={
@@ -26,6 +29,7 @@ export default function VotePanel(_props: Props) {
               ? aData
               : undefined
           }
+          instance={instance}
         />
       ) : (
         <em>stand by for question details...</em>
