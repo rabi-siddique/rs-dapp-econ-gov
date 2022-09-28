@@ -277,3 +277,29 @@ export const usePublishedDatum = (path: string) => {
 
   return { status, data };
 };
+
+export const usePublishedHistory = (path: string) => {
+  const [status, setStatus] = useState('idle');
+  const [data, setData] = useState([]);
+  const walletUtils = useContext(WalletContext);
+
+  useEffect(() => {
+    const { follow } = walletUtils;
+    const fetchData = async () => {
+      console.log('usePublishedDatum following', `:published.${path}`);
+      const follower = await follow(`:published.${path}`);
+      const iterable: AsyncIterable<Record<string, unknown>> =
+        await follower.getReverseIterable();
+      setStatus('waiting');
+      const items = [];
+      for await (const { value } of iterable) {
+        items.push(value);
+      }
+      setData(items);
+      setStatus('received');
+    };
+    fetchData().catch(e => console.error('useEffect error', e));
+  }, [path, walletUtils]);
+
+  return { status, data };
+};
