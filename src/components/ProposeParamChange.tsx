@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { displayFunctionsAtom, governedParamsIndexAtom } from 'store/app';
-import CustomInput from './CustomInput';
+import { AmountInput, PercentageInput } from './inputs';
 
 interface Props {
   anchorName: string;
@@ -35,7 +35,7 @@ export default function ProposeParamChange(props: Props) {
 
   const [paramPatch, setParamPatch] = useState({});
 
-  console.log('ProposeParamChange', { data });
+  console.log('ProposeParamChange', { data, paramPatch });
 
   const params = governedParamsIndex.get(props.anchorName);
   if (!params) {
@@ -45,7 +45,7 @@ export default function ProposeParamChange(props: Props) {
     switch (type) {
       case 'amount':
         return (
-          <CustomInput
+          <AmountInput
             value={(paramPatch[name] || value).value}
             brand={value.brand}
             onChange={newVal =>
@@ -56,8 +56,18 @@ export default function ProposeParamChange(props: Props) {
             }
           />
         );
-      // case 'ratio':
-      //   return displayRatio(value, 6);
+      case 'ratio':
+        return (
+          <PercentageInput
+            ratio={paramPatch[name] || value}
+            onChange={newRatio =>
+              setParamPatch({
+                ...paramPatch,
+                [name]: newRatio,
+              })
+            }
+          />
+        );
       default:
         return <i>{type} not supported</i>;
     }

@@ -20,8 +20,16 @@ export const displayPetname = (pn: Array<string> | string) =>
   Array.isArray(pn) ? pn.join('.') : pn;
 
 export const makeDisplayFunctions = (brandToInfo: Map<Brand, BrandInfo>) => {
-  const getDecimalPlaces = (brand: Brand) =>
+  const getDecimalPlaces = (brand: Brand) => {
+    // XXX for rpc brands that don't come in the purse watcher
+    if ('boardId' in brand) {
+      switch ((brand as any).boardId) {
+        case 'board0188':
+          return 6;
+      }
+    }
     brandToInfo.get(brand)?.decimalPlaces;
+  };
 
   const getPetname = (brand?: Brand | null) =>
     (brand && brandToInfo.get(brand)?.petname) ?? '';
