@@ -1,13 +1,19 @@
 import { bigintStringify } from '@agoric/wallet-backend/src/bigintStringify.js';
+import { stringifyValue } from '@agoric/ui-components';
+import { Ratio } from '@agoric/zoe/src/contractSupport';
 import { RadioGroup } from '@headlessui/react';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
+import { useAtomValue } from 'jotai';
 
+import { displayFunctionsAtom } from 'store/app';
 import {
   QuestionDetails as IQuestionDetails,
+  ParamChangeSpec,
   OfferFilterSpec,
   OutcomeRecord,
 } from '../govTypes.js';
+import { AssetKind, Amount } from '@agoric/ertp';
 
 export function OfferId(props: { id: number }) {
   const { id } = props;
@@ -33,6 +39,58 @@ const choice = (label: string, _name: string, val: string) => (
     {label} <b>{val}</b>
   </label>
 );
+
+function ParamChanges(props: { changes: Record<string, unknown> }) {
+  const { getDecimalPlaces } = useAtomValue(displayFunctionsAtom);
+  const { changes } = props;
+
+  const fmtVal = (value: Amount | Ratio) => {
+    if (typeof value === 'object' && 'brand' in value && 'value' in value) {
+      const decimalPlaces = getDecimalPlaces(value.brand) || 6;
+      const numeral = stringifyValue(
+        value.value,
+        AssetKind.NAT,
+        decimalPlaces,
+        decimalPlaces
+      );
+      return <>{numeral}</>;
+    }
+    throw Error('not impl');
+  };
+  return (
+    <ul>
+      {Object.entries(changes).map(([name, value]) => (
+        <li key={name}>
+          <strong>{name}</strong> = {fmtVal(value as Amount | Ratio)}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ParamChangeIssueOutcome(
+  { issue }: ParamChangeSpec,
+  outcome?: OutcomeRecord
+) {
+  return (
+    <>
+      Proposal: change parameters: <ParamChanges changes={issue.spec.changes} />
+      <br />
+      {outcome ? (
+        outcome.outcome === 'win' ? (
+          <>
+            <strong>PASS</strong>. parameter changed to{' '}
+            <ParamChanges changes={outcome.position.changes} />
+          </>
+        ) : (
+          <strong>FAIL</strong>
+        )
+      ) : (
+        ''
+      )}
+    </>
+  );
+}
 
 function FilterIssueOutcome(
   { issue }: OfferFilterSpec,
@@ -77,6 +135,8 @@ export function QuestionDetails(props: {
       <br />
       {details.electionType === 'offer_filter'
         ? FilterIssueOutcome(details, outcome)
+        : details.electionType === 'param_change'
+        ? ParamChangeIssueOutcome(details, outcome)
         : '???'}
     </>
   );

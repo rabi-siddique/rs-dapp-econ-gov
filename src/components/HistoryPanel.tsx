@@ -18,12 +18,17 @@ export default function VotePanel(_props: Props) {
         'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
       )}
     >
-      {qStatus === 'received' &&
-      aStatus === 'received' &&
-      qData.questionHandle === aData.question ? (
-        <QuestionDetails details={qData} outcome={aData} />
+      {qStatus === 'received' ? (
+        <QuestionDetails
+          details={qData}
+          outcome={
+            aStatus === 'received' && qData.questionHandle === aData.question
+              ? aData
+              : undefined
+          }
+        />
       ) : (
-        <em>stand by...</em>
+        <em>stand by for question details...</em>
       )}
     </div>
   );
