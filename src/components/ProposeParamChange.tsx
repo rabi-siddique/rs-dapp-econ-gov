@@ -97,7 +97,7 @@ export default function ProposeParamChange(props: Props) {
           <label className="block" key={name}>
             <span className="text-gray-700">{name}</span>
             <div className="form-input mt-1 block w-full">
-              {displayParam(name, value)}
+              {displayParam(name, value as ParameterValue)}
             </div>
           </label>
         ))}
