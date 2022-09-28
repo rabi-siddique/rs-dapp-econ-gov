@@ -1,5 +1,9 @@
 import clsx from 'clsx';
-import { usePublishedDatum } from 'lib/wallet.js';
+import {
+  OutcomeRecord,
+  QuestionDetails as IQuestionDetails,
+} from 'govTypes.js';
+import { usePublishedDatum, usePublishedHistory } from 'lib/wallet.js';
 import { QuestionDetails } from './questions.js';
 
 interface Props {}
@@ -8,12 +12,38 @@ export default function VotePanel(_props: Props) {
   const { status: instanceStatus, data: instance } = usePublishedDatum(
     'agoricNames.instance'
   );
-  const { status: qStatus, data: qData } = usePublishedDatum(
+  const { status: qStatus, data: questions } = usePublishedHistory(
     'committees.Initial_Economic_Committee.latestQuestion'
   );
-  const { status: aStatus, data: aData } = usePublishedDatum(
+  const { status: aStatus, data: outcomes } = usePublishedHistory(
     'committees.Initial_Economic_Committee.latestOutcome'
   );
+  const outcomeByHandle = new Map(
+    outcomes.map((o: OutcomeRecord) => [o.question, o])
+  );
+  const questionsWithAnswers: [q: IQuestionDetails, a: OutcomeRecord][] =
+    questions.map((q: IQuestionDetails) => [
+      q,
+      outcomeByHandle.get(q.questionHandle),
+    ]);
+  const receivedItems =
+    qStatus === 'received' && instanceStatus === 'received'
+      ? questionsWithAnswers.map(([qData, aData], index) => (
+          <li key={index}>
+            <QuestionDetails
+              details={qData}
+              outcome={
+                aStatus === 'received' &&
+                qData.questionHandle === aData.question
+                  ? aData
+                  : undefined
+              }
+              instance={instance}
+            />
+          </li>
+        ))
+      : null;
+
   return (
     <div
       className={clsx(
@@ -21,18 +51,10 @@ export default function VotePanel(_props: Props) {
         'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
       )}
     >
-      {qStatus === 'received' && instanceStatus === 'received' ? (
-        <QuestionDetails
-          details={qData}
-          outcome={
-            aStatus === 'received' && qData.questionHandle === aData.question
-              ? aData
-              : undefined
-          }
-          instance={instance}
-        />
-      ) : (
+      {receivedItems === null ? (
         <em>stand by for question details...</em>
+      ) : (
+        <ul>{receivedItems}</ul>
       )}
     </div>
   );
