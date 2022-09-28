@@ -167,6 +167,12 @@ export function VoteOnLatestQuestion() {
     walletUtils.sendOffer(offer);
     event.preventDefault();
   }
+  const {
+    closingRule: { deadline },
+  } = data as IQuestionDetails;
+  const now = Date.now(); // WARNING: ambient, effectful
+  const deadlinePassed = Number(deadline) * 1000 < now;
+
   return (
     <>
       <QuestionDetails details={data} />
@@ -203,8 +209,9 @@ export function VoteOnLatestQuestion() {
         <input
           type="submit"
           value="Submit vote"
-          disabled={!position}
+          disabled={!position || deadlinePassed}
           className="btn-primary p-1 rounded mt-2"
+          title={deadlinePassed ? 'Deadline passed' : ''}
         />
       </form>
     </>
