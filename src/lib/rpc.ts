@@ -139,8 +139,9 @@ export const boardSlottingMarshaller = (slotToVal = (s, _i) => s) => ({
       }
       const index = seen.size;
       seen.set(v, index);
-      return { index, iface: v.iface };
+      return index;
     };
+
     const recur = part => {
       if (part === null) return null;
       if (typeof part === 'bigint') {
@@ -151,7 +152,10 @@ export const boardSlottingMarshaller = (slotToVal = (s, _i) => s) => ({
       }
       if (typeof part === 'object') {
         if ('boardId' in part) {
-          return { '@qclass': 'slot', ...slotIndex(part.boardId) };
+          const { boardId, iface } = part;
+          assert(iface, 'missing iface');
+          const index = slotIndex(boardId);
+          return { '@qclass': 'slot', index, iface };
         }
         return Object.fromEntries(
           Object.entries(part).map(([k, v]) => [k, recur(v)])
