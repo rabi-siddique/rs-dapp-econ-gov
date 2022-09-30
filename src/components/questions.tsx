@@ -176,19 +176,70 @@ export function QuestionDetails(props: {
   );
 }
 
+function ChoosePosition(props: {
+  positions: string[];
+  onChoose(position: string): void;
+}) {
+  const [position, setPosition] = useState(null);
+
+  const handleSubmit = e => {
+    props.onChoose(position);
+    e.preventDefault();
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <RadioGroup value={position} onChange={setPosition}>
+        <RadioGroup.Label className="block text-sm leading-5 font-medium text-gray-700 mt-2">
+          Positions
+        </RadioGroup.Label>
+        <div className="space-y-2">
+          {props.positions.map((pos, index) => (
+            <RadioGroup.Option
+              value={pos}
+              key={index}
+              className={({ active, checked }) =>
+                `${
+                  active
+                    ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
+                    : ''
+                }
+              ${checked ? 'bg-sky-900 bg-opacity-75 text-white' : 'bg-white'}
+                relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
+              }
+            >
+              {({ checked }) => (
+                <span className={checked ? 'bg-blue-200' : ''}>
+                  {index === 0 ? 'YES: ' : ''}
+                  {bigintStringify(pos)}
+                </span>
+              )}
+            </RadioGroup.Option>
+          ))}
+        </div>
+      </RadioGroup>
+      <input
+        type="submit"
+        value="Submit vote"
+        disabled={!position}
+        className="btn-primary p-1 rounded mt-2"
+      />
+    </form>
+  );
+}
+
 export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
   const walletUtils = useContext(WalletContext);
   const { status, data } = usePublishedDatum(
     'committees.Initial_Economic_Committee.latestQuestion'
   );
-  const [position, setPosition] = useState(null);
 
   console.debug('render VoteOnLatestQuestion', status, data);
   if (!data?.positions) {
     return <b>{status} for a question</b>;
   }
 
-  function handleSubmit(event) {
+  function voteFor(position) {
     console.log('voting for position', position);
     const offer = walletUtils.makeOfferToVote(
       props.ecOfferId,
@@ -196,7 +247,6 @@ export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
       data.questionHandle
     );
     walletUtils.sendOffer(offer);
-    event.preventDefault();
   }
   const {
     closingRule: { deadline },
@@ -207,44 +257,11 @@ export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
   return (
     <>
       <QuestionDetails details={data} />
-      <form onSubmit={handleSubmit}>
-        <RadioGroup value={position} onChange={setPosition}>
-          <RadioGroup.Label className="block text-sm leading-5 font-medium text-gray-700 mt-2">
-            Positions
-          </RadioGroup.Label>
-          <div className="space-y-2">
-            {data.positions.map((pos, index) => (
-              <RadioGroup.Option
-                value={pos}
-                key={index}
-                className={({ active, checked }) =>
-                  `${
-                    active
-                      ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
-                      : ''
-                  }
-              ${checked ? 'bg-sky-900 bg-opacity-75 text-white' : 'bg-white'}
-                relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
-                }
-              >
-                {({ checked }) => (
-                  <span className={checked ? 'bg-blue-200' : ''}>
-                    {index === 0 ? 'YES: ' : ''}
-                    {bigintStringify(pos)}
-                  </span>
-                )}
-              </RadioGroup.Option>
-            ))}
-          </div>
-        </RadioGroup>
-        <input
-          type="submit"
-          value="Submit vote"
-          disabled={!position || deadlinePassed}
-          className="btn-primary p-1 rounded mt-2"
-          title={deadlinePassed ? 'Deadline passed' : ''}
-        />
-      </form>
+      {deadlinePassed ? (
+        <em>Deadline passed</em>
+      ) : (
+        <ChoosePosition positions={data.positions} onChoose={voteFor} />
+      )}
     </>
   );
 }
