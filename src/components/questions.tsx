@@ -176,21 +176,25 @@ export function QuestionDetails(props: {
   );
 }
 
-export function VoteOnLatestQuestion() {
+export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
   const walletUtils = useContext(WalletContext);
   const { status, data } = usePublishedDatum(
     'committees.Initial_Economic_Committee.latestQuestion'
   );
   const [position, setPosition] = useState(null);
 
-  console.log('render VoteOnLatestQuestion', status, data);
+  console.debug('render VoteOnLatestQuestion', status, data);
   if (!data?.positions) {
-    return <b>{status}</b>;
+    return <b>{status} for a question</b>;
   }
 
   function handleSubmit(event) {
     console.log('voting for position', position);
-    const offer = walletUtils.makeOfferToVote([position], data.questionHandle);
+    const offer = walletUtils.makeOfferToVote(
+      props.ecOfferId,
+      [position],
+      data.questionHandle
+    );
     walletUtils.sendOffer(offer);
     event.preventDefault();
   }

@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -20,12 +20,11 @@ import GovernanceTools from 'components/GovernanceTools';
 import { WalletContext } from 'lib/wallet';
 import 'styles/globals.css';
 
-interface Props {
-  smartWalletProvisioned: boolean;
-}
+interface Props {}
 
-const App = (props: Props) => {
+const App = (_props: Props) => {
   const [wallet] = useAtom(walletAtom);
+  const walletUtils = useContext(WalletContext);
   const [_brandToInfo, mergeBrandToInfo] = useAtom(brandToInfoAtom);
   const [_purses, setPurses] = useAtom(pursesAtom);
   const [_offers, setOffers] = useAtom(offersAtom);
@@ -61,12 +60,8 @@ const App = (props: Props) => {
     setInstanceIds,
   ]);
 
-  // FIXME detect and do something different if not
-  const smartWalletConnected = true;
+  const address = walletUtils.getWalletAddress();
 
-  if (!props.smartWalletProvisioned) {
-    return <p>No smart wallet for your address</p>;
-  }
   return (
     <>
       <ToastContainer
@@ -82,12 +77,10 @@ const App = (props: Props) => {
         <div className="min-w-screen container p-4 mx-auto flex justify-between items-center">
           <img src={INTER_LOGO} className="item" alt="Inter Logo" width="200" />
           <WalletConnection />
-          <WalletContext.Consumer>
-            {walletUtils => walletUtils.getWalletAddress()}
-          </WalletContext.Consumer>
+          {address}
         </div>
         <div className="min-w-screen container mx-auto flex justify-center mt-16">
-          {smartWalletConnected ? <GovernanceTools /> : 'Connect wallet'}
+          <GovernanceTools walletAddress={address} />
         </div>
       </div>
     </>

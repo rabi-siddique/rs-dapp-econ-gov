@@ -10,12 +10,12 @@ import {
 } from './rpc';
 import { makeRpcUtils } from './rpc.js';
 
-import { Amount } from '@agoric/ertp';
+import { Amount, Brand, DisplayInfo, Issuer } from '@agoric/ertp';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
 
 const marshaller = boardSlottingMarshaller();
 
-const psmCharterInvitationSpec = {
+export const psmCharterInvitationSpec = {
   instanceName: 'psmCharter',
   description: 'PSM charter member invitation',
 };
@@ -68,25 +68,6 @@ export const makeWalletUtils = async (agoricNet: string) => {
     });
 
   const walletKey = await keplr.getKey(chainKit.chainInfo.chainId);
-  const follower = await follow(`:published.wallet.${walletKey.bech32Address}`);
-
-  // xxx mutable
-  let state: Awaited<ReturnType<typeof coalesceWalletState>> | undefined;
-
-  function invitationLike(descriptionSubstr: string) {
-    const map = state.invitationsReceived as Map<
-      string,
-      {
-        acceptedIn: number;
-        description: string;
-        instance: { boardId: string };
-      }
-    >;
-    const match = Array.from(map.values()).find(r =>
-      r.description.includes(descriptionSubstr)
-    );
-    return match;
-  }
 
   // TODO query RPC for the high water mark
   const nextOfferId = () => {
@@ -97,17 +78,9 @@ export const makeWalletUtils = async (agoricNet: string) => {
   return {
     chainKit,
     follow,
-    async isWalletProvisioned() {
-      state = await coalesceWalletState(follower);
-
-      console.log('isWalletProvisioned', { state });
-
-      return !!state;
-    },
     getWalletAddress() {
       return walletKey.bech32Address;
     },
-    invitationLike,
     makeOfferToAcceptInvitation(
       sourceContractName: string,
       description: string
@@ -126,13 +99,16 @@ export const makeWalletUtils = async (agoricNet: string) => {
         proposal: {},
       };
     },
-    makeOfferToVote(chosenPositions: unknown[], questionHandle) {
+    makeOfferToVote(
+      ecOfferId: number,
+      chosenPositions: unknown[],
+      questionHandle
+    ) {
       const ecInstance = agoricNames.instance['economicCommittee'];
       assert(ecInstance, 'no contract instance for economicCommittee');
 
-      const invitationRecord = invitationLike('Voter');
       assert(
-        invitationRecord,
+        ecOfferId,
         'cannot makeOffer without economicCommittee membership'
       );
 
@@ -140,7 +116,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
         id: nextOfferId(),
         invitationSpec: {
           source: 'continuing',
-          previousOffer: invitationRecord.acceptedIn,
+          previousOffer: ecOfferId,
           invitationMakerName: 'makeVoteInvitation',
           // (positionList, questionHandle)
           invitationArgs: harden([chosenPositions, questionHandle]),
@@ -149,6 +125,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
       };
     },
     makeVoteOnParamChange(
+      psmCharterOfferId: number,
       anchorName: string,
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number
@@ -156,11 +133,8 @@ export const makeWalletUtils = async (agoricNet: string) => {
       const psmInstance = agoricNames.instance[`psm-IST-${anchorName}`];
       assert(psmInstance, `no PSM contract instance for IST.${anchorName}`);
 
-      const invitationRecord = invitationLike(
-        psmCharterInvitationSpec.description
-      );
       assert(
-        invitationRecord,
+        psmCharterOfferId,
         'cannot makeOffer without PSM charter membership'
       );
 
@@ -171,7 +145,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
         id: nextOfferId(),
         invitationSpec: {
           source: 'continuing',
-          previousOffer: invitationRecord.acceptedIn,
+          previousOffer: psmCharterOfferId,
           invitationMakerName: 'VoteOnParamChange',
         },
         offerArgs: {
@@ -183,6 +157,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
       };
     },
     makeVoteOnPauseOffers(
+      psmCharterOfferId: number,
       anchorName: string,
       toPause: string[],
       relativeDeadlineMin: number
@@ -190,11 +165,8 @@ export const makeWalletUtils = async (agoricNet: string) => {
       const psmInstance = agoricNames.instance[`psm-IST-${anchorName}`];
       assert(psmInstance, `no PSM contract instance for IST.${anchorName}`);
 
-      const invitationRecord = invitationLike(
-        psmCharterInvitationSpec.description
-      );
       assert(
-        invitationRecord,
+        psmCharterOfferId,
         'cannot makeOffer without PSM charter membership'
       );
 
@@ -206,7 +178,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
         id: nextOfferId(),
         invitationSpec: {
           source: 'continuing',
-          previousOffer: invitationRecord.acceptedIn,
+          previousOffer: psmCharterOfferId,
           invitationMakerName: 'VoteOnPauseOffers',
           invitationArgs: [psmInstance, toPause, deadline],
         },
@@ -251,7 +223,7 @@ export const WalletContext = React.createContext(walletUtils);
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { useContext, useEffect, useState } from 'react';
-import { coalesceWalletState } from './smart-wallet-utils.js';
+import { ERef } from '@endo/eventual-send';
 
 export const usePublishedDatum = (path: string) => {
   const [status, setStatus] = useState('idle');
@@ -262,7 +234,7 @@ export const usePublishedDatum = (path: string) => {
   useEffect(() => {
     const { follow } = walletUtils;
     const fetchData = async () => {
-      console.log('usePublishedDatum following', `:published.${path}`);
+      console.debug('usePublishedDatum following', `:published.${path}`);
       const follower = await follow(`:published.${path}`);
       const iterable: AsyncIterable<Record<string, unknown>> =
         await follower.getLatestIterable();
@@ -286,7 +258,7 @@ export const usePublishedHistory = (path: string) => {
   useEffect(() => {
     const { follow } = walletUtils;
     const fetchData = async () => {
-      console.log('usePublishedDatum following', `:published.${path}`);
+      console.debug('usePublishedDatum following', `:published.${path}`);
       const follower = await follow(`:published.${path}`);
       const iterable: AsyncIterable<Record<string, unknown>> =
         await follower.getReverseIterable();
@@ -302,4 +274,62 @@ export const usePublishedHistory = (path: string) => {
   }, [path, walletUtils]);
 
   return { status, data };
+};
+
+type BrandDescriptor = {
+  brand: Brand;
+  displayInfo: DisplayInfo;
+  issuer: ERef<Issuer>;
+  petname: string | string[];
+};
+
+type CurrentWalletRecord = {
+  brands: BrandDescriptor[];
+  purses: Array<{ brand: Brand; balance: Amount }>;
+  offerToUsedInvitation: Record<number, Amount>;
+  lastOfferId: number;
+};
+
+export const inferInvitationStatus = (
+  current: CurrentWalletRecord | undefined,
+  descriptionSubstr: string
+) => {
+  if (!current?.offerToUsedInvitation) {
+    return { status: 'nodata' };
+  }
+  // first check for accepted
+  const usedInvitationEntry = Object.entries(
+    current.offerToUsedInvitation
+  ).find(([_, invitationAmount]) =>
+    invitationAmount.value[0].description.includes(descriptionSubstr)
+  );
+  if (usedInvitationEntry) {
+    return {
+      status: 'accepted',
+      acceptedIn: Number(usedInvitationEntry[0]),
+    };
+  }
+  // if that's not available, see if there's an invitation that can be used
+
+  const invitationPurse = current.purses.find(p =>
+    // xxx take this as param
+    // @ts-expect-error RpcRemote
+    p.brand.iface.includes('Invitation')
+  );
+
+  const invitation: Amount<'set'> | undefined =
+    invitationPurse.balance.value.find(a =>
+      a.description.includes(descriptionSubstr)
+    );
+  if (invitation) {
+    return {
+      status: 'available',
+      invitation,
+    };
+  }
+
+  // no record of an invitation
+  return {
+    status: 'missing',
+  };
 };

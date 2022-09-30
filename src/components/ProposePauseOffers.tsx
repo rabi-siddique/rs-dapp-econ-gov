@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 
 interface Props {
   anchorName: string;
+  psmCharterOfferId: number;
 }
 
 export default function ProposePauseOffers(props: Props) {
@@ -28,6 +29,7 @@ export default function ProposePauseOffers(props: Props) {
       .filter(([_, check]) => check)
       .map(([name]) => name);
     const offer = walletUtils.makeVoteOnPauseOffers(
+      props.psmCharterOfferId,
       props.anchorName,
       toPause,
       minutesUntilClose

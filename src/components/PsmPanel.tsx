@@ -1,6 +1,11 @@
 import { Listbox } from '@headlessui/react';
 import { useAtom } from 'jotai';
-import { WalletContext } from 'lib/wallet';
+import {
+  inferInvitationStatus,
+  psmCharterInvitationSpec,
+  usePublishedDatum,
+  WalletContext,
+} from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { selectedAnchorPetnameAtom } from 'store/swap';
 import AcceptInvitation from './AcceptInvitation';
@@ -16,36 +21,47 @@ interface Props {}
 export default function PsmPanel(_props: Props) {
   const [anchorName, setAnchorName] = useState(anchors[0]);
   const walletUtils = useContext(WalletContext);
-  const invitationRecord = walletUtils.invitationLike(
-    'PSM charter member invitation'
+  const { data } = usePublishedDatum(
+    `wallet.${walletUtils.getWalletAddress()}.current`
   );
   const [selectedAnchorBrandPetname, _setSelectedAnchorBrandPetname] = useAtom(
     selectedAnchorPetnameAtom
   );
 
-  console.log('rendering PsmPanel', {
-    invitationRecord,
+  console.debug('rendering PsmPanel', {
+    data,
     selectedAnchorBrandPetname,
   });
-  if (!invitationRecord) {
+
+  const invitationStatus = inferInvitationStatus(
+    data,
+    psmCharterInvitationSpec.description
+  );
+  if (invitationStatus.status === 'nodata') {
+    return <p>Loading…</p>;
+  }
+  if (invitationStatus.status === 'missing') {
     return (
       <p>You must first have received an invitation to the PSM Charter.</p>
     );
   }
-  if (!invitationRecord.acceptedIn) {
+  if (invitationStatus.status === 'available') {
     return (
       <div>
         To vote you will need to accept your invitation to the PSM Charter.
         <AcceptInvitation
-          description={invitationRecord.description}
+          // @ts-expect-error invitation type
+          description={invitationStatus.invitation.description}
           // TODO validate earlier that this invitation is from this contract
-          sourceContract="psmCharter"
+          sourceContract={psmCharterInvitationSpec.instanceName}
         />
         And then <b>reload the page</b>.
       </div>
     );
   }
-  const previousOfferId = invitationRecord.acceptedIn;
+
+  assert(invitationStatus.status === 'accepted');
+  const previousOfferId = invitationStatus.acceptedIn;
 
   return (
     <div>
@@ -74,8 +90,14 @@ export default function PsmPanel(_props: Props) {
             ))}
           </Listbox.Options>
 
-          <ProposeParamChange anchorName={anchorName} />
-          <ProposePauseOffers anchorName={anchorName} />
+          <ProposeParamChange
+            psmCharterOfferId={previousOfferId}
+            anchorName={anchorName}
+          />
+          <ProposePauseOffers
+            psmCharterOfferId={previousOfferId}
+            anchorName={anchorName}
+          />
         </Listbox>
       </div>
     </div>

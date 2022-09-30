@@ -2,11 +2,20 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { Tab } from '@headlessui/react';
 import clsx from 'clsx';
+import { usePublishedDatum } from 'lib/wallet';
+import HistoryPanel from './HistoryPanel';
 import PsmPanel from './PsmPanel';
 import VotePanel from './VotePanel';
-import HistoryPanel from './HistoryPanel';
 
-export default function GovernanceTools() {
+interface Props {
+  walletAddress: string;
+}
+
+export default function GovernanceTools(props: Props) {
+  const { status, data } = usePublishedDatum(
+    `wallet.${props.walletAddress}.current`
+  );
+
   const tabClassname = ({ selected }) =>
     clsx(
       'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700',
@@ -15,6 +24,15 @@ export default function GovernanceTools() {
         ? 'bg-white shadow'
         : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
     );
+
+  console.log({ status, data });
+  if (status === 'idle') {
+    return (
+      <p>
+        No smart wallet found. Try <em>Signal Wallet</em>
+      </p>
+    );
+  }
 
   return (
     <div className="w-full max-w-xl px-2 py-16 sm:px-0">
