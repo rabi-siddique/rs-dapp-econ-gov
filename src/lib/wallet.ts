@@ -76,6 +76,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
   };
 
   return {
+    agoricNet,
     chainKit,
     follow,
     getWalletAddress() {
@@ -216,6 +217,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
 const usp = new URLSearchParams(window.location.search);
 const agoricNet = usp.get('agoricNet') || 'devnet';
 console.log('RPC server:', agoricNet);
+
 export const walletUtils = await makeWalletUtils(agoricNet);
 
 export const WalletContext = React.createContext(walletUtils);

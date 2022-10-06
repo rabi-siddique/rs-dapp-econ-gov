@@ -22,6 +22,27 @@ import 'styles/globals.css';
 
 interface Props {}
 
+const NetPicker = (props: { currentNet: string }) => {
+  return (
+    <div style={{ padding: 2 }}>
+      {['main', 'testnet', 'ollinet', 'devnet', 'local'].map(net => {
+        if (net === props.currentNet) {
+          return (
+            <b key={net} style={{ paddingRight: 4 }}>
+              {net}
+            </b>
+          );
+        }
+        return (
+          <a key={net} href={`/?agoricNet=${net}`} style={{ paddingRight: 4 }}>
+            {net}
+          </a>
+        );
+      })}
+    </div>
+  );
+};
+
 const App = (_props: Props) => {
   const [wallet] = useAtom(walletAtom);
   const walletUtils = useContext(WalletContext);
@@ -78,6 +99,7 @@ const App = (_props: Props) => {
           <img src={INTER_LOGO} className="item" alt="Inter Logo" width="200" />
           <WalletConnection />
           {address}
+          <NetPicker currentNet={walletUtils.agoricNet} />
         </div>
         <div className="min-w-screen container mx-auto flex justify-center mt-16">
           <GovernanceTools walletAddress={address} />
