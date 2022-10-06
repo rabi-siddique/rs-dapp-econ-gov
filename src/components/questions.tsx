@@ -5,6 +5,7 @@ import { RadioGroup } from '@headlessui/react';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { useAtomValue } from 'jotai';
+import { formatRelative } from 'date-fns';
 
 import { displayFunctionsAtom } from 'store/app';
 import {
@@ -29,11 +30,17 @@ export function OfferId(props: { id: number }) {
   return <code title={title}>{id}</code>;
 }
 
-export function ZoeTime(props: { seconds: bigint }) {
+export function Deadline(props: { seconds: bigint }) {
   const { seconds } = props;
 
-  const when = new Date(Number(seconds) * 1000).toISOString();
-  return <strong>{when}</strong>;
+  const date = new Date(Number(seconds) * 1000);
+
+  return (
+    <span>
+      Deadline: <strong>{formatRelative(date, new Date())}</strong>
+      <tt style={{ float: 'right' }}>{date.toISOString()}</tt>
+    </span>
+  );
 }
 
 const choice = (label: string, _name: string, val: string) => (
@@ -158,7 +165,7 @@ export function QuestionDetails(props: {
   console.debug('QuestionDetails', details);
   return (
     <>
-      Deadline: <ZoeTime seconds={details.closingRule.deadline} />
+      <Deadline seconds={details.closingRule.deadline} />
       <br />
       <small>
         Handle <strong>{details.questionHandle.boardId} </strong>
