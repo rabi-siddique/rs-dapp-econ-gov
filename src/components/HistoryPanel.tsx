@@ -18,6 +18,15 @@ export default function VotePanel(_props: Props) {
   const { status: aStatus, data: outcomes } = usePublishedHistory(
     'committees.Initial_Economic_Committee.latestOutcome'
   );
+
+  // Return early if not all data yet available
+  const dataLoaded = [instanceStatus, qStatus, aStatus].every(
+    s => s === 'received'
+  );
+  if (!dataLoaded) {
+    return <em>stand by for question details...</em>;
+  }
+
   const outcomeByHandle = new Map(
     outcomes.map((o: OutcomeRecord) => [o.question, o])
   );
@@ -26,23 +35,15 @@ export default function VotePanel(_props: Props) {
       q,
       outcomeByHandle.get(q.questionHandle),
     ]);
-  const receivedItems =
-    qStatus === 'received' && instanceStatus === 'received'
-      ? questionsWithAnswers.map(([qData, aData], index) => (
-          <div key={index} className="p-4 rounded">
-            <QuestionDetails
-              details={qData}
-              outcome={
-                aStatus === 'received' &&
-                qData.questionHandle === aData.question
-                  ? aData
-                  : undefined
-              }
-              instance={instance}
-            />
-          </div>
-        ))
-      : null;
+  const receivedItems = questionsWithAnswers.map(([qData, aData], index) => (
+    <div key={index} className="p-4 rounded">
+      <QuestionDetails
+        details={qData}
+        outcome={aData?.question === qData.questionHandle ? aData : undefined}
+        instance={instance}
+      />
+    </div>
+  ));
 
   return (
     <div
@@ -51,13 +52,9 @@ export default function VotePanel(_props: Props) {
         'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
       )}
     >
-      {receivedItems === null ? (
-        <em>stand by for question details...</em>
-      ) : (
-        <div className="grid grid-cols-1 divide-y divide-blue-400">
-          {receivedItems}
-        </div>
-      )}
+      <div className="grid grid-cols-1 divide-y divide-blue-400">
+        {receivedItems}
+      </div>
     </div>
   );
 }
