@@ -36,7 +36,7 @@ export default function ProposeParamChange(props: Props) {
 
   const params = governedParamsIndex.get(props.anchorName);
   if (!params) {
-    return <b>signal wallet!</b>;
+    return <b>TO PROCEED: accept this dapp in wallet</b>;
   }
   function displayParam(name: string, { type, value }: ParameterValue) {
     switch (type) {
