@@ -101,6 +101,17 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
   );
 }
 
+function PrettyOutcome(props: { outcome: OutcomeRecord }) {
+  switch (props.outcome?.outcome) {
+    case 'win':
+      return <strong>PASS ✅</strong>;
+    case 'fail':
+      return <strong>FAIL ❌</strong>;
+    default:
+      return <span>PENDING ⏳</span>;
+  }
+}
+
 function paramChangeOutcome(
   { issue }: ParamChangeSpec,
   outcome?: OutcomeRecord,
@@ -113,20 +124,7 @@ function paramChangeOutcome(
       Proposal: change {name} parameters:{' '}
       <ParamChanges changes={issue.spec.changes} />
       <br />
-      {outcome ? (
-        outcome.outcome === 'win' ? (
-          <>
-            <strong>PASS</strong>. parameter changed to{' '}
-            <ParamChanges
-              changes={(outcome.position as ChangeParamsPosition).changes}
-            />
-          </>
-        ) : (
-          <strong>FAIL</strong>
-        )
-      ) : (
-        ''
-      )}
+      <PrettyOutcome outcome={outcome} />
     </>
   );
 }
@@ -140,18 +138,7 @@ function offerFilterOutcome(
       Proposal: set filtered offers to{' '}
       <code>{bigintStringify(issue.strings)}</code>
       <br />
-      {outcome ? (
-        outcome.outcome === 'win' ? (
-          <>
-            <strong>PASS</strong>. updated filters:{' '}
-            {bigintStringify(outcome.position.strings)}
-          </>
-        ) : (
-          'FAIL'
-        )
-      ) : (
-        ''
-      )}
+      <PrettyOutcome outcome={outcome} />
     </>
   );
 }
