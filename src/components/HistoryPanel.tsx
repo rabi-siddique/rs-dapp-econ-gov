@@ -29,7 +29,7 @@ export default function VotePanel(_props: Props) {
   const receivedItems =
     qStatus === 'received' && instanceStatus === 'received'
       ? questionsWithAnswers.map(([qData, aData], index) => (
-          <li key={index}>
+          <div key={index} className="p-4 rounded">
             <QuestionDetails
               details={qData}
               outcome={
@@ -40,7 +40,7 @@ export default function VotePanel(_props: Props) {
               }
               instance={instance}
             />
-          </li>
+          </div>
         ))
       : null;
 
@@ -54,7 +54,9 @@ export default function VotePanel(_props: Props) {
       {receivedItems === null ? (
         <em>stand by for question details...</em>
       ) : (
-        <ul>{receivedItems}</ul>
+        <div className="grid grid-cols-1 divide-y divide-blue-400">
+          {receivedItems}
+        </div>
       )}
     </div>
   );

@@ -55,13 +55,7 @@ export default function GovernanceTools(props: Props) {
           <Tab.Panel key="vote">
             <VotePanel />
           </Tab.Panel>
-          <Tab.Panel
-            key="propose"
-            className={clsx(
-              'rounded-xl bg-white p-3',
-              'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
-            )}
-          >
+          <Tab.Panel key="propose">
             <PsmPanel />
           </Tab.Panel>
         </Tab.Panels>
