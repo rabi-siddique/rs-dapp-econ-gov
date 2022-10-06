@@ -25,7 +25,7 @@ interface Props {}
 const NetPicker = (props: { currentNet: string }) => {
   return (
     <div style={{ padding: 2 }}>
-      {['main', 'testnet', 'ollinet', 'devnet', 'local'].map(net => {
+      {['main', 'emerynet', 'ollinet', 'devnet', 'local'].map(net => {
         if (net === props.currentNet) {
           return (
             <b key={net} style={{ paddingRight: 4 }}>
