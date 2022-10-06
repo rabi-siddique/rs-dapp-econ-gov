@@ -1,29 +1,28 @@
-import { bigintStringify } from '@agoric/wallet-backend/src/bigintStringify.js';
 import { stringifyValue } from '@agoric/ui-components';
+import { bigintStringify } from '@agoric/wallet-backend/src/bigintStringify.js';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
 import { RadioGroup } from '@headlessui/react';
+import { formatRelative, formatISO9075 } from 'date-fns';
+import { useAtomValue } from 'jotai';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
-import { useAtomValue } from 'jotai';
-import { formatRelative } from 'date-fns';
 
+import { Amount, AssetKind } from '@agoric/ertp';
 import { displayFunctionsAtom } from 'store/app';
 import {
-  QuestionDetails as IQuestionDetails,
-  ParamChangeSpec,
-  ChangeParamsPosition,
   OfferFilterSpec,
   OutcomeRecord,
+  ParamChangeSpec,
+  QuestionDetails as IQuestionDetails,
   RpcRemote,
 } from '../govTypes.js';
-import { AssetKind, Amount } from '@agoric/ertp';
 
 export function OfferId(props: { id: number }) {
   const { id } = props;
 
   let title = '';
   try {
-    title = new Date(id).toISOString();
+    title = formatISO9075(new Date(id));
   } catch (err) {
     console.debug('not a timestamp', id, err);
   }
@@ -38,7 +37,7 @@ export function Deadline(props: { seconds: bigint }) {
   return (
     <span>
       Deadline: <strong>{formatRelative(date, new Date())}</strong>
-      <tt style={{ float: 'right' }}>{date.toISOString()}</tt>
+      <code style={{ float: 'right' }}>{formatISO9075(date)}</code>
     </span>
   );
 }
