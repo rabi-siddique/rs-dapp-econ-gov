@@ -1,17 +1,13 @@
-import { makeFollower, makeLeader } from '@agoric/casting';
-import { SigningStargateClient as AmbientClient } from '@cosmjs/stargate';
-import React from 'react';
-import { suggestChain } from './chainInfo.js';
-import { makeInteractiveSigner } from './keyManagement.js';
-import {
-  boardSlottingMarshaller,
-  networkConfig,
-  networkConfigUrl,
-} from './rpc';
-import { makeRpcUtils } from './rpc.js';
-
 import { Amount, Brand, DisplayInfo, Issuer } from '@agoric/ertp';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
+import { SigningStargateClient as AmbientClient } from '@cosmjs/stargate';
+import { ERef } from '@endo/eventual-send';
+import { ChainInfo, Keplr } from '@keplr-wallet/types';
+import React, { useContext, useEffect, useState } from 'react';
+import { suggestChain } from './chainInfo.js';
+import { makeInteractiveSigner } from './keyManagement.js';
+import { boardSlottingMarshaller, networkConfigUrl, RpcUtils } from './rpc';
+import { makeRpcUtils } from './rpc.js';
 
 const marshaller = boardSlottingMarshaller();
 
@@ -20,23 +16,17 @@ export const psmCharterInvitationSpec = {
   description: 'PSM charter member invitation',
 };
 
-export const makeWalletUtils = async (agoricNet: string) => {
-  const { keplr } = window as import('@keplr-wallet/types').Window;
-  if (!keplr) {
-    window.alert('requires Keplr extension');
-    assert.fail('missing keplr');
-  }
-
-  const { agoricNames, fromBoard } = await makeRpcUtils({
-    agoricNet,
-  });
-  const makeChainKit = async (agoricNet: string) => {
-    const chainInfo: import('@keplr-wallet/types').ChainInfo =
-      await suggestChain(networkConfigUrl(agoricNet), {
+export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
+  const { agoricNames, fromBoard } = rpcUtils;
+  const makeChainKit = async () => {
+    const chainInfo: ChainInfo = await suggestChain(
+      networkConfigUrl(agoricNet),
+      {
         fetch: window.fetch,
         keplr,
         random: Math.random,
-      });
+      }
+    );
 
     const signer = await makeInteractiveSigner(
       chainInfo,
@@ -44,28 +34,15 @@ export const makeWalletUtils = async (agoricNet: string) => {
       AmbientClient.connectWithSigner
     );
 
-    const leader = makeLeader(networkConfig.rpcAddrs[0]);
-
     return {
       chainInfo,
-      agoricNames,
       fromBoard,
-      leader,
       signer,
     };
   };
 
-  const chainKit = await makeChainKit(agoricNet);
+  const chainKit = await makeChainKit();
   console.log({ chainKit });
-
-  const unserializer = boardSlottingMarshaller(fromBoard.convertSlotToVal);
-
-  // XXX factor out of wallet
-  // XXX memoize on path
-  const follow = (path: string) =>
-    makeFollower(path, chainKit.leader, {
-      unserializer,
-    });
 
   const walletKey = await keplr.getKey(chainKit.chainInfo.chainId);
 
@@ -78,7 +55,7 @@ export const makeWalletUtils = async (agoricNet: string) => {
   return {
     agoricNet,
     chainKit,
-    follow,
+    rpcUtils,
     getWalletAddress() {
       return walletKey.bech32Address;
     },
@@ -217,15 +194,17 @@ export const makeWalletUtils = async (agoricNet: string) => {
 const usp = new URLSearchParams(window.location.search);
 const agoricNet = usp.get('agoricNet') || 'devnet';
 console.log('RPC server:', agoricNet);
+const rpcUtils = await makeRpcUtils({ agoricNet });
 
-export const walletUtils = await makeWalletUtils(agoricNet);
+const { keplr } = window as import('@keplr-wallet/types').Window;
+if (!keplr) {
+  window.alert('requires Keplr extension');
+  assert.fail('missing keplr');
+}
+
+export const walletUtils = await makeWalletUtils(rpcUtils, keplr);
 
 export const WalletContext = React.createContext(walletUtils);
-
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable jsx-a11y/anchor-has-content */
-import { useContext, useEffect, useState } from 'react';
-import { ERef } from '@endo/eventual-send';
 
 export const usePublishedDatum = (path: string) => {
   const [status, setStatus] = useState('idle');
@@ -234,7 +213,7 @@ export const usePublishedDatum = (path: string) => {
 
   // XXX cleanup? await next?
   useEffect(() => {
-    const { follow } = walletUtils;
+    const { follow } = rpcUtils;
     const fetchData = async () => {
       console.debug('usePublishedDatum following', `:published.${path}`);
       const follower = await follow(`:published.${path}`);
@@ -258,7 +237,7 @@ export const usePublishedHistory = (path: string) => {
   const walletUtils = useContext(WalletContext);
 
   useEffect(() => {
-    const { follow } = walletUtils;
+    const { follow } = rpcUtils;
     const fetchData = async () => {
       console.debug('usePublishedDatum following', `:published.${path}`);
       const follower = await follow(`:published.${path}`);

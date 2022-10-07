@@ -2,6 +2,8 @@
 // @ts-check
 /// <reference types="ses"/>
 
+import { makeFollower, makeLeader } from '@agoric/casting';
+
 /**
  * @typedef {{boardId: string, iface: string}} RpcRemote
  */
@@ -243,5 +245,22 @@ export const makeRpcUtils = async ({ agoricNet }) => {
   const fromBoard = makeFromBoard();
   const agoricNames = await makeAgoricNames(fromBoard, vstorage);
 
-  return { vstorage, fromBoard, agoricNames };
+  const leader = makeLeader(networkConfig.rpcAddrs[0]);
+
+  const unserializer = boardSlottingMarshaller(fromBoard.convertSlotToVal);
+
+  // XXX memoize on path
+  const follow = (path: string) =>
+    makeFollower(path, leader, {
+      unserializer,
+    });
+
+  return {
+    agoricNames,
+    follow,
+    leader,
+    fromBoard,
+    vstorage,
+  };
 };
+export type RpcUtils = Awaited<ReturnType<typeof makeRpcUtils>>;
