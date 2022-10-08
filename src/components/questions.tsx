@@ -224,7 +224,7 @@ function ChoosePosition(props: {
 export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
   const walletUtils = useContext(WalletContext);
   const { status, data } = usePublishedDatum(
-    'committees.Initial_Economic_Committee.latestQuestion'
+    'committees.Economic_Committee.latestQuestion'
   );
 
   console.debug('render VoteOnLatestQuestion', status, data);

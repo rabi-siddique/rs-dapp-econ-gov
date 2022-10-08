@@ -13,10 +13,10 @@ export default function VotePanel(_props: Props) {
     'agoricNames.instance'
   );
   const { status: qStatus, data: questions } = usePublishedHistory(
-    'committees.Initial_Economic_Committee.latestQuestion'
+    'committees.Economic_Committee.latestQuestion'
   );
   const { status: aStatus, data: outcomes } = usePublishedHistory(
-    'committees.Initial_Economic_Committee.latestOutcome'
+    'committees.Economic_Committee.latestOutcome'
   );
 
   // Return early if not all data yet available
