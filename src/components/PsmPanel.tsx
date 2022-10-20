@@ -1,5 +1,4 @@
 import { Listbox } from '@headlessui/react';
-import { useAtom } from 'jotai';
 import {
   inferInvitationStatus,
   psmCharterInvitationSpec,
@@ -7,7 +6,6 @@ import {
   WalletContext,
 } from 'lib/wallet';
 import { useContext, useState } from 'react';
-import { selectedAnchorPetnameAtom } from 'store/swap';
 import AcceptInvitation from './AcceptInvitation';
 import ProposeParamChange from './ProposeParamChange';
 import ProposePauseOffers from './ProposePauseOffers';
@@ -24,14 +22,6 @@ export default function PsmPanel(_props: Props) {
   const { data } = usePublishedDatum(
     `wallet.${walletUtils.getWalletAddress()}.current`
   );
-  const [selectedAnchorBrandPetname, _setSelectedAnchorBrandPetname] = useAtom(
-    selectedAnchorPetnameAtom
-  );
-
-  console.debug('rendering PsmPanel', {
-    data,
-    selectedAnchorBrandPetname,
-  });
 
   const invitationStatus = inferInvitationStatus(
     data,
