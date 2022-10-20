@@ -1,8 +1,6 @@
 import { Amount } from '@agoric/ertp';
-import { useAtomValue } from 'jotai';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
-import { governedParamsIndexAtom } from 'store/app';
 import { AmountInput, PercentageInput } from './inputs';
 
 interface Props {
@@ -25,7 +23,6 @@ export type ParameterValue =
     };
 
 export default function ProposeParamChange(props: Props) {
-  const governedParamsIndex = useAtomValue(governedParamsIndexAtom);
   const walletUtils = useContext(WalletContext);
   const { data } = usePublishedDatum(`psm.IST.${props.anchorName}.governance`);
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
@@ -34,10 +31,6 @@ export default function ProposeParamChange(props: Props) {
 
   console.log('ProposeParamChange', { data, paramPatch });
 
-  const params = governedParamsIndex.get(props.anchorName);
-  if (!params) {
-    return <b>TO PROCEED: accept this dapp in wallet</b>;
-  }
   function displayParam(name: string, { type, value }: ParameterValue) {
     switch (type) {
       case 'amount':

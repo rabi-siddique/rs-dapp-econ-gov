@@ -1,12 +1,8 @@
 import { atom } from 'jotai';
 import type { Id as ToastId, ToastOptions } from 'react-toastify';
 
-import type { GovernedParams, Metrics } from 'store/app';
-import {
-  governedParamsIndexAtom,
-  instanceIdsAtom,
-  metricsIndexAtom,
-} from 'store/app';
+import type { Metrics } from 'store/app';
+import { instanceIdsAtom, metricsIndexAtom } from 'store/app';
 
 export enum SwapError {
   IN_PROGRESS = 'Swap in progress.',
@@ -57,15 +53,6 @@ export const metricsAtom = atom<Metrics | null>(get => {
     return null;
   }
   return get(metricsIndexAtom).get(selectedPetname) ?? null;
-});
-
-/** The governed params for the currently selected anchor. */
-export const governedParamsAtom = atom<GovernedParams | null>(get => {
-  const selectedPetname = get(selectedAnchorPetnameAtom);
-  if (!selectedPetname) {
-    return null;
-  }
-  return get(governedParamsIndexAtom).get(selectedPetname) ?? null;
 });
 
 /** The contract instance id for the currently selected anchor. */
