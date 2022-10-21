@@ -206,8 +206,14 @@ export const walletUtils = await makeWalletUtils(rpcUtils, keplr);
 
 export const WalletContext = React.createContext(walletUtils);
 
+export enum LoadStatus {
+  Idle = 'idle',
+  Waiting = 'waiting',
+  Received = 'received',
+}
+
 export const usePublishedDatum = (path: string) => {
-  const [status, setStatus] = useState('idle');
+  const [status, setStatus] = useState(LoadStatus.Idle);
   const [data, setData] = useState({} as any);
   const walletUtils = useContext(WalletContext);
 
@@ -220,10 +226,10 @@ export const usePublishedDatum = (path: string) => {
       const iterable: AsyncIterable<Record<string, unknown>> =
         await follower.getLatestIterable();
       const iterator = iterable[Symbol.asyncIterator]();
-      setStatus('waiting');
+      setStatus(LoadStatus.Waiting);
       const { value: publishedValue } = await iterator.next();
       setData(publishedValue.value);
-      setStatus('received');
+      setStatus(LoadStatus.Received);
     };
     fetchData().catch(e => console.error('useEffect error', e));
   }, [path, walletUtils]);
@@ -232,7 +238,7 @@ export const usePublishedDatum = (path: string) => {
 };
 
 export const usePublishedHistory = (path: string) => {
-  const [status, setStatus] = useState('idle');
+  const [status, setStatus] = useState(LoadStatus.Idle);
   const [data, setData] = useState([]);
   const walletUtils = useContext(WalletContext);
 
@@ -243,13 +249,13 @@ export const usePublishedHistory = (path: string) => {
       const follower = await follow(`:published.${path}`);
       const iterable: AsyncIterable<Record<string, unknown>> =
         await follower.getReverseIterable();
-      setStatus('waiting');
+      setStatus(LoadStatus.Waiting);
       const items = [];
       for await (const { value } of iterable) {
         items.push(value);
       }
       setData(items);
-      setStatus('received');
+      setStatus(LoadStatus.Received);
     };
     fetchData().catch(e => console.error('useEffect error', e));
   }, [path, walletUtils]);

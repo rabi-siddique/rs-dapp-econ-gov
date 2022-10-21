@@ -1,5 +1,5 @@
 import { Amount } from '@agoric/ertp';
-import { usePublishedDatum, WalletContext } from 'lib/wallet';
+import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
 
@@ -24,7 +24,9 @@ export type ParameterValue =
 
 export default function ProposeParamChange(props: Props) {
   const walletUtils = useContext(WalletContext);
-  const { data } = usePublishedDatum(`psm.IST.${props.anchorName}.governance`);
+  const { data, status } = usePublishedDatum(
+    `psm.IST.${props.anchorName}.governance`
+  );
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
 
   const [paramPatch, setParamPatch] = useState({});
@@ -75,8 +77,9 @@ export default function ProposeParamChange(props: Props) {
     event.preventDefault();
   }
 
-  if (!data?.current) {
-    return <b>loading… (you have to signal wallet)</b>;
+  // XXX tell user when the storage node doesn't exist, i.e. invalid anchor
+  if (status !== LoadStatus.Received) {
+    return <em>waiting for existing parameter values</em>;
   }
 
   // styling examples https://tailwindcss-forms.vercel.app/
