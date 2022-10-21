@@ -1,24 +1,43 @@
-// TODO source from sdk
 // @ts-check
-import { fromBase64, fromBech32, toBase64, toBech32 } from '@cosmjs/encoding';
-import { Registry } from '@cosmjs/proto-signing';
+import { fromBech32, toBech32, fromBase64, toBase64 } from '@cosmjs/encoding';
+import { DirectSecp256k1Wallet, Registry } from '@cosmjs/proto-signing';
 import {
   AminoTypes,
-  assertIsDeliverTxSuccess,
-  createAuthzAminoConverters,
-  createBankAminoConverters,
   defaultRegistryTypes,
+  QueryClient,
+  createProtobufRpcClient,
+  assertIsDeliverTxSuccess,
+  createBankAminoConverters,
+  createAuthzAminoConverters,
 } from '@cosmjs/stargate';
 
-import { MsgWalletAction, MsgWalletSpendAction } from './cosmicProtoMessages';
-
 import { GenericAuthorization } from 'cosmjs-types/cosmos/authz/v1beta1/authz.js';
-import { bech32Config, stableCurrency } from './chainInfo';
+import { QueryClientImpl } from 'cosmjs-types/cosmos/authz/v1beta1/query.js';
+
+import {
+  MsgProvision,
+  MsgWalletAction,
+  MsgWalletSpendAction,
+} from './cosmicProtoMessages';
+
+import { stableCurrency, bech32Config } from './chainInfo';
 
 /** @type {(address: string) => Uint8Array} */
 export function toAccAddress(address) {
   return fromBech32(address).data;
 }
+
+const KEY_SIZE = 32; // as in bech32
+
+// XXX domain of @agoric/cosmic-proto
+/**
+ * non-exhaustive list of powerFlags
+ *
+ * See also MsgProvision in golang/cosmos/proto/agoric/swingset/msgs.proto
+ */
+export const PowerFlags = /** @type {const} */ ({
+  SMART_WALLET: 'SMART_WALLET',
+});
 
 /**
  * The typeUrl of a message pairs a package name with a message name.
@@ -60,20 +79,33 @@ const CosmosMessages = /** @type {const} */ ({
 });
 
 /**
- * `/agoric.swingset.XXX` matches package agoric.swingset in swingset/msgs.go
+ * `/agoric.swingset.XXX` matches package agoric.swingset in swingset/msgs.proto
+ * aminoType taken from Type() in golang/cosmos/x/swingset/types/msgs.go
  */
 export const SwingsetMsgs = /** @type {const} */ ({
+  MsgProvision: {
+    typeUrl: '/agoric.swingset.MsgProvision',
+    aminoType: 'swingset/Provision',
+  },
   MsgWalletAction: {
     typeUrl: '/agoric.swingset.MsgWalletAction',
     aminoType: 'swingset/WalletAction',
   },
   MsgWalletSpendAction: {
     typeUrl: '/agoric.swingset.MsgWalletSpendAction',
-    aminoType: 'swingset/WalletAction',
+    aminoType: 'swingset/WalletSpendAction',
   },
 });
 
+// XXX repeating the TS definitions made by protoc
+// TODO define these automatically from those
 /**
+ * @typedef {{
+ *   nickname: string,
+ *   address: string, // base64 of raw bech32 data
+ *   powerFlags: string[],
+ *   submitter: string, // base64 of raw bech32 data
+ * }} Provision
  * @typedef {{
  *   owner: string, // base64 of raw bech32 data
  *   action: string,
@@ -87,6 +119,7 @@ export const SwingsetMsgs = /** @type {const} */ ({
 export const SwingsetRegistry = new Registry([
   ...defaultRegistryTypes,
   // XXX should this list be "upstreamed" to @agoric/cosmic-proto?
+  [SwingsetMsgs.MsgProvision.typeUrl, MsgProvision],
   [SwingsetMsgs.MsgWalletAction.typeUrl, MsgWalletAction],
   [SwingsetMsgs.MsgWalletSpendAction.typeUrl, MsgWalletSpendAction],
 ]);
@@ -106,12 +139,44 @@ export const zeroFee = () => {
   return fee;
 };
 
+const dbg = label => x => {
+  console.log(label, x);
+  return x;
+};
+
 /** @type {import('@cosmjs/stargate').AminoConverters} */
-const SwingsetConverters = {
-  // TODO: #3628, #4654
-  // '/agoric.swingset.MsgProvision': {
-  //   /* ... */
-  // },
+export const SwingsetConverters = {
+  [SwingsetMsgs.MsgProvision.typeUrl]: {
+    aminoType: SwingsetMsgs.MsgProvision.aminoType,
+    toAmino: protoVal => {
+      const { nickname, address, powerFlags, submitter } = dbg(
+        'provision toAmino protoVal',
+      )(protoVal);
+      return {
+        address: toBech32(
+          bech32Config.bech32PrefixAccAddr,
+          fromBase64(address),
+        ),
+        nickname,
+        powerFlags,
+        submitter: toBech32(
+          bech32Config.bech32PrefixAccAddr,
+          fromBase64(submitter),
+        ),
+      };
+    },
+    fromAmino: aminoVal => {
+      const { nickname, address, powerFlags, submitter } = dbg(
+        'provision fromAmino aminoVal',
+      )(aminoVal);
+      return {
+        address: toBase64(toAccAddress(address)),
+        nickname,
+        powerFlags,
+        submitter: toBase64(toAccAddress(submitter)),
+      };
+    },
+  },
   [SwingsetMsgs.MsgWalletAction.typeUrl]: {
     aminoType: SwingsetMsgs.MsgWalletAction.aminoType,
     toAmino: ({ action, owner }) => ({
@@ -124,16 +189,88 @@ const SwingsetConverters = {
     }),
   },
   [SwingsetMsgs.MsgWalletSpendAction.typeUrl]: {
-    aminoType: SwingsetMsgs.MsgWalletAction.aminoType,
+    aminoType: SwingsetMsgs.MsgWalletSpendAction.aminoType,
     toAmino: ({ spendAction, owner }) => ({
-      spendAction,
+      spend_action: spendAction,
       owner: toBech32(bech32Config.bech32PrefixAccAddr, fromBase64(owner)),
     }),
-    fromAmino: ({ spendAction, owner }) => ({
+    fromAmino: ({ spend_action: spendAction, owner }) => ({
       spendAction,
       owner: toBase64(toAccAddress(owner)),
     }),
   },
+};
+
+export const BROWSER_STORAGE_KEY = 'agoric.wallet.backgroundSignerKey';
+
+/**
+ * Maintain a key for signing non-spending messages in localStorage.
+ *
+ * See also `delegateWalletAction()` below.
+ *
+ * @param {object} io
+ * @param {typeof window.localStorage} io.localStorage
+ * @param {typeof import('@cosmjs/crypto').Random.getBytes} io.csprng
+ */
+export const makeBackgroundSigner = async ({ localStorage, csprng }) => {
+  const provideLocalKey = () => {
+    const stored = localStorage.getItem(BROWSER_STORAGE_KEY);
+    if (stored) {
+      return fromBase64(stored);
+    }
+    console.debug(
+      `localStorage.setItem(${BROWSER_STORAGE_KEY}, Random.getBytes(${KEY_SIZE}))`,
+    );
+    const seed = csprng(KEY_SIZE);
+    localStorage.setItem(BROWSER_STORAGE_KEY, toBase64(seed));
+    return seed;
+  };
+  const seed = provideLocalKey();
+  const wallet = await DirectSecp256k1Wallet.fromKey(
+    seed,
+    bech32Config.bech32PrefixAccAddr,
+  );
+
+  const accounts = await wallet.getAccounts();
+  console.debug('device account(s):', accounts);
+
+  const [{ address }] = accounts;
+
+  /**
+   * Query grants for granter / grantee pair
+   *
+   * For example, to check whether `delegateWalletAction()` is necessary.
+   *
+   * @param {string} granter address
+   * @param {import('@cosmjs/tendermint-rpc').Tendermint34Client} rpcClient
+   * @returns {Promise<GenericAuthorization[]>}
+   */
+  const queryGrants = async (granter, rpcClient) => {
+    const base = QueryClient.withExtensions(rpcClient);
+    const rpc = createProtobufRpcClient(base);
+    const queryService = new QueryClientImpl(rpc);
+    console.log('query Grants', { granter, grantee: address });
+    const result = await queryService.Grants({
+      granter,
+      grantee: address,
+      msgTypeUrl: '', // wildcard
+    });
+
+    const decoded = result.grants.flatMap(grant =>
+      grant.authorization
+        ? [GenericAuthorization.decode(grant.authorization.value)]
+        : [],
+    );
+
+    return decoded;
+  };
+
+  return harden({
+    address,
+    registry: SwingsetRegistry,
+    wallet,
+    queryGrants,
+  });
 };
 
 /**
@@ -153,13 +290,75 @@ const makeGrantWalletActionMessage = (granter, grantee, seconds) => {
           value: GenericAuthorization.encode(
             GenericAuthorization.fromPartial({
               msg: SwingsetMsgs.MsgWalletAction.typeUrl,
-            })
+            }),
           ).finish(),
         },
         expiration: { seconds },
       },
     },
   };
+};
+
+/**
+ * TODO: test this, once we have a solution for cosmjs/issues/1155
+ *
+ * @param {string} granter bech32 address
+ * @param {string} grantee bech32 address
+ * @param {string} allowance number of uist (TODO: fix uist magic string denom)
+ * @param {number} seconds expiration as seconds (Date.now() / 1000)
+ */
+const makeFeeGrantMessage = (granter, grantee, allowance, seconds) => {
+  return {
+    typeUrl: CosmosMessages.feegrant.MsgGrantAllowance.typeUrl,
+    value: {
+      granter,
+      grantee,
+      allowance: {
+        typeUrl: CosmosMessages.feegrant.BasicAllowance.typeUrl,
+        value: {
+          spendLimit: [{ denom: 'uist', amount: allowance }],
+          expiration: { seconds },
+        },
+      },
+    },
+  };
+};
+
+/**
+ * @param {string} grantee
+ * @param {EncodeObject[]} msgObjs
+ * @param {import('@cosmjs/proto-signing').Registry} registry
+ * @typedef {import('@cosmjs/proto-signing').EncodeObject} EncodeObject
+ */
+const makeExecMessage = (grantee, msgObjs, registry) => {
+  const msgs = msgObjs.map(obj => ({
+    typeUrl: obj.typeUrl,
+    value: registry.encode(obj),
+  }));
+  return {
+    typeUrl: CosmosMessages.authz.MsgExec.typeUrl,
+    value: { grantee, msgs },
+  };
+};
+
+/**
+ * Make Exec messages for grantee to do WalletAction on behalf of granter
+ *
+ * @param {string} granter in the authz sense
+ * @param {string} grantee in the authz sense
+ * @param {string} action MsgWalletAction.action
+ * @returns {EncodeObject[]}
+ */
+export const makeExecActionMessages = (granter, grantee, action) => {
+  const act1 = {
+    typeUrl: SwingsetMsgs.MsgWalletAction.typeUrl,
+    value: {
+      owner: toBase64(toAccAddress(granter)),
+      action,
+    },
+  };
+  const msgs = [makeExecMessage(grantee, [act1], SwingsetRegistry)];
+  return msgs;
 };
 
 /**
@@ -175,13 +374,15 @@ const makeGrantWalletActionMessage = (granter, grantee, seconds) => {
 export const makeInteractiveSigner = async (
   chainInfo,
   keplr,
-  connectWithSigner
+  connectWithSigner,
 ) => {
   const { chainId } = chainInfo;
 
   const key = await keplr.getKey(chainId);
 
-  const offlineSigner = await keplr.getOfflineSignerAuto(chainId);
+  // Until we have SIGN_MODE_TEXTUAL,
+  // Use Amino because Direct results in ugly protobuf in the keplr UI.
+  const offlineSigner = await keplr.getOfflineSignerOnlyAmino(chainId);
   console.log('InteractiveSigner', { offlineSigner });
 
   // Currently, Keplr extension manages only one address/public key pair.
@@ -197,7 +398,7 @@ export const makeInteractiveSigner = async (
     aminoTypes: new AminoTypes(converters),
     registry: SwingsetRegistry,
   });
-  console.debug('InteractiveSigner', { signingClient, address });
+  console.debug('InteractiveSigner', { signingClient });
 
   const fee = zeroFee();
 
@@ -215,11 +416,14 @@ export const makeInteractiveSigner = async (
      */
     delegateWalletAction: async (grantee, t0) => {
       const expiration = t0 / 1000 + 4 * 60 * 60;
+      // TODO: parameterize allowance?
+      const allowance = '250000'; // 0.25 IST
 
       // TODO: support for fee-account in MsgExec
       console.warn(
         'cannot yet makeFeeGrantMessage',
-        '(using feeGrantWorkAround)'
+        makeFeeGrantMessage(address, grantee, allowance, expiration),
+        '(using feeGrantWorkAround)',
       );
 
       const feeGrantWorkAround = {
@@ -231,7 +435,7 @@ export const makeInteractiveSigner = async (
         },
       };
 
-      /** @type {import('@cosmjs/proto-signing').EncodeObject[]} */
+      /** @type {EncodeObject[]} */
       const msgs = [
         // TODO: makeFeeGrantMessage(address, grantee, allowance, expiration),
         feeGrantWorkAround,
@@ -246,8 +450,6 @@ export const makeInteractiveSigner = async (
       return tx;
     },
 
-    getSequence: () => signingClient.getSequence(address),
-
     /**
      * Sign and broadcast WalletSpendAction
      *
@@ -258,7 +460,7 @@ export const makeInteractiveSigner = async (
      */
     submitSpendAction: async spendAction => {
       const { accountNumber, sequence } = await signingClient.getSequence(
-        address
+        address,
       );
       console.log({ accountNumber, sequence });
 
