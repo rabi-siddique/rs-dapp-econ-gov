@@ -4,7 +4,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { INTER_LOGO } from 'assets/assets';
-import WalletConnection from 'components/WalletConnection';
 import {
   brandToInfoAtom,
   governedParamsIndexAtom,
@@ -97,7 +96,6 @@ const App = (_props: Props) => {
       <div>
         <div className="min-w-screen container p-4 mx-auto flex justify-between items-center">
           <img src={INTER_LOGO} className="item" alt="Inter Logo" width="200" />
-          <WalletConnection />
           {address}
           <NetPicker currentNet={walletUtils.agoricNet} />
         </div>

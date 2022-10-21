@@ -1,9 +1,5 @@
 /// <reference types="vite/client" />
 
-declare module '@agoric/web-components/react' {
-  export const makeReactAgoricWalletConnection;
-}
-
 declare module '@agoric/notifier' {
   export const makeAsyncIterableFromNotifier;
   export const observeIteration;
@@ -11,8 +7,30 @@ declare module '@agoric/notifier' {
 }
 
 declare module '@agoric/casting' {
+  export type Follower<T> = {
+    getLatestIterable: () => Promise<AsyncIterable<T>>;
+    getEachIterable: (
+      options?: IterateEachOptions
+    ) => Promise<AsyncIterable<T>>;
+    getReverseIterable: (
+      options?: IterateEachOptions
+    ) => Promise<AsyncIterable<T>>;
+  };
+
+  export type ValueFollowerElement = {
+    value: T;
+    blockHeight: number;
+    currentBlockHeight: number;
+  };
+
+  export type ValueFollower<T> = Follower<ValueFollowerElement<T>>;
+
   export type Leader = any;
-  export const makeFollower;
+  export function makeFollower<T>(
+    specP,
+    leaderOrMaker,
+    options
+  ): Promise<ValueFollower<T>>;
   export const iterateLatest;
   export const iterateReverse;
   export const makeLeader;
