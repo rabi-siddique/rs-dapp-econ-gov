@@ -33,6 +33,8 @@ export default function ProposeParamChange(props: Props) {
 
   console.log('ProposeParamChange', { data, paramPatch });
 
+  const canGovern = !!props.psmCharterOfferId;
+
   function displayParam(name: string, { type, value }: ParameterValue) {
     switch (type) {
       case 'amount':
@@ -66,6 +68,7 @@ export default function ProposeParamChange(props: Props) {
   }
 
   function handleSubmit(event) {
+    event.preventDefault();
     console.log({ event });
     const offer = walletUtils.makeVoteOnParamChange(
       props.psmCharterOfferId,
@@ -74,7 +77,6 @@ export default function ProposeParamChange(props: Props) {
       minutesUntilClose
     );
     walletUtils.sendOffer(offer);
-    event.preventDefault();
   }
 
   // XXX tell user when the storage node doesn't exist, i.e. invalid anchor
@@ -85,7 +87,7 @@ export default function ProposeParamChange(props: Props) {
   // styling examples https://tailwindcss-forms.vercel.app/
   return (
     <div className="block mt-16">
-      <h2>VoteOnParamChange</h2>
+      <h2>Params</h2>
       <form onSubmit={handleSubmit}>
         {Object.entries(data.current).map(([name, value]) => (
           <label className="block" key={name}>
@@ -110,6 +112,7 @@ export default function ProposeParamChange(props: Props) {
           type="submit"
           value="Propose param change"
           className="btn-primary p-1 rounded mt-2"
+          disabled={!canGovern}
         />
       </form>
     </div>
