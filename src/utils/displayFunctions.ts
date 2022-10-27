@@ -6,6 +6,7 @@ import {
 import { AssetKind, Brand } from '@agoric/ertp';
 import { IST_ICON } from 'assets/assets';
 import type { BrandInfo } from 'store/app';
+import { wellKnownBrands } from 'config';
 
 const getLogoForBrandPetname = (brandPetname: string) => {
   switch (brandPetname) {
@@ -23,10 +24,10 @@ export const makeDisplayFunctions = (brandToInfo: Map<Brand, BrandInfo>) => {
   const getDecimalPlaces = (brand: Brand) => {
     // XXX for rpc brands that don't come in the purse watcher
     if ('boardId' in brand) {
-      switch ((brand as any).boardId) {
-        case 'board0188':
-          return 6;
-      }
+      const { boardId } = brand as unknown as { boardId: string };
+      const info = wellKnownBrands[boardId];
+      assert(info, `unknown boardId ${boardId}`);
+      return info.decimalPlaces;
     }
     brandToInfo.get(brand)?.decimalPlaces;
   };
