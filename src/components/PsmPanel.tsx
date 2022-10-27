@@ -12,7 +12,16 @@ import ProposePauseOffers from './ProposePauseOffers';
 import { OfferId } from './questions.js';
 
 // TODO fetch list from RPC
-const anchors = ['AUSD', 'USDC_axl', 'USDC_grv', 'ToyUSD'];
+const anchors = [
+  // Testing
+  'AUSD',
+  'ToyUSD',
+  // Mainnet
+  'USDC_axl',
+  'USDC_grv',
+  'USDT_axl',
+  'USDT_grv',
+];
 
 interface Props {}
 
