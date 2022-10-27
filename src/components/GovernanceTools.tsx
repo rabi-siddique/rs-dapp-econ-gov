@@ -25,7 +25,7 @@ export default function GovernanceTools(props: Props) {
         : 'text-blue-100 hover:bg-white/[0.12] hover:text-white'
     );
 
-  console.log({ status, data });
+  console.debug('render GovernanceTools', { status, data });
   if (status === 'idle') {
     return (
       <p>

@@ -16,6 +16,8 @@ export default function ProposePauseOffers(props: Props) {
 
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
 
+  const canGovern = !!props.psmCharterOfferId;
+
   function handleCheckChange(event) {
     const { target } = event;
     assert(target.type === 'checkbox');
@@ -24,6 +26,7 @@ export default function ProposePauseOffers(props: Props) {
   }
 
   function handleSubmit(event) {
+    event.preventDefault();
     console.log({ event, checked, minutesUntilClose });
     const toPause = Object.entries(checked)
       .filter(([_, check]) => check)
@@ -35,13 +38,13 @@ export default function ProposePauseOffers(props: Props) {
       minutesUntilClose
     );
     walletUtils.sendOffer(offer);
-    event.preventDefault();
   }
 
   // styling examples https://tailwindcss-forms.vercel.app/
   return (
     <form className="mt-16" onSubmit={handleSubmit}>
-      <h2>VoteOnPauseOffers</h2>
+      <h2>Pause offers</h2>
+      <em>Current filter not displayed</em>
 
       <div className="block mt-2">
         {Object.keys(checked).map(str => (
@@ -73,6 +76,7 @@ export default function ProposePauseOffers(props: Props) {
         type="submit"
         value="Propose set to pause"
         className="btn-primary p-1 rounded mt-2"
+        disabled={!canGovern}
       />
     </form>
   );
