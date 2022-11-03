@@ -69,7 +69,7 @@ const App = (_props: Props) => {
       setMetricsIndex,
       setGovernedParamsIndex,
       setInstanceIds,
-    });
+    }).catch((err: Error) => console.error('got watchContract err', err));
   }, [
     wallet,
     mergeBrandToInfo,

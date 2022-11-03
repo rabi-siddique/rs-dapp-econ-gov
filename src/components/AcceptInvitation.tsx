@@ -16,7 +16,7 @@ export default function AcceptInvitation(props: Props) {
               props.sourceContract,
               props.description
             );
-            walletUtils.sendOffer(offer);
+            void walletUtils.sendOffer(offer);
           }}
         >
           Accept Invitation

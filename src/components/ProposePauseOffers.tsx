@@ -37,7 +37,7 @@ export default function ProposePauseOffers(props: Props) {
       toPause,
       minutesUntilClose
     );
-    walletUtils.sendOffer(offer);
+    void walletUtils.sendOffer(offer);
   }
 
   // styling examples https://tailwindcss-forms.vercel.app/
