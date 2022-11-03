@@ -4,7 +4,7 @@
  * XXX much/most of this is copied and could get out of sync.
  * TODO: import them https://github.com/Agoric/agoric-sdk/issues/6343
  */
-import { Amount, Brand } from '@agoric/ertp';
+import { Amount } from '@agoric/ertp';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
 
 // Endo with boardId marshaling
