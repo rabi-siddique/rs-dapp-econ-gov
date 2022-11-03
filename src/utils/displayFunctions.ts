@@ -8,6 +8,11 @@ import { IST_ICON } from 'assets/assets';
 import type { BrandInfo } from 'store/app';
 import { wellKnownBrands } from 'config';
 
+export const notifyError = err => {
+  console.log(err);
+  window.alert(err);
+};
+
 const getLogoForBrandPetname = (brandPetname: string) => {
   switch (brandPetname) {
     case 'IST':

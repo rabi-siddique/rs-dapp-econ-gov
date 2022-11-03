@@ -239,7 +239,7 @@ export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
       [position],
       data.questionHandle
     );
-    walletUtils.sendOffer(offer);
+    void walletUtils.sendOffer(offer);
   }
   const {
     closingRule: { deadline },

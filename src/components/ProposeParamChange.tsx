@@ -76,7 +76,7 @@ export default function ProposeParamChange(props: Props) {
       paramPatch,
       minutesUntilClose
     );
-    walletUtils.sendOffer(offer);
+    void walletUtils.sendOffer(offer);
   }
 
   // XXX tell user when the storage node doesn't exist, i.e. invalid anchor

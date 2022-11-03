@@ -1,4 +1,4 @@
-import type { Bech32Config, ChainInfo, Currency } from '@keplr-wallet/types';
+import type { Bech32Config, Currency } from '@keplr-wallet/types';
 
 export const AGORIC_COIN_TYPE = 564;
 export const COSMOS_COIN_TYPE = 118;
