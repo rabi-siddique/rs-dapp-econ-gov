@@ -40,15 +40,29 @@ export default function ProposePauseOffers(props: Props) {
     void walletUtils.sendOffer(offer);
   }
 
+  const optionMessage = option => {
+    switch (option) {
+      case 'wantMinted':
+        return 'Propose IST minting pause (Users will not be able to swap supported stable tokens for IST in PSM) (wantMinted)';
+      case 'giveMinted':
+        return 'Propose IST burning pause (Users will not be able to swap IST for supported stable tokens in PSM) (giveMinted)';
+      default:
+        return option;
+    }
+  };
+
   // styling examples https://tailwindcss-forms.vercel.app/
   return (
-    <form className="mt-16" onSubmit={handleSubmit}>
-      <h2>Pause offers</h2>
-      <em>Current filter not displayed</em>
-
-      <div className="block mt-2">
+    <form onSubmit={handleSubmit}>
+      <h2 className="mb-2 block text-lg leading-5 font-medium text-gray-700">
+        Pause Offers
+      </h2>
+      <div className="text-gray-500">
+        <i>Current filter not displayed</i>
+      </div>
+      <div className="block my-4">
         {Object.keys(checked).map(str => (
-          <div key={str}>
+          <div key={str} className="my-2 leading-5">
             <label className="inline-flex items-center">
               <input
                 type="checkbox"
@@ -56,28 +70,28 @@ export default function ProposePauseOffers(props: Props) {
                 checked={checked[str]}
                 onChange={handleCheckChange}
               />
-              <span className="ml-2">{str}</span>
+              <span className="ml-2">{optionMessage(str)}</span>
             </label>
           </div>
         ))}
       </div>
-
       <label className="block">
         <span className="text-gray-700">Minutes until close of vote</span>
         <input
           type="number"
-          className="mt-1 block w-full"
+          className="mt-1 block w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
           value={minutesUntilClose}
           onChange={e => setMinutesUntilClose(e.target.valueAsNumber)}
         />
       </label>
-
-      <input
-        type="submit"
-        value="Propose set to pause"
-        className="btn-primary p-1 rounded mt-2"
-        disabled={!canGovern}
-      />
+      <div className="w-full flex flex-row justify-end mt-2">
+        <input
+          type="submit"
+          value="Propose Pause Offer Proposal"
+          className="btn-primary p-2 rounded mt-2 cursor-pointer"
+          disabled={!canGovern}
+        />
+      </div>
     </form>
   );
 }

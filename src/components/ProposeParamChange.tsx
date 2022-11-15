@@ -40,6 +40,7 @@ export default function ProposeParamChange(props: Props) {
       case 'amount':
         return (
           <AmountInput
+            suffix={name === 'MintLimit' && 'IST'}
             value={(paramPatch[name] || value).value}
             brand={value.brand}
             onChange={newVal =>
@@ -63,7 +64,7 @@ export default function ProposeParamChange(props: Props) {
           />
         );
       default:
-        return <i>{type} not supported</i>;
+        return <i className="text-gray-500">{type} not supported</i>;
     }
   }
 
@@ -79,42 +80,67 @@ export default function ProposeParamChange(props: Props) {
     void walletUtils.sendOffer(offer);
   }
 
-  // XXX tell user when the storage node doesn't exist, i.e. invalid anchor
-  if (status !== LoadStatus.Received) {
-    return <em>waiting for existing parameter values</em>;
-  }
+  let content = (
+    <div className="text-gray-500 mt-2">
+      <i>Waiting for existing parameter values...</i>
+    </div>
+  );
 
-  // styling examples https://tailwindcss-forms.vercel.app/
-  return (
-    <div className="block mt-16">
-      <h2>Params</h2>
+  const paramLabel = name => {
+    switch (name) {
+      case 'GiveMintedFee':
+        return 'Set GiveMinted Fee (Fee charged when user swaps IST for supported stable token)';
+      case 'WantMintedFee':
+        return 'Set WantMinted Fee (Fee charged when user swaps supported stable token for IST)';
+      case 'MintLimit':
+        return 'Set Mint Limit';
+      default:
+        return name;
+    }
+  };
+
+  // XXX tell user when the storage node doesn't exist, i.e. invalid anchor
+  if (status === LoadStatus.Received) {
+    content = (
       <form onSubmit={handleSubmit}>
         {Object.entries(data.current).map(([name, value]) => (
-          <label className="block" key={name}>
-            <span className="text-gray-700">{name}</span>
-            <div className="form-input mt-1 block w-full">
-              {displayParam(name, value as ParameterValue)}
-            </div>
-          </label>
+          <div className="mb-2" key={name}>
+            <label className="block">
+              <span className="text-gray-700">{paramLabel(name)}</span>
+              <div className="w-full">
+                {displayParam(name, value as ParameterValue)}
+              </div>
+            </label>
+          </div>
         ))}
-
         <label className="block">
           <span className="text-gray-700">Minutes until close of vote</span>
           <input
             type="number"
-            className="mt-1 block w-full"
+            className="mt-1 block w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
             value={minutesUntilClose}
             onChange={e => setMinutesUntilClose(e.target.valueAsNumber)}
           />
         </label>
-
-        <input
-          type="submit"
-          value="Propose param change"
-          className="btn-primary p-1 rounded mt-2"
-          disabled={!canGovern}
-        />
+        <div className="w-full flex flex-row justify-end mt-2">
+          <input
+            type="submit"
+            value="Propose Parameter Change Proposal"
+            className="btn-primary p-2 rounded mt-2 cursor-pointer"
+            disabled={!canGovern}
+          />
+        </div>
       </form>
-    </div>
+    );
+  }
+
+  // styling examples https://tailwindcss-forms.vercel.app/
+  return (
+    <>
+      <h2 className="mb-2 block text-lg leading-5 font-medium text-gray-700">
+        Parameters
+      </h2>
+      {content}
+    </>
   );
 }

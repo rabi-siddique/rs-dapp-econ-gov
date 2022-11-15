@@ -1,6 +1,7 @@
 import { AssetKind, Brand } from '@agoric/ertp';
 import { parseAsValue, stringifyValue } from '@agoric/ui-components';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
+import clsx from 'clsx';
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { displayFunctionsAtom } from 'store/app';
@@ -9,10 +10,12 @@ export const AmountInput = ({
   value,
   onChange,
   brand,
+  suffix,
 }: {
   onChange: (value: bigint) => void;
   value: bigint;
   brand: Brand;
+  suffix?: string;
 }) => {
   const { getDecimalPlaces } = useAtomValue(displayFunctionsAtom);
 
@@ -42,9 +45,17 @@ export const AmountInput = ({
         placeholder="0.0"
         value={displayString}
         onChange={handleInputChange}
-        className="rounded-sm bg-white bg-opacity-100 text-xl p-3 leading-6 w-full hover:outline-none focus:outline-none border-none"
+        className={clsx(
+          'rounded-sm bg-white bg-opacity-100 text-xl p-3 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300',
+          suffix ? 'pr-10' : ''
+        )}
         min="0"
       />
+      {suffix && (
+        <span className="z-10 h-full leading-snug font-normal text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
+          {suffix}
+        </span>
+      )}
     </div>
   );
 };
@@ -90,7 +101,7 @@ export const PercentageInput = ({
         step="0.01"
         value={displayString}
         onChange={handleInputChange}
-        className="rounded-sm bg-white bg-opacity-100 text-xl p-3 pr-10 leading-6 w-full hover:outline-none focus:outline-none border-none"
+        className="rounded-sm bg-white bg-opacity-100 text-xl p-3 pr-10 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
         min="0"
         max="100"
       />

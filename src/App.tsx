@@ -96,7 +96,7 @@ const App = (_props: Props) => {
           {address}
           <NetPicker currentNet={walletUtils.agoricNet} />
         </div>
-        <div className="min-w-screen container mx-auto flex justify-center mt-16">
+        <div className="min-w-screen container mx-auto flex justify-center mt-8">
           <GovernanceTools walletAddress={address} />
         </div>
       </div>
