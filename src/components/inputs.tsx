@@ -60,23 +60,39 @@ export const PercentageInput = ({
     ratio.denominator.value === 10_000n,
     'only conventional denominator value supported'
   );
+  const value = Number(ratio.numerator.value) / 100;
+  const valueString = value ? String(value) : '';
+  const [fieldString, setFieldString] = useState(valueString);
+
+  const parseFieldString = str => BigInt(Math.round(Number(str) * 100));
+
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = ev => {
+    const str = ev.target?.value?.replace('-', '').replace('e', '');
+    setFieldString(str);
+    const { numerator, denominator } = ratio;
+    const newNumerator = {
+      ...numerator,
+      value: parseFieldString(str),
+    };
+    onChange({ denominator, numerator: newNumerator });
+  };
+
+  const displayString =
+    ratio.numerator.value === parseFieldString(fieldString)
+      ? fieldString
+      : valueString;
+
   return (
     <div className="relative flex w-full flex-wrap items-stretch">
       <input
+        placeholder="0.00"
         type="number"
         step="0.01"
-        value={Number(ratio.numerator.value) / 100}
-        onChange={e => {
-          const { target } = e;
-          const { numerator, denominator } = ratio;
-          const newNumerator = {
-            ...numerator,
-            value: BigInt(Math.round(Number(target.value) * 100)),
-          };
-          onChange({ denominator, numerator: newNumerator });
-        }}
+        value={displayString}
+        onChange={handleInputChange}
         className="rounded-sm bg-white bg-opacity-100 text-xl p-3 pr-10 leading-6 w-full hover:outline-none focus:outline-none border-none"
         min="0"
+        max="100"
       />
       <span className="z-10 h-full leading-snug font-normal text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
         %

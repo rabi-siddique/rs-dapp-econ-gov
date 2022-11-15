@@ -87,7 +87,7 @@ export default function PsmPanel() {
           onChange={setAnchorName}
         >
           <Listbox.Label className="block text-sm leading-5 font-medium text-gray-700">
-            Anchor
+            Contract
           </Listbox.Label>
           <Listbox.Button className="cursor-default relative w-full rounded-md border border-gray-300 bg-white pl-3 pr-10 py-2 text-left focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition ease-in-out duration-150 sm:text-sm sm:leading-5">
             {anchorName}
