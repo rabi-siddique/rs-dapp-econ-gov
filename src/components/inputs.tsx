@@ -61,7 +61,7 @@ export const PercentageInput = ({
     'only conventional denominator value supported'
   );
   return (
-    <div className="relative flex-grow">
+    <div className="relative flex w-full flex-wrap items-stretch">
       <input
         type="number"
         step="0.01"
@@ -75,9 +75,12 @@ export const PercentageInput = ({
           };
           onChange({ denominator, numerator: newNumerator });
         }}
-        className="rounded-sm bg-white bg-opacity-100 text-xl p-3 leading-6 w-full hover:outline-none focus:outline-none border-none"
+        className="rounded-sm bg-white bg-opacity-100 text-xl p-3 pr-10 leading-6 w-full hover:outline-none focus:outline-none border-none"
         min="0"
       />
+      <span className="z-10 h-full leading-snug font-normal text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
+        %
+      </span>
     </div>
   );
 };
