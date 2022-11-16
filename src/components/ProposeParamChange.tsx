@@ -136,11 +136,11 @@ export default function ProposeParamChange(props: Props) {
 
   // styling examples https://tailwindcss-forms.vercel.app/
   return (
-    <>
+    <div>
       <h2 className="mb-2 block text-lg leading-5 font-medium text-gray-700">
         Parameters
       </h2>
       {content}
-    </>
+    </div>
   );
 }

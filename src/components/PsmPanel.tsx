@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import clsx from 'clsx';
 import { Menu, Transition } from '@headlessui/react';
+import { motion } from 'framer-motion';
 import {
   inferInvitationStatus,
   psmCharterInvitationSpec,
@@ -108,8 +109,10 @@ export default function PsmPanel() {
 
   return (
     <div>
-      <Eligibility {...invitationStatus} />
-      <div className="w-full mt-2">
+      <motion.div layout>
+        <Eligibility {...invitationStatus} />
+      </motion.div>
+      <motion.div layout="position" className="w-full mt-2">
         <div className="p-4 rounded-lg border border-gray-200 shadow-md">
           <Menu as="div">
             <div className="text-md leading-5 font-regular text-gray-700">
@@ -196,7 +199,7 @@ export default function PsmPanel() {
         <div className="p-4 rounded-lg border border-gray-200 shadow-md">
           {body}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

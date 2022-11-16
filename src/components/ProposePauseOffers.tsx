@@ -63,9 +63,10 @@ export default function ProposePauseOffers(props: Props) {
       <div className="block my-4">
         {Object.keys(checked).map(str => (
           <div key={str} className="my-2 leading-5">
-            <label className="inline-flex items-center">
+            <label className="inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
+                className="cursor-pointer"
                 name={str}
                 checked={checked[str]}
                 onChange={handleCheckChange}
