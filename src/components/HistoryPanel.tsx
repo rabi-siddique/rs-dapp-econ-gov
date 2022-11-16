@@ -1,4 +1,4 @@
-import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import {
   OutcomeRecord,
   QuestionDetails as IQuestionDetails,
@@ -7,6 +7,35 @@ import { usePublishedDatum, usePublishedHistory } from 'lib/wallet.js';
 import { QuestionDetails } from './questions.js';
 
 interface Props {}
+
+const tabContentVariant = {
+  active: {
+    display: 'block',
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+  inactive: {
+    display: 'none',
+  },
+};
+
+const cardVariant = {
+  active: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.25,
+    },
+  },
+  inactive: {
+    opacity: 0,
+    y: 10,
+    transition: {
+      duration: 0.25,
+    },
+  },
+};
 
 export default function VotePanel(_props: Props) {
   const { status: instanceStatus, data: instance } = usePublishedDatum(
@@ -36,25 +65,27 @@ export default function VotePanel(_props: Props) {
       outcomeByHandle.get(q.questionHandle),
     ]);
   const receivedItems = questionsWithAnswers.map(([qData, aData], index) => (
-    <div key={index} className="p-4 rounded">
+    <motion.div
+      key={index}
+      variants={cardVariant}
+      className="p-4 rounded-lg border-gray border shadow-md mb-4"
+    >
       <QuestionDetails
         details={qData}
         outcome={aData?.question === qData.questionHandle ? aData : undefined}
         instance={instance}
       />
-    </div>
+    </motion.div>
   ));
 
   return (
-    <div
-      className={clsx(
-        'rounded-xl bg-white p-3',
-        'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
-      )}
+    <motion.div
+      animate="active"
+      initial="inactive"
+      variants={tabContentVariant}
+      className="pt-2"
     >
-      <div className="grid grid-cols-1 divide-y divide-blue-400">
-        {receivedItems}
-      </div>
-    </div>
+      {receivedItems}
+    </motion.div>
   );
 }

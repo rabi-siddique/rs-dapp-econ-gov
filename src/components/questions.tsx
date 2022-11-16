@@ -7,6 +7,7 @@ import { useAtomValue } from 'jotai';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
+import { FiCheck } from 'react-icons/fi';
 
 import { Amount, AssetKind } from '@agoric/ertp';
 import { displayFunctionsAtom } from 'store/app';
@@ -17,6 +18,7 @@ import {
   QuestionDetails as IQuestionDetails,
   RpcRemote,
 } from '../govTypes.js';
+import clsx from 'clsx';
 
 export function OfferId(props: { id: number }) {
   const { id } = props;
@@ -34,12 +36,13 @@ export function Deadline(props: { seconds: bigint }) {
   const { seconds } = props;
 
   const date = new Date(Number(seconds) * 1000);
+  const relativeDate = formatRelative(date, new Date());
 
   return (
-    <span>
-      Deadline: <strong>{formatRelative(date, new Date())}</strong>
-      <code style={{ float: 'right' }}>{formatISO9075(date)}</code>
-    </span>
+    <div className="py-2 font-medium">
+      Deadline - {relativeDate}{' '}
+      <span className="font-normal">({formatISO9075(date)})</span>
+    </div>
   );
 }
 
@@ -81,7 +84,7 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
         decimalPlaces,
         decimalPlaces
       );
-      return <>{numeral}</>;
+      return <>{numeral} IST</>;
     } else if (isSafeRatio(value)) {
       const { numerator, denominator } = value;
       const pct = (100 * Number(numerator.value)) / Number(denominator.value);
@@ -91,54 +94,60 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
     return bigintStringify(value);
   };
   return (
-    <ul>
-      {Object.entries(changes).map(([name, value]) => (
-        <li key={name}>
-          <strong>{name}</strong> = {fmtVal(value as Amount | Ratio)}
-        </li>
-      ))}
-    </ul>
+    <table className="w-full text-md text-left">
+      <thead className="bg-gray-100">
+        <tr>
+          <th scope="col" className="font-medium p-2">
+            Parameter
+          </th>
+          <th scope="col" className="font-medium p-2">
+            New Value
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {Object.entries(changes).map(([name, value]) => (
+          <tr className="border-b" key={name}>
+            <td className="p-2">{name}</td>
+            <td className="p-2">{fmtVal(value as Amount | Ratio)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
 function PrettyOutcome(props: { outcome: OutcomeRecord }) {
   switch (props.outcome?.outcome) {
     case 'win':
-      return <strong>PASS ✅</strong>;
+      return <span>Passed ✅</span>;
     case 'fail':
-      return <strong>FAIL ❌</strong>;
+      return <span>Failed ❌</span>;
     default:
-      return <span>PENDING ⏳</span>;
+      return <span>Pending ⏳</span>;
   }
 }
 
 function paramChangeOutcome(
   { issue }: ParamChangeSpec,
-  outcome?: OutcomeRecord,
   instance?: [name: string, value: RpcRemote][]
 ) {
   const name =
     instance && instance.find(([_n, i]) => i === issue.contract)?.[0];
   return (
     <>
-      Proposal: change {name} parameters:{' '}
+      <p className="mb-2">
+        Change <span className="font-medium">{name}</span> parameters:
+      </p>
       <ParamChanges changes={issue.spec.changes} />
-      <br />
-      <PrettyOutcome outcome={outcome} />
     </>
   );
 }
 
-function offerFilterOutcome(
-  { issue }: OfferFilterSpec,
-  outcome?: OutcomeRecord
-) {
+function offerFilterOutcome({ issue }: OfferFilterSpec) {
   return (
     <>
-      Proposal: set filtered offers to{' '}
-      <code>{bigintStringify(issue.strings)}</code>
-      <br />
-      <PrettyOutcome outcome={outcome} />
+      Set filtered offers to <code>{bigintStringify(issue.strings)}</code>
     </>
   );
 }
@@ -152,17 +161,19 @@ export function QuestionDetails(props: {
   console.debug('QuestionDetails', details);
   return (
     <>
-      <Deadline seconds={details.closingRule.deadline} />
-      <br />
-      <p>
-        Question Handle: <strong>{details.questionHandle.boardId} </strong>
-      </p>
-      <br />
-      {details.electionType === 'offer_filter'
-        ? offerFilterOutcome(details, outcome)
-        : details.electionType === 'param_change'
-        ? paramChangeOutcome(details, outcome, instance)
-        : '???'}
+      <div className="mb-2 px-2 flex align-middle justify-between">
+        <Deadline seconds={details.closingRule.deadline} />
+        <div className="px-4 py-2 rounded-3xl w-fit border-2 text-sm">
+          <PrettyOutcome outcome={outcome} />
+        </div>
+      </div>
+      <div className="p-2">
+        {details.electionType === 'offer_filter'
+          ? offerFilterOutcome(details)
+          : details.electionType === 'param_change'
+          ? paramChangeOutcome(details, instance)
+          : '???'}
+      </div>
     </>
   );
 }
@@ -180,46 +191,67 @@ function ChoosePosition(props: {
 
   return (
     <form onSubmit={handleSubmit}>
-      <RadioGroup value={position} onChange={setPosition}>
-        <RadioGroup.Label className="block text-sm leading-5 font-medium text-gray-700 mt-2">
-          Positions
+      <RadioGroup className="px-2" value={position} onChange={setPosition}>
+        <RadioGroup.Label className="block leading-5 font-medium mt-4 mb-2">
+          Choose Position:
         </RadioGroup.Label>
-        <div className="space-y-2">
+        <div className="flex flex-row-reverse justify-end gap-2">
           {props.positions.map((pos, index) => (
             <RadioGroup.Option
-              value={pos}
               key={index}
-              className={({ active, checked }) =>
-                `${
-                  active
-                    ? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-sky-300'
-                    : ''
-                }
-              ${checked ? 'bg-sky-900 bg-opacity-75 text-white' : 'bg-white'}
-                relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
+              value={pos}
+              className={({ checked }) =>
+                clsx(
+                  checked ? 'ring-purple-300' : 'ring-gray-200',
+                  'ring-2 relative flex cursor-pointer rounded-lg px-5 py-4 focus:outline-none'
+                )
               }
             >
               {({ checked }) => (
-                <span className={checked ? 'bg-blue-200' : ''}>
-                  {index === 0 ? 'YES: ' : ''}
-                  {bigintStringify(pos)}
-                </span>
+                <div className="flex h-46 w-20 items-center justify-center gap-x-2">
+                  <motion.div layout="position" className="text-sm">
+                    <RadioGroup.Label
+                      as="p"
+                      className="font-medium text-gray-900"
+                    >
+                      {index === 0 ? 'YES' : 'NO'}
+                    </RadioGroup.Label>
+                  </motion.div>
+                  {checked && (
+                    <motion.div
+                      className="shrink-0 text-gray-900"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring' }}
+                    >
+                      <FiCheck className="h-5 w-6" />
+                    </motion.div>
+                  )}
+                </div>
               )}
             </RadioGroup.Option>
           ))}
         </div>
       </RadioGroup>
-      <input
-        type="submit"
-        value="Submit vote"
-        disabled={!position}
-        className="btn-primary p-1 rounded mt-2"
-      />
+      <div className="mt-2 px-2 flex justify-end">
+        <input
+          type="submit"
+          value="Submit vote"
+          disabled={!position}
+          className={clsx(
+            'btn-primary rounded mt-2 p-2',
+            position ? 'cursor-pointer' : 'cursor-not-allowed'
+          )}
+        />
+      </div>
     </form>
   );
 }
 
-export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
+export function VoteOnLatestQuestion(props: {
+  ecOfferId: number;
+  instance?: [property: string, value: RpcRemote][];
+}) {
   const walletUtils = useContext(WalletContext);
   const { status, data } = usePublishedDatum(
     'committees.Economic_Committee.latestQuestion'
@@ -254,13 +286,15 @@ export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
       animate={{ scale: 1 }}
       initial={{ scale: 0.95 }}
       transition={{ type: 'spring', bounce: 0.4, stiffness: 400 }}
-      className="shadow-lg p-4 rounded-lg border-gray-200 border"
+      className="shadow-md p-4 rounded-lg border-gray-200 border"
     >
-      <QuestionDetails details={data} />
+      <QuestionDetails details={data} instance={props.instance} />
       {deadlinePassed ? (
         <em>Deadline passed</em>
       ) : (
-        <ChoosePosition positions={data.positions} onChoose={voteFor} />
+        <>
+          <ChoosePosition positions={data.positions} onChoose={voteFor} />
+        </>
       )}
     </motion.div>
   );

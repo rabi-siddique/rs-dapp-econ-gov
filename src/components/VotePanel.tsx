@@ -15,6 +15,9 @@ export default function VotePanel(_props: Props) {
   const { data } = usePublishedDatum(
     `wallet.${walletUtils.getWalletAddress()}.current`
   );
+  const { status: instanceStatus, data: instance } = usePublishedDatum(
+    'agoricNames.instance'
+  );
 
   let eligibility = <p>Loading…</p>;
 
@@ -54,9 +57,14 @@ export default function VotePanel(_props: Props) {
     <div>
       <motion.div layout>{eligibility}</motion.div>
       <motion.div layout="position">
-        {invitationStatus.status === 'accepted' && previousOfferId && (
-          <VoteOnLatestQuestion ecOfferId={previousOfferId} />
-        )}
+        {instanceStatus === 'received' &&
+          invitationStatus.status === 'accepted' &&
+          previousOfferId && (
+            <VoteOnLatestQuestion
+              ecOfferId={previousOfferId}
+              instance={instance}
+            />
+          )}
       </motion.div>
     </div>
   );
