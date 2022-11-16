@@ -85,14 +85,11 @@ const App = (_props: Props) => {
   return (
     <>
       <ToastContainer
-        enableMultiContainer
-        containerId={'Info'}
-        position={'bottom-center'}
+        position={'bottom-right'}
         closeOnClick={false}
         newestOnTop={true}
-        hideProgressBar={true}
         autoClose={false}
-      ></ToastContainer>
+      />
       <div>
         <div className="min-w-screen container p-4 mx-auto flex justify-between items-center">
           <img src={INTER_LOGO} className="item" alt="Inter Logo" width="200" />

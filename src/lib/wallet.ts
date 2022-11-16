@@ -4,7 +4,11 @@ import { SigningStargateClient as AmbientClient } from '@cosmjs/stargate';
 import { ERef } from '@endo/eventual-send';
 import { ChainInfo, Keplr } from '@keplr-wallet/types';
 import React, { useContext, useEffect, useState } from 'react';
-import { notifyError } from 'utils/displayFunctions.js';
+import {
+  notifyError,
+  notifySigning,
+  notifySuccess,
+} from 'utils/displayFunctions.js';
 import { suggestChain } from './chainInfo.js';
 import { makeInteractiveSigner } from './keyManagement.js';
 import { boardSlottingMarshaller, networkConfigUrl, RpcUtils } from './rpc';
@@ -178,6 +182,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     sendOffer(offer) {
+      const toastId = notifySigning();
       const payload = {
         method: 'executeOffer',
         offer,
@@ -187,7 +192,12 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       console.log('submitting spend action', capData, 'for offer', offer);
       const message = JSON.stringify(capData);
 
-      return chainKit.signer.submitSpendAction(message).catch(notifyError);
+      return chainKit.signer
+        .submitSpendAction(message)
+        .then(tx => {
+          notifySuccess(toastId, tx);
+        })
+        .catch(err => notifyError(toastId, err));
     },
   };
 };
