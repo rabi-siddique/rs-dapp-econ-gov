@@ -1,5 +1,6 @@
 import { Amount } from '@agoric/ertp';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
@@ -103,38 +104,44 @@ export default function ProposeParamChange(props: Props) {
   // XXX tell user when the storage node doesn't exist, i.e. invalid anchor
   if (status === LoadStatus.Received) {
     content = (
-      <form onSubmit={handleSubmit}>
-        {Object.entries(data.current).map(([name, value]) => (
-          <div className="mb-2" key={name}>
-            <label className="block">
-              <span className="text-gray-700">{paramLabel(name)}</span>
-              <div className="w-full">
-                {displayParam(name, value as ParameterValue)}
-              </div>
-            </label>
+      <motion.div
+        className="px-1 overflow-hidden"
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: 'auto', opacity: 1 }}
+      >
+        <form onSubmit={handleSubmit}>
+          {Object.entries(data.current).map(([name, value]) => (
+            <div className="mb-2" key={name}>
+              <label className="block">
+                <span className="text-gray-700">{paramLabel(name)}</span>
+                <div className="w-full">
+                  {displayParam(name, value as ParameterValue)}
+                </div>
+              </label>
+            </div>
+          ))}
+          <label className="block">
+            <span className="text-gray-700">Minutes until close of vote</span>
+            <input
+              type="number"
+              className="mt-1 block w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
+              value={minutesUntilClose}
+              onChange={e => setMinutesUntilClose(e.target.valueAsNumber)}
+            />
+          </label>
+          <div className="w-full flex flex-row justify-end mt-2">
+            <input
+              type="submit"
+              value="Propose Parameter Change Proposal"
+              className={clsx(
+                'btn-primary p-2 rounded mt-2',
+                canGovern ? 'cursor-pointer' : 'cursor-not-allowed'
+              )}
+              disabled={!canGovern}
+            />
           </div>
-        ))}
-        <label className="block">
-          <span className="text-gray-700">Minutes until close of vote</span>
-          <input
-            type="number"
-            className="mt-1 block w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
-            value={minutesUntilClose}
-            onChange={e => setMinutesUntilClose(e.target.valueAsNumber)}
-          />
-        </label>
-        <div className="w-full flex flex-row justify-end mt-2">
-          <input
-            type="submit"
-            value="Propose Parameter Change Proposal"
-            className={clsx(
-              'btn-primary p-2 rounded mt-2',
-              canGovern ? 'cursor-pointer' : 'cursor-not-allowed'
-            )}
-            disabled={!canGovern}
-          />
-        </div>
-      </form>
+        </form>
+      </motion.div>
     );
   }
 

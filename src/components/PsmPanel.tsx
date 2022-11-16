@@ -38,14 +38,14 @@ function Eligibility({
       return <p>Loading…</p>;
     case 'missing':
       return (
-        <p className="rounded-lg py-5 px-6 mb-4 text-base mb-3 bg-red-100 text-red-700">
+        <p className="rounded-lg py-5 px-6 text-base mb-3 bg-red-100 text-red-700">
           To govern you must first have received an invitation to the PSM
           Charter.
         </p>
       );
     case 'available':
       return (
-        <div className="rounded-lg py-5 px-6 mb-4 text-base mb-3 bg-yellow-100 text-yellow-700">
+        <div className="rounded-lg py-5 px-6 text-base mb-3 bg-yellow-100 text-yellow-700">
           To vote you will need to accept your invitation to the PSM Charter.
           <AcceptInvitation
             description={(invitation as any).description}
@@ -57,7 +57,7 @@ function Eligibility({
       );
     case 'accepted':
       return (
-        <p className="rounded-lg py-5 px-6 mb-4 text-base mb-3 bg-green-100 text-green-700">
+        <p className="rounded-lg py-5 px-6 text-base mb-3 bg-green-100 text-green-700">
           You may vote using the invitation makers from offer{' '}
           <OfferId id={acceptedIn} />
         </p>

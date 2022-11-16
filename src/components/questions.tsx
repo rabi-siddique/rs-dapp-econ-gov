@@ -6,6 +6,7 @@ import { formatRelative, formatISO9075 } from 'date-fns';
 import { useAtomValue } from 'jotai';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
+import { motion } from 'framer-motion';
 
 import { Amount, AssetKind } from '@agoric/ertp';
 import { displayFunctionsAtom } from 'store/app';
@@ -153,12 +154,9 @@ export function QuestionDetails(props: {
     <>
       <Deadline seconds={details.closingRule.deadline} />
       <br />
-      <small>
-        Handle <strong>{details.questionHandle.boardId} </strong>
-        {choice('Type', 'electionType', details.electionType)}{' '}
-        {choice('Quorum', 'quorumRule', details.quorumRule)}{' '}
-        {choice('Method', 'method', details.method)}
-      </small>
+      <p>
+        Question Handle: <strong>{details.questionHandle.boardId} </strong>
+      </p>
       <br />
       {details.electionType === 'offer_filter'
         ? offerFilterOutcome(details, outcome)
@@ -229,7 +227,11 @@ export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
 
   console.debug('render VoteOnLatestQuestion', status, data);
   if (!data?.positions) {
-    return <b>{status} for a question</b>;
+    return (
+      <b>
+        {status.charAt(0).toUpperCase() + status.slice(1)} for a question...
+      </b>
+    );
   }
 
   function voteFor(position) {
@@ -248,13 +250,18 @@ export function VoteOnLatestQuestion(props: { ecOfferId: number }) {
   const deadlinePassed = Number(deadline) * 1000 < now;
 
   return (
-    <>
+    <motion.div
+      animate={{ scale: 1 }}
+      initial={{ scale: 0.95 }}
+      transition={{ type: 'spring', bounce: 0.4, stiffness: 400 }}
+      className="shadow-lg p-4 rounded-lg border-gray-200 border"
+    >
       <QuestionDetails details={data} />
       {deadlinePassed ? (
         <em>Deadline passed</em>
       ) : (
         <ChoosePosition positions={data.positions} onChoose={voteFor} />
       )}
-    </>
+    </motion.div>
   );
 }

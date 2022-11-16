@@ -24,7 +24,7 @@ export default function VotePanel(_props: Props) {
     s => s === 'received'
   );
   if (!dataLoaded) {
-    return <em>stand by for question details...</em>;
+    return <em>Stand by for question details...</em>;
   }
 
   const outcomeByHandle = new Map(
