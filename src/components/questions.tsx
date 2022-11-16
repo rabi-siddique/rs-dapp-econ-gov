@@ -290,7 +290,7 @@ export function VoteOnLatestQuestion(props: {
     >
       <QuestionDetails details={data} instance={props.instance} />
       {deadlinePassed ? (
-        <em>Deadline passed</em>
+        <em className="pl-2">Deadline passed</em>
       ) : (
         <>
           <ChoosePosition positions={data.positions} onChoose={voteFor} />
