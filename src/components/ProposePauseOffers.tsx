@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 
@@ -66,7 +67,7 @@ export default function ProposePauseOffers(props: Props) {
             <label className="inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                className="cursor-pointer"
+                className="cursor-pointer text-primary focus:border-primary focus:ring-primary"
                 name={str}
                 checked={checked[str]}
                 onChange={handleCheckChange}
@@ -89,7 +90,10 @@ export default function ProposePauseOffers(props: Props) {
         <input
           type="submit"
           value="Propose Pause Offer Proposal"
-          className="btn-primary p-2 rounded mt-2 cursor-pointer"
+          className={clsx(
+            'btn-primary p-2 rounded mt-2',
+            canGovern ? 'cursor-pointer' : 'cursor-not-allowed'
+          )}
           disabled={!canGovern}
         />
       </div>

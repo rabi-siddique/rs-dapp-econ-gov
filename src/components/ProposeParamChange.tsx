@@ -1,4 +1,5 @@
 import { Amount } from '@agoric/ertp';
+import clsx from 'clsx';
 import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
@@ -126,7 +127,10 @@ export default function ProposeParamChange(props: Props) {
           <input
             type="submit"
             value="Propose Parameter Change Proposal"
-            className="btn-primary p-2 rounded mt-2 cursor-pointer"
+            className={clsx(
+              'btn-primary p-2 rounded mt-2',
+              canGovern ? 'cursor-pointer' : 'cursor-not-allowed'
+            )}
             disabled={!canGovern}
           />
         </div>
