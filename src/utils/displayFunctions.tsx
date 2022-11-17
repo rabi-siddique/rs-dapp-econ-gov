@@ -8,9 +8,38 @@ import { IST_ICON } from 'assets/assets';
 import type { BrandInfo } from 'store/app';
 import { wellKnownBrands } from 'config';
 
-export const notifyError = err => {
+import { Id as ToastId, toast } from 'react-toastify';
+import { DeliverTxResponse } from '@cosmjs/stargate';
+import { transactionInfoUrl } from 'lib/wallet';
+
+export const notifySigning = () =>
+  toast.loading(<p>Awaiting sign and broadcast…</p>);
+
+export const notifySuccess = (toastId: ToastId, tx: DeliverTxResponse) => {
+  const txHash = tx.transactionHash;
+  toast.update(toastId, {
+    render: (
+      <p>
+        <a href={transactionInfoUrl(txHash)} target={txHash} title={txHash}>
+          Transaction
+        </a>{' '}
+        sent.
+      </p>
+    ),
+    type: toast.TYPE.SUCCESS,
+    isLoading: false,
+    closeOnClick: true,
+  });
+};
+
+export const notifyError = (toastId: ToastId, err: Error) => {
   console.log(err);
-  window.alert(err);
+  toast.update(toastId, {
+    render: err.message,
+    type: toast.TYPE.ERROR,
+    isLoading: false,
+    closeOnClick: true,
+  });
 };
 
 const getLogoForBrandPetname = (brandPetname: string) => {
