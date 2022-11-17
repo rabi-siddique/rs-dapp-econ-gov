@@ -10,19 +10,20 @@ import { wellKnownBrands } from 'config';
 
 import { Id as ToastId, toast } from 'react-toastify';
 import { DeliverTxResponse } from '@cosmjs/stargate';
+import { transactionInfoUrl } from 'lib/wallet';
 
 export const notifySigning = () =>
   toast.loading(<p>Awaiting sign and broadcast…</p>);
 
 export const notifySuccess = (toastId: ToastId, tx: DeliverTxResponse) => {
-  const txUrl = `https://bigdipper.live/agoric/transactions/${tx.transactionHash}`;
+  const txHash = tx.transactionHash;
   toast.update(toastId, {
     render: (
       <p>
-        <a href={txUrl} target={tx.transactionHash}>
+        <a href={transactionInfoUrl(txHash)} target={txHash} title={txHash}>
           Transaction
         </a>{' '}
-        complete.
+        sent.
       </p>
     ),
     type: toast.TYPE.SUCCESS,

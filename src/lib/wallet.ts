@@ -207,6 +207,17 @@ const agoricNet = usp.get('agoricNet') || 'devnet';
 console.log('RPC server:', agoricNet);
 const rpcUtils = await makeRpcUtils({ agoricNet });
 
+export const transactionInfoUrl = (transactionHash: string) => {
+  switch (agoricNet) {
+    case 'main':
+      return `https://bigdipper.live/agoric/transactions/${transactionHash}`;
+    case 'local':
+      return '';
+    default:
+      return `https://ollinet.explorer.agoric.net/agoric/tx/${transactionHash}`;
+  }
+};
+
 const { keplr } = window as import('@keplr-wallet/types').Window;
 if (!keplr) {
   window.alert('requires Keplr extension');
