@@ -101,6 +101,7 @@ export default function ProposeParamChange(props: Props) {
     }
   };
 
+  // styling examples https://tailwindcss-forms.vercel.app/
   // XXX tell user when the storage node doesn't exist, i.e. invalid anchor
   if (status === LoadStatus.Received) {
     content = (
@@ -145,7 +146,6 @@ export default function ProposeParamChange(props: Props) {
     );
   }
 
-  // styling examples https://tailwindcss-forms.vercel.app/
   return (
     <div>
       <h2 className="mb-2 block text-lg leading-5 font-medium text-gray-700">

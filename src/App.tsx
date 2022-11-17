@@ -21,7 +21,7 @@ import GovernanceTools from 'components/GovernanceTools';
 import { WalletContext } from 'lib/wallet';
 import 'styles/globals.css';
 
-interface Props {}
+const supportedNetworks = ['main', 'emerynet', 'ollinet', 'devnet', 'local'];
 
 const Item = ({
   label,
@@ -49,19 +49,17 @@ const Item = ({
 };
 
 const NetPicker = (props: { currentNet: string }) => {
-  const items = ['main', 'emerynet', 'ollinet', 'devnet', 'local'].map(
-    config => (
-      <Item
-        key={config}
-        onClick={() => {
-          window.location.assign(
-            window.location.origin + `/?agoricNet=${config}`
-          );
-        }}
-        label={config}
-      />
-    )
-  );
+  const items = supportedNetworks.map(config => (
+    <Item
+      key={config}
+      onClick={() => {
+        window.location.assign(
+          window.location.origin + `/?agoricNet=${config}`
+        );
+      }}
+      label={config}
+    />
+  ));
 
   return (
     <Menu as="div" className="mb-2 mr-2 relative inline-block text-left">
@@ -88,6 +86,8 @@ const NetPicker = (props: { currentNet: string }) => {
     </Menu>
   );
 };
+
+interface Props {}
 
 const App = (_props: Props) => {
   const [wallet] = useAtom(walletAtom);

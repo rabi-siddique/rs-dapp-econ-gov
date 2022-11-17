@@ -71,8 +71,10 @@ export const PercentageInput = ({
     ratio.denominator.value === 10_000n,
     'only conventional denominator value supported'
   );
-  const value = Number(ratio.numerator.value) / 100;
-  const valueString = value ? String(value) : '';
+  const valueString =
+    ratio.numerator.value === 0n
+      ? ''
+      : String(Number(ratio.numerator.value) / 100);
   const [fieldString, setFieldString] = useState(valueString);
 
   const parseFieldString = str => BigInt(Math.round(Number(str) * 100));

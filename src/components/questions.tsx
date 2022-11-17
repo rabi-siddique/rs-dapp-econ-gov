@@ -8,7 +8,6 @@ import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiCheck } from 'react-icons/fi';
-
 import { Amount, AssetKind } from '@agoric/ertp';
 import { displayFunctionsAtom } from 'store/app';
 import {
@@ -18,6 +17,7 @@ import {
   QuestionDetails as IQuestionDetails,
   RpcRemote,
 } from '../govTypes.js';
+import { capitalize } from 'utils/displayFunctions.js';
 import clsx from 'clsx';
 
 export function OfferId(props: { id: number }) {
@@ -45,12 +45,6 @@ export function Deadline(props: { seconds: bigint }) {
     </div>
   );
 }
-
-const choice = (label: string, _name: string, val: string) => (
-  <label>
-    {label} <b>{val}</b>
-  </label>
-);
 
 /**
  * a Ratio is "safe" iff
@@ -259,11 +253,7 @@ export function VoteOnLatestQuestion(props: {
 
   console.debug('render VoteOnLatestQuestion', status, data);
   if (!data?.positions) {
-    return (
-      <b>
-        {status.charAt(0).toUpperCase() + status.slice(1)} for a question...
-      </b>
-    );
+    return <b>{capitalize(status)} for a question...</b>;
   }
 
   function voteFor(position) {
