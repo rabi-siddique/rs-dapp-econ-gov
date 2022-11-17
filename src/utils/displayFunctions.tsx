@@ -28,6 +28,7 @@ export const notifySuccess = (toastId: ToastId, tx: DeliverTxResponse) => {
     ),
     type: toast.TYPE.SUCCESS,
     isLoading: false,
+    closeOnClick: true,
   });
 };
 
@@ -37,6 +38,7 @@ export const notifyError = (toastId: ToastId, err: Error) => {
     render: err.message,
     type: toast.TYPE.ERROR,
     isLoading: false,
+    closeOnClick: true,
   });
 };
 
