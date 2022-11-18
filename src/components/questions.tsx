@@ -36,11 +36,22 @@ export function OfferId(props: { id: number }) {
 function PrettyOutcome(props: { outcome: OutcomeRecord }) {
   switch (props.outcome?.outcome) {
     case 'win':
-      return <span>✅ Passed - </span>;
+      return <span className="pl-1">✅ Passed - </span>;
     case 'fail':
-      return <span>❌ Failed - </span>;
+      return <span className="pl-1">❌ Failed - </span>;
     default:
-      return <span>⏳ Vote Closes - </span>;
+      return <span className="pl-1">⏳ Vote Closes - </span>;
+  }
+}
+
+function outcomeColor(outcome?: OutcomeRecord) {
+  switch (outcome?.outcome) {
+    case 'win':
+      return 'bg-green-400 bg-opacity-10';
+    case 'fail':
+      return 'bg-red-400 bg-opacity-5';
+    default:
+      return 'bg-yellow-500 border border-yellow-100 bg-opacity-5';
   }
 }
 
@@ -58,7 +69,7 @@ export function Deadline(props: { seconds: bigint; outcome: OutcomeRecord }) {
         <span className="text-sm pl-1 flex flex-col justify-center">
           <span
             data-tip={formatISO9075(date)}
-            className="tooltip tooltip-secondary"
+            className="tooltip tooltip-secondary font-medium"
           >
             <FiInfo></FiInfo>
           </span>
@@ -109,8 +120,11 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
     // fallback
     return bigintStringify(value);
   };
+
+  const changeEntries = Object.entries(changes);
+
   return (
-    <table className="w-full text-md text-left">
+    <table className="w-full text-md text-left border rounded-md">
       <thead className="bg-gray-100">
         <tr>
           <th scope="col" className="font-medium p-2">
@@ -122,12 +136,19 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
         </tr>
       </thead>
       <tbody>
-        {Object.entries(changes).map(([name, value]) => (
-          <tr className="border-b" key={name}>
-            <td className="p-2">{name}</td>
-            <td className="p-2">{fmtVal(value as Amount | Ratio)}</td>
+        {changeEntries.length ? (
+          changeEntries.map(([name, value]) => (
+            <tr className="border-b" key={name}>
+              <td className="p-2">{name}</td>
+              <td className="p-2">{fmtVal(value as Amount | Ratio)}</td>
+            </tr>
+          ))
+        ) : (
+          <tr className="border-b">
+            <td className="p-2 italic">No changes</td>
+            <td className="p-2 italic">-</td>
           </tr>
-        ))}
+        )}
       </tbody>
     </table>
   );
@@ -167,7 +188,12 @@ export function QuestionDetails(props: {
   console.debug('QuestionDetails', details);
   return (
     <>
-      <div className="px-2 flex align-middle justify-between">
+      <div
+        className={clsx(
+          'p-2 flex align-middle justify-between rounded-md',
+          outcomeColor(outcome)
+        )}
+      >
         <Deadline outcome={outcome} seconds={details.closingRule.deadline} />
         <div className="text-sm px-2 text-gray-500">
           {details.questionHandle.boardId}
@@ -202,7 +228,7 @@ function ChoosePosition(props: {
         <RadioGroup.Label className="block leading-5 font-medium mt-4 mb-2">
           Vote:
         </RadioGroup.Label>
-        <div className="flex flex-row-reverse justify-end gap-2">
+        <div className="flex flex-row-reverse justify-end gap-4">
           {props.positions.map((pos, index) => (
             <RadioGroup.Option
               key={index}
@@ -211,8 +237,8 @@ function ChoosePosition(props: {
                 clsx(
                   checked
                     ? 'ring-purple-300'
-                    : 'ring-gray-200 hover:bg-gray-50',
-                  'ring-2 relative flex cursor-pointer rounded-lg px-5 py-4 focus:outline-none'
+                    : 'ring-gray-200 hover:bg-gray-100',
+                  'ring-2 relative flex cursor-pointer rounded-lg px-2 py-2 focus:outline-none'
                 )
               }
             >
