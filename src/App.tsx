@@ -63,7 +63,7 @@ const NetPicker = (props: { currentNet: string }) => {
 
   return (
     <Menu as="div" className="mb-2 mr-2 relative inline-block text-left">
-      <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-5 px-4 py-2 text-md font-medium text-primary hover:bg-opacity-10 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+      <Menu.Button className="shadow-md inline-flex w-full justify-center rounded-md bg-blue-900/10 hover:bg-slate-100 px-4 py-2 text-md font-medium text-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
         {props.currentNet}
         <FiChevronDown
           className="ml-2 -mr-1 h-6 w-5 text-primary"
@@ -155,7 +155,7 @@ const App = (_props: Props) => {
               target="block-explorer"
               href={explorerHref}
               title="Block Explorer"
-              className="no-underline inline-flex justify-center rounded-md bg-black bg-opacity-5 px-4 py-2 text-md font-medium text-primary hover:bg-opacity-10 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
+              className="shadow-md no-underline inline-flex justify-center rounded-md bg-blue-900/10 px-4 py-2 text-md font-medium text-primary hover:bg-slate-100 hover:text-purple-300 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
             >
               {address}
               <FiExternalLink className="my-1 ml-2 -mr-1 h-4 w-5" />

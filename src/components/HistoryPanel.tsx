@@ -5,6 +5,7 @@ import {
 } from 'govTypes.js';
 import { usePublishedDatum, usePublishedHistory } from 'lib/wallet.js';
 import { QuestionDetails } from './questions.js';
+import { Triangle } from 'react-loader-spinner';
 
 interface Props {}
 
@@ -12,7 +13,7 @@ const tabContentVariant = {
   active: {
     display: 'block',
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.2,
     },
   },
   inactive: {
@@ -25,14 +26,14 @@ const cardVariant = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.25,
+      duration: 0.5,
     },
   },
   inactive: {
     opacity: 0,
     y: 10,
     transition: {
-      duration: 0.25,
+      duration: 0.5,
     },
   },
 };
@@ -53,7 +54,14 @@ export default function VotePanel(_props: Props) {
     s => s === 'received'
   );
   if (!dataLoaded) {
-    return <em>Stand by for question details...</em>;
+    return (
+      <div className="text-gray-500 flex-col flex items-center mt-16 space-y-8">
+        <div className="w-fit">
+          <Triangle color="var(--color-primary)" />
+        </div>
+        <div>Stand by for question details...</div>
+      </div>
+    );
   }
 
   const outcomeByHandle = new Map(
@@ -77,6 +85,10 @@ export default function VotePanel(_props: Props) {
       />
     </motion.div>
   ));
+
+  if (!receivedItems.length) {
+    return <div className="italic text-center mt-16">No questions yet.</div>;
+  }
 
   return (
     <motion.div

@@ -35,9 +35,9 @@ export default function GovernanceTools(props: Props) {
   }
 
   return (
-    <div className="w-full max-w-4xl px-2 pb-16 sm:px-0">
+    <div className="w-full max-w-5xl px-2 pb-16 sm:px-0">
       <Tab.Group defaultIndex={0}>
-        <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/10 p-1">
+        <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/10 p-1 shadow-md">
           <Tab key="history" className={tabClassname}>
             History
           </Tab>
@@ -48,7 +48,7 @@ export default function GovernanceTools(props: Props) {
             Propose Change
           </Tab>
         </Tab.List>
-        <Tab.Panels className="mt-2">
+        <Tab.Panels className="relative mt-4 max-w-4xl mx-auto">
           <Tab.Panel key="history">
             <HistoryPanel />
           </Tab.Panel>
