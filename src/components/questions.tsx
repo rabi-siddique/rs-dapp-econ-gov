@@ -294,7 +294,7 @@ export function VoteOnLatestQuestion(props: {
 
   console.debug('render VoteOnLatestQuestion', status, data);
   if (!data?.positions) {
-    return <b>{capitalize(status)} for a question...</b>;
+    return <p>{capitalize(status)} for a question...</p>;
   }
 
   function voteFor(position) {
@@ -314,9 +314,9 @@ export function VoteOnLatestQuestion(props: {
 
   return (
     <motion.div
-      animate={{ scale: 1 }}
-      initial={{ scale: 0.95 }}
-      transition={{ type: 'spring', bounce: 0.4, stiffness: 400 }}
+      animate={{ y: 0, opacity: 1 }}
+      initial={{ y: 10, opacity: 0 }}
+      transition={{ duration: 0.5 }}
       className="shadow-md p-4 rounded-lg border-gray-200 border"
     >
       <QuestionDetails

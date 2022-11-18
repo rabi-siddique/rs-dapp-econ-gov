@@ -109,6 +109,7 @@ export default function ProposeParamChange(props: Props) {
         className="px-1 overflow-hidden"
         initial={{ height: 0, opacity: 0 }}
         animate={{ height: 'auto', opacity: 1 }}
+        transition={{ type: 'tween' }}
       >
         <form onSubmit={handleSubmit}>
           {Object.entries(data.current).map(([name, value]) => (
