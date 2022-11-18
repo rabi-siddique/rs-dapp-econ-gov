@@ -33,18 +33,29 @@ export function OfferId(props: { id: number }) {
   return <code title={title}>{id}</code>;
 }
 
-export function Deadline(props: { seconds: bigint }) {
+function PrettyOutcome(props: { outcome: OutcomeRecord }) {
+  switch (props.outcome?.outcome) {
+    case 'win':
+      return <span>✅ Passed - </span>;
+    case 'fail':
+      return <span>❌ Failed - </span>;
+    default:
+      return <span>⏳ Vote Closes - </span>;
+  }
+}
+
+export function Deadline(props: { seconds: bigint; outcome: OutcomeRecord }) {
   const { seconds } = props;
 
   const date = new Date(Number(seconds) * 1000);
   const relativeDate = capitalize(formatRelative(date, new Date()));
 
   return (
-    <div className="py-2 text-gray-500">
-      Deadline -{' '}
-      <span className="font-medium text-gray-900 inline-flex flex-row align-baseline">
+    <div className="font-medium text-gray-900">
+      <PrettyOutcome outcome={props.outcome} />
+      <span className="font-normal inline-flex flex-row align-baseline">
         <div>{relativeDate}</div>
-        <span className="font-regular text-sm pl-1 flex flex-col justify-center">
+        <span className="text-sm pl-1 flex flex-col justify-center">
           <span
             data-tip={formatISO9075(date)}
             className="tooltip tooltip-secondary"
@@ -122,17 +133,6 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
   );
 }
 
-function PrettyOutcome(props: { outcome: OutcomeRecord }) {
-  switch (props.outcome?.outcome) {
-    case 'win':
-      return <span>Passed ✅</span>;
-    case 'fail':
-      return <span>Failed ❌</span>;
-    default:
-      return <span>Pending ⏳</span>;
-  }
-}
-
 function paramChangeOutcome(
   { issue }: ParamChangeSpec,
   instance?: [name: string, value: RpcRemote][]
@@ -168,19 +168,12 @@ export function QuestionDetails(props: {
   return (
     <>
       <div className="px-2 flex align-middle justify-between">
-        <Deadline seconds={details.closingRule.deadline} />
-        {!props.deadlinePassed && (
-          <div className="px-4 py-2 rounded-3xl w-fit border-2 text-sm">
-            <PrettyOutcome outcome={outcome} />
-          </div>
-        )}
-      </div>
-      <div className="px-2 text-gray-500">
-        Question Handle -{' '}
-        <span className="font-medium text-gray-900">
+        <Deadline outcome={outcome} seconds={details.closingRule.deadline} />
+        <div className="text-sm px-2 text-gray-500">
           {details.questionHandle.boardId}
-        </span>
+        </div>
       </div>
+
       <div className="p-2 mt-2">
         {details.electionType === 'offer_filter'
           ? offerFilterOutcome(details)
