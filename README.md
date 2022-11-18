@@ -2,6 +2,8 @@
 
 UI for Governance of Inter Protocol
 
+![image](https://user-images.githubusercontent.com/150986/202804842-e7def6b9-9136-4541-b93e-6ccd2ab1a039.png)
+
 # Development
 
 # Test net
