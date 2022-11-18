@@ -7,9 +7,10 @@ import { useAtomValue } from 'jotai';
 import { usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiCheck } from 'react-icons/fi';
+import { FiCheck, FiInfo } from 'react-icons/fi';
 import { Amount, AssetKind } from '@agoric/ertp';
 import { displayFunctionsAtom } from 'store/app';
+
 import {
   OfferFilterSpec,
   OutcomeRecord,
@@ -36,12 +37,22 @@ export function Deadline(props: { seconds: bigint }) {
   const { seconds } = props;
 
   const date = new Date(Number(seconds) * 1000);
-  const relativeDate = formatRelative(date, new Date());
+  const relativeDate = capitalize(formatRelative(date, new Date()));
 
   return (
-    <div className="py-2 font-medium">
-      Deadline - {relativeDate}{' '}
-      <span className="font-normal">({formatISO9075(date)})</span>
+    <div className="py-2 text-gray-500">
+      Deadline -{' '}
+      <span className="font-medium text-gray-900 inline-flex flex-row align-baseline">
+        <div>{relativeDate}</div>
+        <span className="font-regular text-sm pl-1 flex flex-col justify-center">
+          <span
+            data-tip={formatISO9075(date)}
+            className="tooltip tooltip-secondary"
+          >
+            <FiInfo></FiInfo>
+          </span>
+        </span>
+      </span>
     </div>
   );
 }
@@ -131,7 +142,7 @@ function paramChangeOutcome(
   return (
     <>
       <p className="mb-2">
-        Change <span className="font-medium">{name}</span> parameters:
+        Change <code>{name}</code> parameters:
       </p>
       <ParamChanges changes={issue.spec.changes} />
     </>
@@ -150,18 +161,27 @@ export function QuestionDetails(props: {
   details: IQuestionDetails;
   outcome?: OutcomeRecord;
   instance?: [property: string, value: RpcRemote][];
+  deadlinePassed?: boolean;
 }) {
   const { details, outcome, instance } = props;
   console.debug('QuestionDetails', details);
   return (
     <>
-      <div className="mb-2 px-2 flex align-middle justify-between">
+      <div className="px-2 flex align-middle justify-between">
         <Deadline seconds={details.closingRule.deadline} />
-        <div className="px-4 py-2 rounded-3xl w-fit border-2 text-sm">
-          <PrettyOutcome outcome={outcome} />
-        </div>
+        {!props.deadlinePassed && (
+          <div className="px-4 py-2 rounded-3xl w-fit border-2 text-sm">
+            <PrettyOutcome outcome={outcome} />
+          </div>
+        )}
       </div>
-      <div className="p-2">
+      <div className="px-2 text-gray-500">
+        Question Handle -{' '}
+        <span className="font-medium text-gray-900">
+          {details.questionHandle.boardId}
+        </span>
+      </div>
+      <div className="p-2 mt-2">
         {details.electionType === 'offer_filter'
           ? offerFilterOutcome(details)
           : details.electionType === 'param_change'
@@ -187,7 +207,7 @@ function ChoosePosition(props: {
     <form onSubmit={handleSubmit}>
       <RadioGroup className="px-2" value={position} onChange={setPosition}>
         <RadioGroup.Label className="block leading-5 font-medium mt-4 mb-2">
-          Choose Position:
+          Vote:
         </RadioGroup.Label>
         <div className="flex flex-row-reverse justify-end gap-2">
           {props.positions.map((pos, index) => (
@@ -196,7 +216,9 @@ function ChoosePosition(props: {
               value={pos}
               className={({ checked }) =>
                 clsx(
-                  checked ? 'ring-purple-300' : 'ring-gray-200',
+                  checked
+                    ? 'ring-purple-300'
+                    : 'ring-gray-200 hover:bg-gray-50',
                   'ring-2 relative flex cursor-pointer rounded-lg px-5 py-4 focus:outline-none'
                 )
               }
@@ -278,9 +300,20 @@ export function VoteOnLatestQuestion(props: {
       transition={{ type: 'spring', bounce: 0.4, stiffness: 400 }}
       className="shadow-md p-4 rounded-lg border-gray-200 border"
     >
-      <QuestionDetails details={data} instance={props.instance} />
+      <QuestionDetails
+        details={data}
+        instance={props.instance}
+        deadlinePassed={deadlinePassed}
+      />
       {deadlinePassed ? (
-        <em className="pl-2">Deadline passed</em>
+        <div className="w-full flex flex-row justify-end mt-2 px-2">
+          <button
+            className="btn-primary rounded mt-2 p-2 cursor-not-allowed"
+            disabled
+          >
+            Deadline passed
+          </button>
+        </div>
       ) : (
         <>
           <ChoosePosition positions={data.positions} onChoose={voteFor} />

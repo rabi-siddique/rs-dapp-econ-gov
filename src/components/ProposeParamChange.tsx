@@ -133,7 +133,7 @@ export default function ProposeParamChange(props: Props) {
           <div className="w-full flex flex-row justify-end mt-2">
             <input
               type="submit"
-              value="Propose Parameter Change Proposal"
+              value="Propose Parameter Change"
               className={clsx(
                 'btn-primary p-2 rounded mt-2',
                 canGovern ? 'cursor-pointer' : 'cursor-not-allowed'

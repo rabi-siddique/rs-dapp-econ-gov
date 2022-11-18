@@ -45,9 +45,9 @@ export default function ProposePauseOffers(props: Props) {
   const optionMessage = option => {
     switch (option) {
       case 'wantMinted':
-        return 'Propose IST minting pause (Users will not be able to swap supported stable tokens for IST in PSM) (wantMinted)';
+        return 'Pause wantMinted (IST minting) — Users will not be able to swap supported stable tokens for IST in PSM';
       case 'giveMinted':
-        return 'Propose IST burning pause (Users will not be able to swap IST for supported stable tokens in PSM) (giveMinted)';
+        return 'Pause giveMinted (IST burning) - Users will not be able to swap IST for supported stable tokens in PSM';
       default:
         return option;
     }
@@ -95,7 +95,7 @@ export default function ProposePauseOffers(props: Props) {
         <div className="w-full flex flex-row justify-end mt-2">
           <input
             type="submit"
-            value="Propose Pause Offer Proposal"
+            value="Propose Pause Offers"
             className={clsx(
               'btn-primary p-2 rounded mt-2',
               canGovern ? 'cursor-pointer' : 'cursor-not-allowed'
