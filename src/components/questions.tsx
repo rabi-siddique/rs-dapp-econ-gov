@@ -111,7 +111,7 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
         decimalPlaces,
         decimalPlaces
       );
-      return <>{numeral} IST</>;
+      return <>{new Intl.NumberFormat().format(Number(numeral))} IST</>;
     } else if (isSafeRatio(value)) {
       const { numerator, denominator } = value;
       const pct = (100 * Number(numerator.value)) / Number(denominator.value);

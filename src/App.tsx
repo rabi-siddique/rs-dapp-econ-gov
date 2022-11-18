@@ -63,12 +63,9 @@ const NetPicker = (props: { currentNet: string }) => {
 
   return (
     <Menu as="div" className="mb-2 mr-2 relative inline-block text-left">
-      <Menu.Button className="shadow-md inline-flex w-full justify-center rounded-md bg-blue-900/10 hover:bg-slate-100 px-4 py-2 text-md font-medium text-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+      <Menu.Button className="shadow-md inline-flex w-full justify-center rounded-md hover:text-purple-300 bg-blue-900/10 hover:bg-slate-100 px-4 py-2 text-md font-medium text-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
         {props.currentNet}
-        <FiChevronDown
-          className="ml-2 -mr-1 h-6 w-5 text-primary"
-          aria-hidden="true"
-        />
+        <FiChevronDown className="ml-2 -mr-1 h-6 w-5" aria-hidden="true" />
       </Menu.Button>
       <Transition
         as={Fragment}

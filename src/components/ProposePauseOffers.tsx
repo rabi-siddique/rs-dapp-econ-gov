@@ -88,7 +88,7 @@ export default function ProposePauseOffers(props: Props) {
           <span className="text-gray-700">Minutes until close of vote</span>
           <input
             type="number"
-            className="mt-1 block w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
+            className="rounded mt-1 block w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
             value={minutesUntilClose}
             onChange={e => setMinutesUntilClose(e.target.valueAsNumber)}
           />

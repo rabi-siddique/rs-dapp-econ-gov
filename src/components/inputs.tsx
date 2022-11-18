@@ -27,29 +27,31 @@ export const AmountInput = ({
   );
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = ev => {
-    const str = ev.target?.value?.replace('-', '').replace('e', '');
+    const str = ev.target?.value?.replace(/[^0-9]+/g, '');
     setFieldString(str);
     const parsed = parseAsValue(str, AssetKind.NAT, decimalPlaces);
     onChange(parsed);
   };
 
-  const displayString =
+  const valueString =
     value === parseAsValue(fieldString, AssetKind.NAT, decimalPlaces)
       ? fieldString
       : amountString;
 
+  const displayString =
+    valueString && new Intl.NumberFormat().format(Number(valueString));
+
   return (
     <div className="relative flex-grow">
       <input
-        type="number"
-        placeholder="0.0"
+        type="text"
+        placeholder="0"
         value={displayString}
         onChange={handleInputChange}
         className={clsx(
-          'rounded-sm bg-white bg-opacity-100 text-xl p-3 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300',
+          'rounded bg-white bg-opacity-100 text-xl p-3 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300',
           suffix ? 'pr-10' : ''
         )}
-        min="0"
       />
       {suffix && (
         <span className="z-10 h-full leading-snug font-normal text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
@@ -103,7 +105,7 @@ export const PercentageInput = ({
         step="0.01"
         value={displayString}
         onChange={handleInputChange}
-        className="rounded-sm bg-white bg-opacity-100 text-xl p-3 pr-10 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
+        className="rounded bg-white bg-opacity-100 text-xl p-3 pr-10 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
         min="0"
         max="100"
       />
