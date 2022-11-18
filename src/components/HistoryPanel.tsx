@@ -1,12 +1,42 @@
-import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import {
   OutcomeRecord,
   QuestionDetails as IQuestionDetails,
 } from 'govTypes.js';
 import { usePublishedDatum, usePublishedHistory } from 'lib/wallet.js';
 import { QuestionDetails } from './questions.js';
+import { Triangle } from 'react-loader-spinner';
 
 interface Props {}
+
+const tabContentVariant = {
+  active: {
+    display: 'block',
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+  inactive: {
+    display: 'none',
+  },
+};
+
+const cardVariant = {
+  active: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+    },
+  },
+  inactive: {
+    opacity: 0,
+    y: 10,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 export default function VotePanel(_props: Props) {
   const { status: instanceStatus, data: instance } = usePublishedDatum(
@@ -24,7 +54,14 @@ export default function VotePanel(_props: Props) {
     s => s === 'received'
   );
   if (!dataLoaded) {
-    return <em>stand by for question details...</em>;
+    return (
+      <div className="text-gray-500 flex-col flex items-center mt-16 space-y-8">
+        <div className="w-fit">
+          <Triangle color="var(--color-primary)" />
+        </div>
+        <div>Stand by for question details...</div>
+      </div>
+    );
   }
 
   const outcomeByHandle = new Map(
@@ -36,25 +73,31 @@ export default function VotePanel(_props: Props) {
       outcomeByHandle.get(q.questionHandle),
     ]);
   const receivedItems = questionsWithAnswers.map(([qData, aData], index) => (
-    <div key={index} className="p-4 rounded">
+    <motion.div
+      key={index}
+      variants={cardVariant}
+      className="p-4 rounded-lg border-gray border shadow-md mb-4"
+    >
       <QuestionDetails
         details={qData}
         outcome={aData?.question === qData.questionHandle ? aData : undefined}
         instance={instance}
       />
-    </div>
+    </motion.div>
   ));
 
+  if (!receivedItems.length) {
+    return <div className="italic text-center mt-16">No questions yet.</div>;
+  }
+
   return (
-    <div
-      className={clsx(
-        'rounded-xl bg-white p-3',
-        'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
-      )}
+    <motion.div
+      animate="active"
+      initial="inactive"
+      variants={tabContentVariant}
+      className="pt-2"
     >
-      <div className="grid grid-cols-1 divide-y divide-blue-400">
-        {receivedItems}
-      </div>
-    </div>
+      {receivedItems}
+    </motion.div>
   );
 }

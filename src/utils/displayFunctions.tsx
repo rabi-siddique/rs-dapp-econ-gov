@@ -13,14 +13,19 @@ import { DeliverTxResponse } from '@cosmjs/stargate';
 import { transactionInfoUrl } from 'lib/wallet';
 
 export const notifySigning = () =>
-  toast.loading(<p>Awaiting sign and broadcast…</p>);
+  toast.loading(<p>Awaiting sign and broadcast...</p>);
 
 export const notifySuccess = (toastId: ToastId, tx: DeliverTxResponse) => {
   const txHash = tx.transactionHash;
   toast.update(toastId, {
     render: (
       <p>
-        <a href={transactionInfoUrl(txHash)} target={txHash} title={txHash}>
+        <a
+          className="no-underline hover:underline"
+          href={transactionInfoUrl(txHash)}
+          target={txHash}
+          title={txHash}
+        >
           Transaction
         </a>{' '}
         sent.
@@ -28,9 +33,11 @@ export const notifySuccess = (toastId: ToastId, tx: DeliverTxResponse) => {
     ),
     type: toast.TYPE.SUCCESS,
     isLoading: false,
-    closeOnClick: true,
+    closeButton: true,
   });
 };
+
+export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
 export const notifyError = (toastId: ToastId, err: Error) => {
   console.log(err);
@@ -38,7 +45,7 @@ export const notifyError = (toastId: ToastId, err: Error) => {
     render: err.message,
     type: toast.TYPE.ERROR,
     isLoading: false,
-    closeOnClick: true,
+    closeButton: true,
   });
 };
 
