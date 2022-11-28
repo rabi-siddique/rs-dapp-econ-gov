@@ -1,12 +1,16 @@
 import {
   inferInvitationStatus,
   usePublishedDatum,
+  usePublishedHistory,
   WalletContext,
 } from 'lib/wallet';
 import { useContext } from 'react';
 import { motion } from 'framer-motion';
 import AcceptInvitation from './AcceptInvitation';
-import { OfferId, VoteOnLatestQuestion } from './questions';
+import { OfferId, VoteOnQuestion } from './questions';
+import { QuestionDetails, RpcRemote } from 'govTypes';
+import { capitalize } from 'utils/displayFunctions';
+import { timestampPassed } from 'utils/helpers';
 
 interface Props {}
 
@@ -50,6 +54,36 @@ function Eligibility({
   }
 }
 
+function VoteOnQuestions(props: {
+  ecOfferId: number;
+  instance?: [property: string, value: RpcRemote][];
+}) {
+  const history = usePublishedHistory(
+    'committees.Economic_Committee.latestQuestion'
+  );
+  console.debug('question history', history.data);
+
+  if (history.status !== 'received') {
+    return <p>{capitalize(history.status)} for a question...</p>;
+  }
+
+  const openQuestions = history.data.filter(
+    (q: QuestionDetails) => !timestampPassed(Number(q.closingRule.deadline))
+  );
+
+  return (
+    <>
+      {openQuestions.map((details: QuestionDetails) => (
+        <VoteOnQuestion
+          {...props}
+          details={details}
+          key={details.counterInstance.boardId}
+        />
+      ))}
+    </>
+  );
+}
+
 export default function VotePanel(_props: Props) {
   const walletUtils = useContext(WalletContext);
   const { data } = usePublishedDatum(
@@ -71,10 +105,7 @@ export default function VotePanel(_props: Props) {
         {instanceStatus === 'received' &&
           invitationStatus.status === 'accepted' &&
           previousOfferId && (
-            <VoteOnLatestQuestion
-              ecOfferId={previousOfferId}
-              instance={instance}
-            />
+            <VoteOnQuestions ecOfferId={previousOfferId} instance={instance} />
           )}
       </motion.div>
     </div>

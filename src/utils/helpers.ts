@@ -31,3 +31,8 @@ export const mapAtom = <K, V>() => {
     }
   );
 };
+
+export function timestampPassed(timestamp: number) {
+  const now = Date.now(); // WARNING: ambient, effectful
+  return timestamp * 1000 < now;
+}

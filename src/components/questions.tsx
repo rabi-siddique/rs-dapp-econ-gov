@@ -4,7 +4,7 @@ import { Ratio } from '@agoric/zoe/src/contractSupport';
 import { RadioGroup } from '@headlessui/react';
 import { formatRelative, formatISO9075 } from 'date-fns';
 import { useAtomValue } from 'jotai';
-import { usePublishedDatum, WalletContext } from 'lib/wallet';
+import { WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiCheck, FiInfo } from 'react-icons/fi';
@@ -20,6 +20,7 @@ import {
 } from '../govTypes.js';
 import { capitalize } from 'utils/displayFunctions.js';
 import clsx from 'clsx';
+import { timestampPassed } from 'utils/helpers.js';
 
 export function OfferId(props: { id: number }) {
   const { id } = props;
@@ -55,7 +56,7 @@ function outcomeColor(outcome?: OutcomeRecord) {
   }
 }
 
-export function Deadline(props: { seconds: bigint; outcome: OutcomeRecord }) {
+export function Deadline(props: { seconds: bigint; outcome?: OutcomeRecord }) {
   const { seconds } = props;
 
   const date = new Date(Number(seconds) * 1000);
@@ -283,34 +284,28 @@ function ChoosePosition(props: {
   );
 }
 
-export function VoteOnLatestQuestion(props: {
+export function VoteOnQuestion(props: {
   ecOfferId: number;
   instance?: [property: string, value: RpcRemote][];
+  details: IQuestionDetails;
 }) {
   const walletUtils = useContext(WalletContext);
-  const { status, data } = usePublishedDatum(
-    'committees.Economic_Committee.latestQuestion'
-  );
 
-  console.debug('render VoteOnLatestQuestion', status, data);
-  if (!data?.positions) {
-    return <p>{capitalize(status)} for a question...</p>;
-  }
+  const { details } = props;
 
   function voteFor(position) {
     console.log('voting for position', position);
     const offer = walletUtils.makeOfferToVote(
       props.ecOfferId,
       [position],
-      data.questionHandle
+      details.questionHandle
     );
     void walletUtils.sendOffer(offer);
   }
   const {
     closingRule: { deadline },
-  } = data as IQuestionDetails;
-  const now = Date.now(); // WARNING: ambient, effectful
-  const deadlinePassed = Number(deadline) * 1000 < now;
+  } = details;
+  const deadlinePassed = timestampPassed(Number(deadline));
 
   return (
     <motion.div
@@ -320,7 +315,7 @@ export function VoteOnLatestQuestion(props: {
       className="shadow-md p-4 rounded-lg border-gray-200 border"
     >
       <QuestionDetails
-        details={data}
+        details={details}
         instance={props.instance}
         deadlinePassed={deadlinePassed}
       />
@@ -335,7 +330,11 @@ export function VoteOnLatestQuestion(props: {
         </div>
       ) : (
         <>
-          <ChoosePosition positions={data.positions} onChoose={voteFor} />
+          <ChoosePosition
+            // @ts-expect-error not all positions are string[]
+            positions={details.positions}
+            onChoose={voteFor}
+          />
         </>
       )}
     </motion.div>
