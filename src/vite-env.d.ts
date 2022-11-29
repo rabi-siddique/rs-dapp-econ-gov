@@ -1,11 +1,5 @@
 /// <reference types="vite/client" />
 
-declare module '@agoric/notifier' {
-  export const makeAsyncIterableFromNotifier;
-  export const observeIteration;
-  export const subscribeEach;
-}
-
 declare module '@agoric/casting' {
   export type Follower<T> = {
     getLatestIterable: () => Promise<AsyncIterable<T>>;

@@ -11,6 +11,11 @@
     n-readlines "^1.0.0"
     tmp "^0.2.1"
 
+"@agoric/assert@0.5.2-dev-7443b3e.0+7443b3e":
+  version "0.5.2-dev-7443b3e.0"
+  resolved "https://registry.yarnpkg.com/@agoric/assert/-/assert-0.5.2-dev-7443b3e.0.tgz#440d47c7c1a7c848e718e26f6c8936e3dd296e2a"
+  integrity sha512-vKvxIQSeWfz9e8CKsYMQaxng+ykVoW/DnrAJ5PLGsiog3atMqlcL260Bg2ykEW9Z2E4ic+XBvuXtFZfEtj7W8A==
+
 "@agoric/assert@^0.5.1", "@agoric/assert@~0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@agoric/assert/-/assert-0.5.1.tgz#f118129c3d091108528dec08a31f5f65c26de0c6"
@@ -137,7 +142,7 @@
   resolved "https://registry.npmjs.org/@agoric/nat/-/nat-4.1.0.tgz"
   integrity sha512-2oMoh3DMn0Fx8HChPPiH8irBNdT/33ttxAZJohhd3nU3gyBRQ1u+eEoOQWfSkrE6M02iMkQM7GE9MzGmjQ6bHg==
 
-"@agoric/notifier@^0.5.1", "@agoric/notifier@~0.5.1":
+"@agoric/notifier@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@agoric/notifier/-/notifier-0.5.1.tgz#110326a4cbfec8ef184e0e46b9a61133a4eb6546"
   integrity sha512-aczYmc2LSHoGzImk6+NLbyfEIx1WNZtOR7TWMa2Oq4uz/bWc6HzRk1TV22ReKQkwS+lM7n0IVecNGULBrjEQUw==
@@ -146,6 +151,16 @@
     "@endo/eventual-send" "^0.16.5"
     "@endo/marshal" "^0.7.5"
     "@endo/promise-kit" "^0.2.49"
+
+"@agoric/notifier@^0.5.2-dev-7443b3e.0":
+  version "0.5.2-dev-7443b3e.0"
+  resolved "https://registry.yarnpkg.com/@agoric/notifier/-/notifier-0.5.2-dev-7443b3e.0.tgz#7bbfd0e357761eda6bc2797082ccc71dfc09eb4a"
+  integrity sha512-VtvbNM/OIZ7PrjJU0P7yeibwvVEcKJWSA475gvzk+2A4CzM6yuUxp7yT7yg3egKKFJDBAx+gkzGeBqIzhNNoTA==
+  dependencies:
+    "@agoric/assert" "0.5.2-dev-7443b3e.0+7443b3e"
+    "@endo/eventual-send" "^0.16.8"
+    "@endo/marshal" "^0.8.1"
+    "@endo/promise-kit" "^0.2.52"
 
 "@agoric/pegasus@^0.7.4":
   version "0.7.4"
@@ -976,6 +991,11 @@
   resolved "https://registry.yarnpkg.com/@endo/eventual-send/-/eventual-send-0.16.5.tgz#39f2e21b5331cd9e423a8440f9e74e28fea6701e"
   integrity sha512-tWmia2jv+beGf4oVOxUqcHc358PX3Gssz4qUD3BA7D6d7AW75Pk34ArWsi29E9w6aNMrnhnpX+EaRBWoj/Q1PA==
 
+"@endo/eventual-send@^0.16.8":
+  version "0.16.8"
+  resolved "https://registry.yarnpkg.com/@endo/eventual-send/-/eventual-send-0.16.8.tgz#d0084bd13c2034cbc8394968c49b8648f7224e5f"
+  integrity sha512-bxWzRrcrCS44m0N0lCGA7BQoBFSfKkzwpFGGdZNVbUbT7+b9fzOV58sdSzzxxGnl6UwG24KzX71CNNA3PxJI9w==
+
 "@endo/far@^0.2.11":
   version "0.2.11"
   resolved "https://registry.yarnpkg.com/@endo/far/-/far-0.2.11.tgz#cf3581c00997eb1aa92c4a375d89f747ac8af778"
@@ -1018,10 +1038,24 @@
     "@endo/nat" "^4.1.20"
     "@endo/promise-kit" "^0.2.49"
 
+"@endo/marshal@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@endo/marshal/-/marshal-0.8.1.tgz#475afc97d093625b1da8626d2629433f90c0e369"
+  integrity sha512-ST69cR6nmbEeL3/ofBavac3oCdGBsyK/xmDhX3dDMnqzHJOgOH4jMQqqCit+wo08g5sSJBPX0FUtCx2UjZ2smQ==
+  dependencies:
+    "@endo/eventual-send" "^0.16.8"
+    "@endo/nat" "^4.1.23"
+    "@endo/promise-kit" "^0.2.52"
+
 "@endo/nat@^4.1.20":
   version "4.1.20"
   resolved "https://registry.yarnpkg.com/@endo/nat/-/nat-4.1.20.tgz#c11780b5670e7ad847e5cec58cbfff8e45256c67"
   integrity sha512-14tKaoiuKNpGyrepU0c2aZ5S9bnWPRUi2e7bbIeFhyCrR7AJ4EorxQnWvB5Ftq59YNBQA9qVJRJ8odU6jhnZwg==
+
+"@endo/nat@^4.1.23":
+  version "4.1.23"
+  resolved "https://registry.yarnpkg.com/@endo/nat/-/nat-4.1.23.tgz#ce8c9e1def409f44a5a9a85962942338e2c9e2e9"
+  integrity sha512-n7cOUJt1neJLswQpKd9Mv3k7xaKT43fAfDDE+WT0dalUmBvevkUi+plkS9X3jyrDebtW/lN/kYdfS3bdObVn2A==
 
 "@endo/netstring@^0.3.19":
   version "0.3.19"
@@ -1038,6 +1072,13 @@
   integrity sha512-Eq1GJUeIPyJHNS1ZHaJuf7coj8HIHnTo6cCI3/liN7FYnERiwkcYFYeOMPnqdIw2SDXvWEvBSX00d1+U2Nyomg==
   dependencies:
     ses "^0.15.23"
+
+"@endo/promise-kit@^0.2.52":
+  version "0.2.52"
+  resolved "https://registry.yarnpkg.com/@endo/promise-kit/-/promise-kit-0.2.52.tgz#c84ff3b0ff1349c024357125f806dec99f3f791b"
+  integrity sha512-uCvn7gCVlHo7uRES2K5aNZmgHD9qKOLRCotf7rJUTsyE/eW+IGa/IRXpZ7DI7nIdJEFdbZ4V3pHJXVrcGo0kjA==
+  dependencies:
+    ses "^0.18.0"
 
 "@endo/static-module-record@^0.7.12":
   version "0.7.12"
@@ -4866,6 +4907,11 @@ ses@0.15.23, ses@^0.15.23:
   version "0.15.23"
   resolved "https://registry.yarnpkg.com/ses/-/ses-0.15.23.tgz#067a2d856ea1304093dff5d27eaa906c495962d8"
   integrity sha512-mFV5a0alaJkJcWU3AgT/2yRasEZZNv78PY6UmRdt6KhndtOMMkQl7vAvwWp9md8YBBG3zVJ5J82PT0uPY7atXw==
+
+ses@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-0.18.0.tgz#9bc1f17712e2f2cf9a38c83156197a6fe722822e"
+  integrity sha512-WMEOltdIqYk11uZiD+0ANnTLcpAQXyLAPm5NneJSbSPEzxhSn4G7B/bs3dtSOcEicAlFI6WFXqXKDMu9BBCj+w==
 
 sha.js@^2.4.0, sha.js@^2.4.11, sha.js@^2.4.8:
   version "2.4.11"

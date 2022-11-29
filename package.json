@@ -19,7 +19,7 @@
     "@agoric/casting": "~0.3.0",
     "@agoric/cosmic-proto": "~0.2.1",
     "@agoric/ertp": "~0.15.1",
-    "@agoric/notifier": "~0.5.1",
+    "@agoric/notifier": "^0.5.2-dev-7443b3e.0",
     "@agoric/smart-wallet": "^0.4.0",
     "@agoric/ui-components": "~0.3.1",
     "@agoric/wallet": "~0.15.0",
