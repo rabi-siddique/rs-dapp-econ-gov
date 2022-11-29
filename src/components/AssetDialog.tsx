@@ -1,4 +1,4 @@
-import { Brand } from '@agoric/ertp';
+import type { Brand } from '@agoric/ertp/src/types';
 import { useAtomValue } from 'jotai';
 
 import AssetListItem from 'components/AssetListItem';

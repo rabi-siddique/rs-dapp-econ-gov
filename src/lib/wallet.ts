@@ -1,4 +1,9 @@
-import { Amount, Brand, DisplayInfo, Issuer } from '@agoric/ertp';
+import type {
+  Amount,
+  Brand,
+  DisplayInfo,
+  Issuer,
+} from '@agoric/ertp/src/types';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
 import { SigningStargateClient as AmbientClient } from '@cosmjs/stargate';
 import { ERef } from '@endo/eventual-send';

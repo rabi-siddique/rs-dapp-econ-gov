@@ -1,4 +1,5 @@
-import { AssetKind, Brand } from '@agoric/ertp';
+import { AssetKind } from '@agoric/ertp';
+import type { Brand } from '@agoric/ertp/src/types';
 import { parseAsValue, stringifyValue } from '@agoric/ui-components';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
 import clsx from 'clsx';

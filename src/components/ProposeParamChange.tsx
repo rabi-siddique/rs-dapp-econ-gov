@@ -1,4 +1,4 @@
-import { Amount } from '@agoric/ertp';
+import type { Amount } from '@agoric/ertp/src/types';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';

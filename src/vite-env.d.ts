@@ -1,11 +1,5 @@
 /// <reference types="vite/client" />
 
-declare module '@agoric/notifier' {
-  export const makeAsyncIterableFromNotifier;
-  export const observeIteration;
-  export const subscribeEach;
-}
-
 declare module '@agoric/casting' {
   export type Follower<T> = {
     getLatestIterable: () => Promise<AsyncIterable<T>>;
@@ -34,17 +28,6 @@ declare module '@agoric/casting' {
   export const iterateLatest;
   export const iterateReverse;
   export const makeLeader;
-}
-
-// This holds constants; types are in ertp.d.ts
-declare module '@agoric/ertp' {
-  export const AmountMath;
-  export const AssetKind = {
-    NAT: 'nat',
-    SET: 'set',
-    COPY_SET: 'copySet',
-    COPY_BAG: 'copyBag',
-  };
 }
 
 declare module '@agoric/wallet-backend' {

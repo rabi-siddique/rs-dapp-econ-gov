@@ -1,16 +1,16 @@
+import { AssetKind } from '@agoric/ertp';
+import type { Brand } from '@agoric/ertp/src/types';
 import {
-  stringifyRatioAsPercent,
   stringifyRatio,
+  stringifyRatioAsPercent,
   stringifyValue,
 } from '@agoric/ui-components';
-import { AssetKind, Brand } from '@agoric/ertp';
-import { IST_ICON } from 'assets/assets';
-import type { BrandInfo } from 'store/app';
-import { wellKnownBrands } from 'config';
-
-import { Id as ToastId, toast } from 'react-toastify';
 import { DeliverTxResponse } from '@cosmjs/stargate';
+import { IST_ICON } from 'assets/assets';
+import { wellKnownBrands } from 'config';
 import { transactionInfoUrl } from 'lib/wallet';
+import { Id as ToastId, toast } from 'react-toastify';
+import type { BrandInfo } from 'store/app';
 
 export const notifySigning = () =>
   toast.loading(<p>Awaiting sign and broadcast...</p>);

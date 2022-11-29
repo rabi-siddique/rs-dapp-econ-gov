@@ -2,7 +2,7 @@ import { useId } from 'react';
 import { useAtomValue } from 'jotai';
 
 import { displayFunctionsAtom } from 'store/app';
-import { Brand } from '@agoric/ertp';
+import type { Brand } from '@agoric/ertp/src/types';
 
 const AssetListItem = ({ brand }: { brand: Brand }) => {
   const { displayBrandIcon, displayBrandPetname } =
