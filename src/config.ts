@@ -10,5 +10,6 @@ export const wellKnownBrands = {
   board02314: { petname: 'IST', decimalPlaces: 6 },
   board02810: { petname: 'USDT_grv', decimalPlaces: 6 },
   board04312: { petname: 'BLD', decimalPlaces: 6 },
+  board05311: { petname: 'AUSD', decimalPlaces: 6 },
   board0566: { petname: 'USDC_grv', decimalPlaces: 6 },
 } as Record<string, { petname: string; decimalPlaces: number }>;
