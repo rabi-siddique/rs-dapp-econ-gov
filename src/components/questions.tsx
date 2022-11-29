@@ -1,16 +1,20 @@
+import { AssetKind } from '@agoric/ertp';
+import type { Amount } from '@agoric/ertp/src/types';
 import { stringifyValue } from '@agoric/ui-components';
 import { bigintStringify } from '@agoric/wallet-backend/src/bigintStringify.js';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
 import { RadioGroup } from '@headlessui/react';
-import { formatRelative, formatISO9075 } from 'date-fns';
+import { formatISO9075, formatRelative } from 'date-fns';
+import { motion } from 'framer-motion';
 import { useAtomValue } from 'jotai';
 import { WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
-import { motion } from 'framer-motion';
 import { FiCheck, FiInfo } from 'react-icons/fi';
-import { Amount, AssetKind } from '@agoric/ertp';
 import { displayFunctionsAtom } from 'store/app';
 
+import clsx from 'clsx';
+import { capitalize } from 'utils/displayFunctions.js';
+import { timestampPassed } from 'utils/helpers.js';
 import {
   OfferFilterSpec,
   OutcomeRecord,
@@ -18,9 +22,6 @@ import {
   QuestionDetails as IQuestionDetails,
   RpcRemote,
 } from '../govTypes.js';
-import { capitalize } from 'utils/displayFunctions.js';
-import clsx from 'clsx';
-import { timestampPassed } from 'utils/helpers.js';
 
 export function OfferId(props: { id: number }) {
   const { id } = props;

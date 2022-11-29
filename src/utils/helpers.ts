@@ -1,7 +1,7 @@
-import { displayPetname } from 'utils/displayFunctions';
+import type { Brand } from '@agoric/ertp/src/types';
 import { PursesJSONState } from '@agoric/wallet-backend';
-import { Brand } from '@agoric/ertp';
 import { atom } from 'jotai';
+import { displayPetname } from 'utils/displayFunctions';
 
 export const getPurseAssetKind = (purse: PursesJSONState) =>
   (purse && purse.displayInfo && purse.displayInfo.assetKind) || undefined;
