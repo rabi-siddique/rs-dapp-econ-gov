@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
-import {
+import type {
   OutcomeRecord,
   QuestionDetails as IQuestionDetails,
-} from 'govTypes.js';
+} from '@agoric/governance/src/types';
 import { usePublishedDatum, usePublishedHistory } from 'lib/wallet.js';
 import { QuestionDetails } from './questions.js';
 import { Triangle } from 'react-loader-spinner';

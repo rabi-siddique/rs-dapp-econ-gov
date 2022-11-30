@@ -1,3 +1,5 @@
+import type { QuestionDetails } from '@agoric/governance/src/types';
+import { motion } from 'framer-motion';
 import {
   inferInvitationStatus,
   usePublishedDatum,
@@ -5,12 +7,11 @@ import {
   WalletContext,
 } from 'lib/wallet';
 import { useContext } from 'react';
-import { motion } from 'framer-motion';
-import AcceptInvitation from './AcceptInvitation';
-import { OfferId, VoteOnQuestion } from './questions';
-import { QuestionDetails, RpcRemote } from 'govTypes';
 import { capitalize } from 'utils/displayFunctions';
 import { timestampPassed } from 'utils/helpers';
+import type { RpcRemote } from '../govTypes';
+import AcceptInvitation from './AcceptInvitation';
+import { OfferId, VoteOnQuestion } from './questions';
 
 interface Props {}
 

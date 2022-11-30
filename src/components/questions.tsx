@@ -1,5 +1,9 @@
 import { AssetKind } from '@agoric/ertp';
 import type { Amount } from '@agoric/ertp/src/types';
+import type {
+  QuestionDetails as IQuestionDetails,
+  OutcomeRecord,
+} from '@agoric/governance/src/types';
 import { stringifyValue } from '@agoric/ui-components';
 import { bigintStringify } from '@agoric/wallet-backend/src/bigintStringify.js';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
@@ -15,13 +19,7 @@ import { displayFunctionsAtom } from 'store/app';
 import clsx from 'clsx';
 import { capitalize } from 'utils/displayFunctions.js';
 import { timestampPassed } from 'utils/helpers.js';
-import {
-  OfferFilterSpec,
-  OutcomeRecord,
-  ParamChangeSpec,
-  QuestionDetails as IQuestionDetails,
-  RpcRemote,
-} from '../govTypes.js';
+import { OfferFilterSpec, ParamChangeSpec, RpcRemote } from '../govTypes.js';
 import { Outcome, outcomeMessage } from '../lib/governance';
 
 export function OfferId(props: { id: number }) {
@@ -194,9 +192,11 @@ export function QuestionDetails(props: {
 
       <div className="p-2 mt-2">
         {details.electionType === 'offer_filter'
-          ? offerFilterOutcome(details)
+          ? // @ts-expect-error failure of inference
+            offerFilterOutcome(details)
           : details.electionType === 'param_change'
-          ? paramChangeOutcome(details, instance)
+          ? // @ts-expect-error failure of inference
+            paramChangeOutcome(details, instance)
           : '???'}
       </div>
     </>

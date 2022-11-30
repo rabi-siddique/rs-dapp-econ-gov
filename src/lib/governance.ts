@@ -1,4 +1,4 @@
-import { OutcomeRecord } from 'govTypes';
+import type { OutcomeRecord } from '@agoric/governance/src/types';
 
 export enum Outcome {
   // "win" just means some position won, including denial of a proposed change
