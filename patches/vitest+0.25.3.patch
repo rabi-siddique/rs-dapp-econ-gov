@@ -1,0 +1,28 @@
+diff --git a/node_modules/vitest/dist/chunk-runtime-rpc.1e7530d3.js b/node_modules/vitest/dist/chunk-runtime-rpc.1e7530d3.js
+index 9bef457..3ac9045 100644
+--- a/node_modules/vitest/dist/chunk-runtime-rpc.1e7530d3.js
++++ b/node_modules/vitest/dist/chunk-runtime-rpc.1e7530d3.js
+@@ -1,18 +1,19 @@
+ import { g as getWorkerState } from './chunk-typecheck-constants.4891f22f.js';
+ import { s as safeSetTimeout } from './chunk-utils-timers.06f993db.js';
+ 
+-const safeRandom = Math.random;
++// const safeRandom = Math.random;
+ function withSafeTimers(fn) {
+   const currentSetTimeout = globalThis.setTimeout;
+-  const currentRandom = globalThis.Math.random;
++  // const currentRandom = globalThis.Math.random;
+   try {
+     globalThis.setTimeout = safeSetTimeout;
+-    globalThis.Math.random = safeRandom;
++    // SES does not allow setting Math.random
++    // globalThis.Math.random = safeRandom;
+     const result = fn();
+     return result;
+   } finally {
+     globalThis.setTimeout = currentSetTimeout;
+-    globalThis.Math.random = currentRandom;
++    // globalThis.Math.random = currentRandom;
+   }
+ }
+ const rpc = () => {

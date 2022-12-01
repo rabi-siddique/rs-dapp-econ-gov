@@ -22,6 +22,7 @@ import {
   QuestionDetails as IQuestionDetails,
   RpcRemote,
 } from '../govTypes.js';
+import { Outcome, outcomeMessage } from '../lib/governance';
 
 export function OfferId(props: { id: number }) {
   const { id } = props;
@@ -35,22 +36,11 @@ export function OfferId(props: { id: number }) {
   return <code title={title}>{id}</code>;
 }
 
-function PrettyOutcome(props: { outcome: OutcomeRecord }) {
-  switch (props.outcome?.outcome) {
-    case 'win':
-      return <span className="pl-1">✅ Passed - </span>;
-    case 'fail':
-      return <span className="pl-1">❌ Failed - </span>;
-    default:
-      return <span className="pl-1">⏳ Vote Closes - </span>;
-  }
-}
-
 function outcomeColor(outcome?: OutcomeRecord) {
   switch (outcome?.outcome) {
-    case 'win':
+    case Outcome.Win:
       return 'bg-green-400 bg-opacity-10';
-    case 'fail':
+    case Outcome.Fail:
       return 'bg-red-400 bg-opacity-5';
     default:
       return 'bg-yellow-500 border border-yellow-100 bg-opacity-5';
@@ -65,7 +55,7 @@ export function Deadline(props: { seconds: bigint; outcome?: OutcomeRecord }) {
 
   return (
     <div className="font-medium text-gray-900">
-      <PrettyOutcome outcome={props.outcome} />
+      <span className="pl-1">{outcomeMessage(props.outcome)} - </span>
       <span className="font-normal inline-flex flex-row align-baseline">
         <div>{relativeDate}</div>
         <span className="text-sm pl-1 flex flex-col justify-center">
