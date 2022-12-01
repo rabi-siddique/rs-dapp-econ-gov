@@ -40,18 +40,18 @@ const cardVariant = {
 
 export default function VotePanel(_props: Props) {
   const { status: instanceStatus, data: instance } = usePublishedDatum(
-    'agoricNames.instance'
+    'agoricNames.instance',
   );
   const { status: qStatus, data: questions } = usePublishedHistory(
-    'committees.Economic_Committee.latestQuestion'
+    'committees.Economic_Committee.latestQuestion',
   );
   const { status: aStatus, data: outcomes } = usePublishedHistory(
-    'committees.Economic_Committee.latestOutcome'
+    'committees.Economic_Committee.latestOutcome',
   );
 
   // Return early if not all data yet available
   const dataLoaded = [instanceStatus, qStatus, aStatus].every(
-    s => s === 'received'
+    s => s === 'received',
   );
   if (!dataLoaded) {
     return (
@@ -65,7 +65,7 @@ export default function VotePanel(_props: Props) {
   }
 
   const outcomeByHandle = new Map(
-    outcomes.map((o: OutcomeRecord) => [o.question, o])
+    outcomes.map((o: OutcomeRecord) => [o.question, o]),
   );
   const questionsWithAnswers: [q: IQuestionDetails, a: OutcomeRecord][] =
     questions.map((q: IQuestionDetails) => [

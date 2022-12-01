@@ -34,7 +34,7 @@ export const bech32Config: Bech32Config = {
  */
 const makeChainInfo = (networkConfig, rpcAddr, chainId, caption) => {
   const coinType = Number(
-    new URL(networkConfig).searchParams.get('coinType') || AGORIC_COIN_TYPE
+    new URL(networkConfig).searchParams.get('coinType') || AGORIC_COIN_TYPE,
   );
   const hostname = new URL(networkConfig).hostname;
   const network = hostname.split('.')[0];
@@ -78,7 +78,7 @@ const makeChainInfo = (networkConfig, rpcAddr, chainId, caption) => {
 export async function suggestChain(
   networkConfig,
   { fetch, keplr, random },
-  caption = undefined
+  caption = undefined,
 ) {
   console.log('suggestChain: fetch', networkConfig); // log net IO
   const res = await fetch(networkConfig);

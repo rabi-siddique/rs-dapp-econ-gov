@@ -4,10 +4,10 @@ declare module '@agoric/casting' {
   export type Follower<T> = {
     getLatestIterable: () => Promise<AsyncIterable<T>>;
     getEachIterable: (
-      options?: IterateEachOptions
+      options?: IterateEachOptions,
     ) => Promise<AsyncIterable<T>>;
     getReverseIterable: (
-      options?: IterateEachOptions
+      options?: IterateEachOptions,
     ) => Promise<AsyncIterable<T>>;
   };
 
@@ -23,7 +23,7 @@ declare module '@agoric/casting' {
   export function makeFollower<T>(
     specP,
     leaderOrMaker,
-    options
+    options,
   ): Promise<ValueFollower<T>>;
   export const iterateLatest;
   export const iterateReverse;

@@ -27,7 +27,7 @@ export type ParameterValue =
 export default function ProposeParamChange(props: Props) {
   const walletUtils = useContext(WalletContext);
   const { data, status } = usePublishedDatum(
-    `psm.IST.${props.anchorName}.governance`
+    `psm.IST.${props.anchorName}.governance`,
   );
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
 
@@ -77,7 +77,7 @@ export default function ProposeParamChange(props: Props) {
       props.psmCharterOfferId,
       props.anchorName,
       paramPatch,
-      minutesUntilClose
+      minutesUntilClose,
     );
     void walletUtils.sendOffer(offer);
   }
@@ -137,7 +137,7 @@ export default function ProposeParamChange(props: Props) {
               value="Propose Parameter Change"
               className={clsx(
                 'btn-primary p-2 rounded mt-2',
-                canGovern ? 'cursor-pointer' : 'cursor-not-allowed'
+                canGovern ? 'cursor-pointer' : 'cursor-not-allowed',
               )}
               disabled={!canGovern}
             />

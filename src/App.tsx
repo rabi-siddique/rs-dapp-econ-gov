@@ -54,7 +54,7 @@ const NetPicker = (props: { currentNet: string }) => {
       key={config}
       onClick={() => {
         window.location.assign(
-          window.location.origin + `/?agoricNet=${config}`
+          window.location.origin + `/?agoricNet=${config}`,
         );
       }}
       label={config}
@@ -94,7 +94,7 @@ const App = (_props: Props) => {
   const [_offers, setOffers] = useAtom(offersAtom);
   const [_metrics, setMetricsIndex] = useAtom(metricsIndexAtom);
   const [_governedParams, setGovernedParamsIndex] = useAtom(
-    governedParamsIndexAtom
+    governedParamsIndexAtom,
   );
   const [_instanceIds, setInstanceIds] = useAtom(instanceIdsAtom);
 
@@ -103,10 +103,10 @@ const App = (_props: Props) => {
 
     // TODO: More user-friendly error handling, like a toast.
     watchPurses(wallet, setPurses, mergeBrandToInfo).catch((err: Error) =>
-      console.error('got watchPurses err', err)
+      console.error('got watchPurses err', err),
     );
     watchOffers(wallet, setOffers).catch((err: Error) =>
-      console.error('got watchOffers err', err)
+      console.error('got watchOffers err', err),
     );
 
     watchContract(wallet, {

@@ -88,7 +88,7 @@ export const makeVStorage = () => {
           // eslint-disable-next-line no-await-in-loop
           ({ blockHeight, values } = await this.readAt(
             path,
-            blockHeight && blockHeight - 1
+            blockHeight && blockHeight - 1,
           ));
         } catch (err) {
           if ('log' in err && err.log.match(/unknown request/)) {
@@ -160,7 +160,7 @@ export const boardSlottingMarshaller = (slotToVal = (s, _i) => s) => ({
           return { '@qclass': 'slot', index, iface };
         }
         return Object.fromEntries(
-          Object.entries(part).map(([k, v]) => [k, recur(v)])
+          Object.entries(part).map(([k, v]) => [k, recur(v)]),
         );
       }
       return part;
@@ -199,7 +199,7 @@ export const storageHelper = {
   unserialize: (txt, ctx) => {
     const { capDatas } = storageHelper.parseCapData(txt);
     return capDatas.map(capData =>
-      boardSlottingMarshaller(ctx.convertSlotToVal).unserialize(capData)
+      boardSlottingMarshaller(ctx.convertSlotToVal).unserialize(capData),
     );
   },
   /** @param {string[]} capDataStrings array of stringified capData */
@@ -230,7 +230,7 @@ export const makeAgoricNames = async (ctx, vstorage) => {
       const parts = storageHelper.unserialize(content, ctx).at(-1);
 
       return [kind, Object.fromEntries(parts)];
-    })
+    }),
   );
   return Object.fromEntries(entries);
 };

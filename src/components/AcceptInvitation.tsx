@@ -14,7 +14,7 @@ export default function AcceptInvitation(props: Props) {
           onClick={() => {
             const offer = walletUtils.makeOfferToAcceptInvitation(
               props.sourceContract,
-              props.description
+              props.description,
             );
             void walletUtils.sendOffer(offer);
           }}

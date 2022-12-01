@@ -8,5 +8,5 @@ export default mergeConfig(
     test: {
       setupFiles: ['src/installSesLockdown.ts'],
     },
-  })
+  }),
 );
