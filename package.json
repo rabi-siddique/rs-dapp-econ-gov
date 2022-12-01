@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "lint": "yarn lint:types && yarn lint:eslint",
     "lint:eslint": "eslint src",
     "lint:types": "tsc",
     "format": "prettier --write src",
