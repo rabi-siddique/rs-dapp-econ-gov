@@ -77,12 +77,12 @@ export default function PsmPanel() {
   const [proposalType, setProposalType] = useState(ProposalTypes.paramChange);
   const walletUtils = useContext(WalletContext);
   const { data } = usePublishedDatum(
-    `wallet.${walletUtils.getWalletAddress()}.current`
+    `wallet.${walletUtils.getWalletAddress()}.current`,
   );
 
   const invitationStatus = inferInvitationStatus(
     data,
-    psmCharterInvitationSpec.description
+    psmCharterInvitationSpec.description,
   );
 
   const previousOfferId = invitationStatus.acceptedIn;
@@ -181,7 +181,7 @@ export default function PsmPanel() {
                         onClick={() => setProposalType(v)}
                         className={clsx(
                           active && 'bg-purple-50',
-                          'text-gray-900 group flex items-center px-2 py-2 text-md w-full'
+                          'text-gray-900 group flex items-center px-2 py-2 text-md w-full',
                         )}
                       >
                         {v}

@@ -101,7 +101,7 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
         value.value,
         AssetKind.NAT,
         decimalPlaces,
-        decimalPlaces
+        decimalPlaces,
       );
       return <>{new Intl.NumberFormat().format(Number(numeral))} IST</>;
     } else if (isSafeRatio(value)) {
@@ -148,7 +148,7 @@ function ParamChanges(props: { changes: Record<string, unknown> }) {
 
 function paramChangeOutcome(
   { issue }: ParamChangeSpec,
-  instance?: [name: string, value: RpcRemote][]
+  instance?: [name: string, value: RpcRemote][],
 ) {
   const name =
     instance && instance.find(([_n, i]) => i === issue.contract)?.[0];
@@ -183,7 +183,7 @@ export function QuestionDetails(props: {
       <div
         className={clsx(
           'p-2 flex align-middle justify-between rounded-md',
-          outcomeColor(outcome)
+          outcomeColor(outcome),
         )}
       >
         <Deadline outcome={outcome} seconds={details.closingRule.deadline} />
@@ -230,7 +230,7 @@ function ChoosePosition(props: {
                   checked
                     ? 'ring-purple-300'
                     : 'ring-gray-200 hover:bg-gray-100',
-                  'ring-2 relative flex cursor-pointer rounded-lg px-2 py-2 focus:outline-none'
+                  'ring-2 relative flex cursor-pointer rounded-lg px-2 py-2 focus:outline-none',
                 )
               }
             >
@@ -267,7 +267,7 @@ function ChoosePosition(props: {
           disabled={!position}
           className={clsx(
             'btn-primary rounded mt-2 p-2',
-            position ? 'cursor-pointer' : 'cursor-not-allowed'
+            position ? 'cursor-pointer' : 'cursor-not-allowed',
           )}
         />
       </div>
@@ -289,7 +289,7 @@ export function VoteOnQuestion(props: {
     const offer = walletUtils.makeOfferToVote(
       props.ecOfferId,
       [position],
-      details.questionHandle
+      details.questionHandle,
     );
     void walletUtils.sendOffer(offer);
   }

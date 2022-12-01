@@ -37,7 +37,7 @@ export default function ProposePauseOffers(props: Props) {
       props.psmCharterOfferId,
       props.anchorName,
       toPause,
-      minutesUntilClose
+      minutesUntilClose,
     );
     void walletUtils.sendOffer(offer);
   }
@@ -99,7 +99,7 @@ export default function ProposePauseOffers(props: Props) {
             value="Propose Pause Offers"
             className={clsx(
               'btn-primary p-2 rounded mt-2',
-              canGovern ? 'cursor-pointer' : 'cursor-not-allowed'
+              canGovern ? 'cursor-pointer' : 'cursor-not-allowed',
             )}
             disabled={!canGovern}
           />

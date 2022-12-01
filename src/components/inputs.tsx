@@ -24,7 +24,7 @@ export const AmountInput = ({
 
   const amountString = stringifyValue(value, AssetKind.NAT, decimalPlaces, 4);
   const [fieldString, setFieldString] = useState(
-    value === null ? '0' : amountString
+    value === null ? '0' : amountString,
   );
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = ev => {
@@ -51,7 +51,7 @@ export const AmountInput = ({
         onChange={handleInputChange}
         className={clsx(
           'rounded bg-white bg-opacity-100 text-xl p-3 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300',
-          suffix ? 'pr-10' : ''
+          suffix ? 'pr-10' : '',
         )}
       />
       {suffix && (
@@ -72,7 +72,7 @@ export const PercentageInput = ({
 }) => {
   assert(
     ratio.denominator.value === 10_000n,
-    'only conventional denominator value supported'
+    'only conventional denominator value supported',
   );
   const valueString =
     ratio.numerator.value === 0n

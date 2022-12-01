@@ -15,7 +15,7 @@ const watchGovernance = async (
   leader: Leader,
   unserializer: Marshal<any>,
   setGovernedParamsIndex: ContractSetters['setGovernedParamsIndex'],
-  anchorPetname: string
+  anchorPetname: string,
 ) => {
   // E.g. ':published.psm.IST.AUSD.governance'
   const spec = dappConfig.INSTANCE_PREFIX + anchorPetname + '.governance';
@@ -31,7 +31,7 @@ const watchMetrics = async (
   leader: Leader,
   unserializer: Marshal<any>,
   setMetricsIndex: ContractSetters['setMetricsIndex'],
-  anchorPetname: string
+  anchorPetname: string,
 ) => {
   // E.g. ':published.psm.IST.AUSD.metrics'
   const spec = dappConfig.INSTANCE_PREFIX + anchorPetname + '.metrics';
@@ -45,7 +45,7 @@ const watchMetrics = async (
 const watchInstanceIds = async (
   leader: Leader,
   setters: ContractSetters,
-  walletUnserializer: Marshal<any>
+  walletUnserializer: Marshal<any>,
 ) => {
   const f = makeFollower(dappConfig.INSTANCES_KEY, leader, {
     unserializer: walletUnserializer,
@@ -61,7 +61,7 @@ const watchInstanceIds = async (
       .filter(entry => entry[0].startsWith(INSTANCE_NAME_PREFIX))
       .map(
         ([key, boardId]) =>
-          [key.slice(INSTANCE_NAME_PREFIX.length), boardId] as [string, string]
+          [key.slice(INSTANCE_NAME_PREFIX.length), boardId] as [string, string],
       );
 
     console.log('instance ids', PSMEntries);
@@ -77,18 +77,18 @@ const watchInstanceIds = async (
           leader,
           walletUnserializer,
           setters.setMetricsIndex,
-          anchorPetname
+          anchorPetname,
         ).catch(e =>
-          console.error('Error watching metrics for', anchorPetname, e)
+          console.error('Error watching metrics for', anchorPetname, e),
         );
 
         watchGovernance(
           leader,
           walletUnserializer,
           setters.setGovernedParamsIndex,
-          anchorPetname
+          anchorPetname,
         ).catch(e =>
-          console.error('Error watching governed params for', anchorPetname, e)
+          console.error('Error watching governed params for', anchorPetname, e),
         );
       }
     });
@@ -109,14 +109,14 @@ export const watchContract = async (wallet: any, setters: ContractSetters) => {
   const leader = makeLeader(netConfig);
 
   watchInstanceIds(leader, setters, walletUnserializer).catch((err: Error) =>
-    console.error('got loadInstanceIds err', err)
+    console.error('got loadInstanceIds err', err),
   );
 };
 
 export const watchPurses = async (
   wallet: ERef<any>,
   setPurses: (purses: PursesJSONState[]) => void,
-  mergeBrandToInfo: (entries: Iterable<Iterable<any>>) => void
+  mergeBrandToInfo: (entries: Iterable<Iterable<any>>) => void,
 ) => {
   const n = await E(wallet).getPursesNotifier();
   for await (const purses of iterateNotifier(n)) {
@@ -139,7 +139,7 @@ export const watchPurses = async (
 
 export const watchOffers = async (
   wallet: any,
-  setOffers: (offers: any) => void
+  setOffers: (offers: any) => void,
 ) => {
   const offerNotifier = E(wallet).getOffersNotifier();
   for await (const offers of iterateNotifier(offerNotifier)) {

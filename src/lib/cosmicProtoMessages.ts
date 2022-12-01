@@ -79,7 +79,7 @@ function createBaseMsgDeliverInbound(): MsgDeliverInbound {
 export const MsgDeliverInbound = {
   encode(
     message: MsgDeliverInbound,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     for (const v of message.messages) {
       writer.uint32(10).string(v!);
@@ -163,13 +163,13 @@ export const MsgDeliverInbound = {
       (obj.ack = (message.ack || Long.UZERO).toString());
     message.submitter !== undefined &&
       (obj.submitter = base64FromBytes(
-        message.submitter !== undefined ? message.submitter : new Uint8Array()
+        message.submitter !== undefined ? message.submitter : new Uint8Array(),
       ));
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgDeliverInbound>, I>>(
-    object: I
+    object: I,
   ): MsgDeliverInbound {
     const message = createBaseMsgDeliverInbound();
     message.messages = object.messages?.map(e => e) || [];
@@ -190,14 +190,14 @@ function createBaseMsgDeliverInboundResponse(): MsgDeliverInboundResponse {
 export const MsgDeliverInboundResponse = {
   encode(
     _: MsgDeliverInboundResponse,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): MsgDeliverInboundResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -223,7 +223,7 @@ export const MsgDeliverInboundResponse = {
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgDeliverInboundResponse>, I>>(
-    _: I
+    _: I,
   ): MsgDeliverInboundResponse {
     const message = createBaseMsgDeliverInboundResponse();
     return message;
@@ -237,7 +237,7 @@ function createBaseMsgWalletAction(): MsgWalletAction {
 export const MsgWalletAction = {
   encode(
     message: MsgWalletAction,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.owner.length !== 0) {
       writer.uint32(10).bytes(message.owner);
@@ -282,14 +282,14 @@ export const MsgWalletAction = {
     const obj: any = {};
     message.owner !== undefined &&
       (obj.owner = base64FromBytes(
-        message.owner !== undefined ? message.owner : new Uint8Array()
+        message.owner !== undefined ? message.owner : new Uint8Array(),
       ));
     message.action !== undefined && (obj.action = message.action);
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgWalletAction>, I>>(
-    object: I
+    object: I,
   ): MsgWalletAction {
     const message = createBaseMsgWalletAction();
     message.owner = object.owner ?? new Uint8Array();
@@ -305,14 +305,14 @@ function createBaseMsgWalletActionResponse(): MsgWalletActionResponse {
 export const MsgWalletActionResponse = {
   encode(
     _: MsgWalletActionResponse,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): MsgWalletActionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -338,7 +338,7 @@ export const MsgWalletActionResponse = {
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgWalletActionResponse>, I>>(
-    _: I
+    _: I,
   ): MsgWalletActionResponse {
     const message = createBaseMsgWalletActionResponse();
     return message;
@@ -352,7 +352,7 @@ function createBaseMsgWalletSpendAction(): MsgWalletSpendAction {
 export const MsgWalletSpendAction = {
   encode(
     message: MsgWalletSpendAction,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.owner.length !== 0) {
       writer.uint32(10).bytes(message.owner);
@@ -365,7 +365,7 @@ export const MsgWalletSpendAction = {
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): MsgWalletSpendAction {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -400,7 +400,7 @@ export const MsgWalletSpendAction = {
     const obj: any = {};
     message.owner !== undefined &&
       (obj.owner = base64FromBytes(
-        message.owner !== undefined ? message.owner : new Uint8Array()
+        message.owner !== undefined ? message.owner : new Uint8Array(),
       ));
     message.spendAction !== undefined &&
       (obj.spendAction = message.spendAction);
@@ -408,7 +408,7 @@ export const MsgWalletSpendAction = {
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgWalletSpendAction>, I>>(
-    object: I
+    object: I,
   ): MsgWalletSpendAction {
     const message = createBaseMsgWalletSpendAction();
     message.owner = object.owner ?? new Uint8Array();
@@ -424,14 +424,14 @@ function createBaseMsgWalletSpendActionResponse(): MsgWalletSpendActionResponse 
 export const MsgWalletSpendActionResponse = {
   encode(
     _: MsgWalletSpendActionResponse,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): MsgWalletSpendActionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -457,7 +457,7 @@ export const MsgWalletSpendActionResponse = {
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgWalletSpendActionResponse>, I>>(
-    _: I
+    _: I,
   ): MsgWalletSpendActionResponse {
     const message = createBaseMsgWalletSpendActionResponse();
     return message;
@@ -476,7 +476,7 @@ function createBaseMsgProvision(): MsgProvision {
 export const MsgProvision = {
   encode(
     message: MsgProvision,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.nickname !== '') {
       writer.uint32(10).string(message.nickname);
@@ -540,7 +540,7 @@ export const MsgProvision = {
     message.nickname !== undefined && (obj.nickname = message.nickname);
     message.address !== undefined &&
       (obj.address = base64FromBytes(
-        message.address !== undefined ? message.address : new Uint8Array()
+        message.address !== undefined ? message.address : new Uint8Array(),
       ));
     if (message.powerFlags) {
       obj.powerFlags = message.powerFlags.map(e => e);
@@ -549,13 +549,13 @@ export const MsgProvision = {
     }
     message.submitter !== undefined &&
       (obj.submitter = base64FromBytes(
-        message.submitter !== undefined ? message.submitter : new Uint8Array()
+        message.submitter !== undefined ? message.submitter : new Uint8Array(),
       ));
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgProvision>, I>>(
-    object: I
+    object: I,
   ): MsgProvision {
     const message = createBaseMsgProvision();
     message.nickname = object.nickname ?? '';
@@ -573,14 +573,14 @@ function createBaseMsgProvisionResponse(): MsgProvisionResponse {
 export const MsgProvisionResponse = {
   encode(
     _: MsgProvisionResponse,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): MsgProvisionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -606,7 +606,7 @@ export const MsgProvisionResponse = {
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgProvisionResponse>, I>>(
-    _: I
+    _: I,
   ): MsgProvisionResponse {
     const message = createBaseMsgProvisionResponse();
     return message;
@@ -620,7 +620,7 @@ function createBaseMsgInstallBundle(): MsgInstallBundle {
 export const MsgInstallBundle = {
   encode(
     message: MsgInstallBundle,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.bundle !== '') {
       writer.uint32(10).string(message.bundle);
@@ -666,13 +666,13 @@ export const MsgInstallBundle = {
     message.bundle !== undefined && (obj.bundle = message.bundle);
     message.submitter !== undefined &&
       (obj.submitter = base64FromBytes(
-        message.submitter !== undefined ? message.submitter : new Uint8Array()
+        message.submitter !== undefined ? message.submitter : new Uint8Array(),
       ));
     return obj;
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgInstallBundle>, I>>(
-    object: I
+    object: I,
   ): MsgInstallBundle {
     const message = createBaseMsgInstallBundle();
     message.bundle = object.bundle ?? '';
@@ -688,14 +688,14 @@ function createBaseMsgInstallBundleResponse(): MsgInstallBundleResponse {
 export const MsgInstallBundleResponse = {
   encode(
     _: MsgInstallBundleResponse,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): MsgInstallBundleResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -721,7 +721,7 @@ export const MsgInstallBundleResponse = {
   },
 
   fromPartial<I extends Exact<DeepPartial<MsgInstallBundleResponse>, I>>(
-    _: I
+    _: I,
   ): MsgInstallBundleResponse {
     const message = createBaseMsgInstallBundleResponse();
     return message;
@@ -734,13 +734,13 @@ export interface Msg {
   InstallBundle(request: MsgInstallBundle): Promise<MsgInstallBundleResponse>;
   /** Send inbound messages. */
   DeliverInbound(
-    request: MsgDeliverInbound
+    request: MsgDeliverInbound,
   ): Promise<MsgDeliverInboundResponse>;
   /** Perform a low-privilege wallet action. */
   WalletAction(request: MsgWalletAction): Promise<MsgWalletActionResponse>;
   /** Perform a wallet action that spends assets. */
   WalletSpendAction(
-    request: MsgWalletSpendAction
+    request: MsgWalletSpendAction,
   ): Promise<MsgWalletSpendActionResponse>;
   /** Provision a new endpoint. */
   Provision(request: MsgProvision): Promise<MsgProvisionResponse>;
@@ -761,24 +761,24 @@ export class MsgClientImpl implements Msg {
     const promise = this.rpc.request(
       'agoric.swingset.Msg',
       'InstallBundle',
-      data
+      data,
     );
     return promise.then(data =>
-      MsgInstallBundleResponse.decode(new _m0.Reader(data))
+      MsgInstallBundleResponse.decode(new _m0.Reader(data)),
     );
   }
 
   DeliverInbound(
-    request: MsgDeliverInbound
+    request: MsgDeliverInbound,
   ): Promise<MsgDeliverInboundResponse> {
     const data = MsgDeliverInbound.encode(request).finish();
     const promise = this.rpc.request(
       'agoric.swingset.Msg',
       'DeliverInbound',
-      data
+      data,
     );
     return promise.then(data =>
-      MsgDeliverInboundResponse.decode(new _m0.Reader(data))
+      MsgDeliverInboundResponse.decode(new _m0.Reader(data)),
     );
   }
 
@@ -787,24 +787,24 @@ export class MsgClientImpl implements Msg {
     const promise = this.rpc.request(
       'agoric.swingset.Msg',
       'WalletAction',
-      data
+      data,
     );
     return promise.then(data =>
-      MsgWalletActionResponse.decode(new _m0.Reader(data))
+      MsgWalletActionResponse.decode(new _m0.Reader(data)),
     );
   }
 
   WalletSpendAction(
-    request: MsgWalletSpendAction
+    request: MsgWalletSpendAction,
   ): Promise<MsgWalletSpendActionResponse> {
     const data = MsgWalletSpendAction.encode(request).finish();
     const promise = this.rpc.request(
       'agoric.swingset.Msg',
       'WalletSpendAction',
-      data
+      data,
     );
     return promise.then(data =>
-      MsgWalletSpendActionResponse.decode(new _m0.Reader(data))
+      MsgWalletSpendActionResponse.decode(new _m0.Reader(data)),
     );
   }
 
@@ -812,7 +812,7 @@ export class MsgClientImpl implements Msg {
     const data = MsgProvision.encode(request).finish();
     const promise = this.rpc.request('agoric.swingset.Msg', 'Provision', data);
     return promise.then(data =>
-      MsgProvisionResponse.decode(new _m0.Reader(data))
+      MsgProvisionResponse.decode(new _m0.Reader(data)),
     );
   }
 }
@@ -821,7 +821,7 @@ interface Rpc {
   request(
     service: string,
     method: string,
-    data: Uint8Array
+    data: Uint8Array,
   ): Promise<Uint8Array>;
 }
 

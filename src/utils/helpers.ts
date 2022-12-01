@@ -11,7 +11,7 @@ export const getPurseDecimalPlaces = (purse: PursesJSONState) =>
 
 export const filterPursesByBrand = (
   purses: PursesJSONState[],
-  desiredBrand: Brand
+  desiredBrand: Brand,
 ) => purses.filter(({ brand }: { brand: any }) => brand === desiredBrand);
 
 export const comparePurses = (a: PursesJSONState, b: PursesJSONState) =>
@@ -28,7 +28,7 @@ export const mapAtom = <K, V>() => {
     (get, set, newEntries: Iterable<any>) => {
       const old = get(innerAtom).entries();
       set(innerAtom, new Map([...old, ...newEntries]));
-    }
+    },
   );
 };
 

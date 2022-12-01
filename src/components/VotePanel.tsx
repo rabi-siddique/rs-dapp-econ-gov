@@ -59,7 +59,7 @@ function VoteOnQuestions(props: {
   instance?: [property: string, value: RpcRemote][];
 }) {
   const history = usePublishedHistory(
-    'committees.Economic_Committee.latestQuestion'
+    'committees.Economic_Committee.latestQuestion',
   );
   console.debug('question history', history.data);
 
@@ -68,7 +68,7 @@ function VoteOnQuestions(props: {
   }
 
   const openQuestions = history.data.filter(
-    (q: QuestionDetails) => !timestampPassed(Number(q.closingRule.deadline))
+    (q: QuestionDetails) => !timestampPassed(Number(q.closingRule.deadline)),
   );
 
   return (
@@ -87,10 +87,10 @@ function VoteOnQuestions(props: {
 export default function VotePanel(_props: Props) {
   const walletUtils = useContext(WalletContext);
   const { data } = usePublishedDatum(
-    `wallet.${walletUtils.getWalletAddress()}.current`
+    `wallet.${walletUtils.getWalletAddress()}.current`,
   );
   const { status: instanceStatus, data: instance } = usePublishedDatum(
-    'agoricNames.instance'
+    'agoricNames.instance',
   );
 
   const invitationStatus = inferInvitationStatus(data, 'Voter');

@@ -13,7 +13,7 @@ interface Props {
 
 export default function GovernanceTools(props: Props) {
   const { status, data } = usePublishedDatum(
-    `wallet.${props.walletAddress}.current`
+    `wallet.${props.walletAddress}.current`,
   );
 
   const tabClassname = ({ selected }) =>
@@ -22,7 +22,7 @@ export default function GovernanceTools(props: Props) {
       'ring-white ring-opacity-60 ring-offset-2 ring-offset-purple-400 focus:outline-none focus:ring-2',
       selected
         ? 'bg-white shadow'
-        : 'hover:bg-white/[0.5] hover:text-purple-300'
+        : 'hover:bg-white/[0.5] hover:text-purple-300',
     );
 
   console.debug('render GovernanceTools', { status, data });

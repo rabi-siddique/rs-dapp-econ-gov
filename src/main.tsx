@@ -11,5 +11,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <WalletContext.Provider value={walletUtils}>
       <App />
     </WalletContext.Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

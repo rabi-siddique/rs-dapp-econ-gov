@@ -35,13 +35,13 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         fetch: window.fetch,
         keplr,
         random: Math.random,
-      }
+      },
     );
 
     const signer = await makeInteractiveSigner(
       chainInfo,
       keplr,
-      AmbientClient.connectWithSigner
+      AmbientClient.connectWithSigner,
     );
 
     return {
@@ -71,7 +71,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
     },
     makeOfferToAcceptInvitation(
       sourceContractName: string,
-      description: string
+      description: string,
     ) {
       const sourceContract = agoricNames.instance[sourceContractName];
       assert(sourceContract, `missing contract ${sourceContractName}`);
@@ -90,14 +90,14 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
     makeOfferToVote(
       ecOfferId: number,
       chosenPositions: unknown[],
-      questionHandle
+      questionHandle,
     ) {
       const ecInstance = agoricNames.instance['economicCommittee'];
       assert(ecInstance, 'no contract instance for economicCommittee');
 
       assert(
         ecOfferId,
-        'cannot makeOffer without economicCommittee membership'
+        'cannot makeOffer without economicCommittee membership',
       );
 
       return {
@@ -116,18 +116,18 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       psmCharterOfferId: number,
       anchorName: string,
       changedParams: Record<string, Amount | Ratio>,
-      relativeDeadlineMin: number
+      relativeDeadlineMin: number,
     ) {
       const psmInstance = agoricNames.instance[`psm-IST-${anchorName}`];
       assert(psmInstance, `no PSM contract instance for IST.${anchorName}`);
 
       assert(
         psmCharterOfferId,
-        'cannot makeOffer without PSM charter membership'
+        'cannot makeOffer without PSM charter membership',
       );
 
       const deadline = BigInt(
-        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000)
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000),
       );
       return {
         id: nextOfferId(),
@@ -148,18 +148,18 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       psmCharterOfferId: number,
       anchorName: string,
       toPause: string[],
-      relativeDeadlineMin: number
+      relativeDeadlineMin: number,
     ) {
       const psmInstance = agoricNames.instance[`psm-IST-${anchorName}`];
       assert(psmInstance, `no PSM contract instance for IST.${anchorName}`);
 
       assert(
         psmCharterOfferId,
-        'cannot makeOffer without PSM charter membership'
+        'cannot makeOffer without PSM charter membership',
       );
 
       const deadline = BigInt(
-        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000)
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000),
       );
 
       return {
@@ -306,16 +306,16 @@ type CurrentWalletRecord = {
 
 export const inferInvitationStatus = (
   current: CurrentWalletRecord | undefined,
-  descriptionSubstr: string
+  descriptionSubstr: string,
 ) => {
   if (!current?.offerToUsedInvitation) {
     return { status: 'nodata' };
   }
   // first check for accepted
   const usedInvitationEntry = Object.entries(
-    current.offerToUsedInvitation
+    current.offerToUsedInvitation,
   ).find(([_, invitationAmount]) =>
-    invitationAmount.value[0].description.includes(descriptionSubstr)
+    invitationAmount.value[0].description.includes(descriptionSubstr),
   );
   if (usedInvitationEntry) {
     return {
@@ -328,12 +328,12 @@ export const inferInvitationStatus = (
   const invitationPurse = current.purses.find(p =>
     // xxx take this as param
     // @ts-expect-error RpcRemote
-    p.brand.iface.includes('Invitation')
+    p.brand.iface.includes('Invitation'),
   );
 
   const invitation: Amount<'set'> | undefined =
     invitationPurse.balance.value.find(a =>
-      a.description.includes(descriptionSubstr)
+      a.description.includes(descriptionSubstr),
     );
   if (invitation) {
     return {

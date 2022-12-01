@@ -72,7 +72,7 @@ export type QuestionDetails = QuestionSpec & {
 };
 
 export type OutcomeRecord<
-  ET extends SupportedElectionType = SupportedElectionType
+  ET extends SupportedElectionType = SupportedElectionType,
 > = {
   question: Handle<'Question'>;
 } & (

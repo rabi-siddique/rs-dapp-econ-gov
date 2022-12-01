@@ -6,15 +6,15 @@ test('outcomeMessage', () => {
   expect(outcomeMessage(undefined)).toBe('⏳ Vote Closes');
   expect(outcomeMessage({})).toBe('???');
   expect(outcomeMessage({ outcome: 'fail', reason: 'some reason' })).toBe(
-    '❌ some reason'
+    '❌ some reason',
   );
   expect(outcomeMessage({ outcome: 'win', position: { noChange: {} } })).toBe(
-    '❌ Change Rejected'
+    '❌ Change Rejected',
   );
   expect(outcomeMessage({ outcome: 'win', position: { dontUpdate: {} } })).toBe(
-    '❌ Change Rejected'
+    '❌ Change Rejected',
   );
   expect(outcomeMessage({ outcome: 'win', position: { strings: [] } })).toBe(
-    '✅ Change Accepted'
+    '✅ Change Accepted',
   );
 });

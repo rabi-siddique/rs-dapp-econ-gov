@@ -20,7 +20,7 @@ export function outcomeMessage(outcome?: OutcomeRecord) {
     const positionKeys = Object.keys(outcome.position);
     assert(
       positionKeys.length === 1,
-      'Only single position outcomes supported'
+      'Only single position outcomes supported',
     );
     const positionKey = positionKeys[0];
     if (['noChange', 'dontUpdate'].includes(positionKey)) {

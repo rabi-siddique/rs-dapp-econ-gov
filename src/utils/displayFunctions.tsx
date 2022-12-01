@@ -94,7 +94,7 @@ export const makeDisplayFunctions = (brandToInfo: Map<Brand, BrandInfo>) => {
       amount.value,
       AssetKind.NAT,
       decimalPlaces,
-      placesToShow
+      placesToShow,
     );
   };
 
