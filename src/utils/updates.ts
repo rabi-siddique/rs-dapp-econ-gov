@@ -9,7 +9,7 @@ import {
 import { dappConfig } from 'config';
 import type { Metrics, GovernedParams, BrandInfo } from 'store/app';
 import type { Marshal } from '@endo/marshal';
-import { PursesJSONState } from '@agoric/wallet-backend';
+import type { PursesJSONState } from '@agoric/wallet-backend';
 
 const watchGovernance = async (
   leader: Leader,
