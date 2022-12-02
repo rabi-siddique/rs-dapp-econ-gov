@@ -1,15 +1,12 @@
-import { E, ERef } from '@endo/eventual-send';
+import { iterateLatest, makeFollower, makeLeader } from '@agoric/casting';
+import type { Leader } from '@agoric/casting/src/types';
 import { makeAsyncIterableFromNotifier as iterateNotifier } from '@agoric/notifier';
-import {
-  iterateLatest,
-  makeLeader,
-  makeFollower,
-  Leader,
-} from '@agoric/casting';
-import { dappConfig } from 'config';
-import type { Metrics, GovernedParams, BrandInfo } from 'store/app';
+import type { PursesJSONState } from '@agoric/wallet-backend';
+import type { ERef } from '@endo/eventual-send';
+import { E } from '@endo/eventual-send';
 import type { Marshal } from '@endo/marshal';
-import { PursesJSONState } from '@agoric/wallet-backend';
+import { dappConfig } from 'config';
+import type { BrandInfo, GovernedParams, Metrics } from 'store/app';
 
 const watchGovernance = async (
   leader: Leader,
@@ -22,6 +19,7 @@ const watchGovernance = async (
   console.log('watchGovernance following', spec);
   const f = makeFollower(spec, leader, { unserializer });
 
+  // @ts-expect-error xxx iterateLatest typedef
   for await (const { value } of iterateLatest(f)) {
     setGovernedParamsIndex([[anchorPetname, value.current]]);
   }
@@ -37,6 +35,7 @@ const watchMetrics = async (
   const spec = dappConfig.INSTANCE_PREFIX + anchorPetname + '.metrics';
   const f = makeFollower(spec, leader, { unserializer });
 
+  // @ts-expect-error xxx iterateLatest typedef
   for await (const { value } of iterateLatest(f)) {
     setMetricsIndex([[anchorPetname, value]]);
   }
@@ -54,6 +53,7 @@ const watchInstanceIds = async (
 
   const watchedAnchors = new Set();
 
+  // @ts-expect-error xxx iterateLatest typedef
   for await (const { value } of iterateLatest(f)) {
     const INSTANCE_NAME_PREFIX = 'psm-IST-';
     // Remove "psm-IST-" prefix so they're like ["AUSD", "board012"]

@@ -1,35 +1,5 @@
 /// <reference types="vite/client" />
 
-declare module '@agoric/casting' {
-  export type Follower<T> = {
-    getLatestIterable: () => Promise<AsyncIterable<T>>;
-    getEachIterable: (
-      options?: IterateEachOptions,
-    ) => Promise<AsyncIterable<T>>;
-    getReverseIterable: (
-      options?: IterateEachOptions,
-    ) => Promise<AsyncIterable<T>>;
-  };
-
-  export type ValueFollowerElement = {
-    value: T;
-    blockHeight: number;
-    currentBlockHeight: number;
-  };
-
-  export type ValueFollower<T> = Follower<ValueFollowerElement<T>>;
-
-  export type Leader = any;
-  export function makeFollower<T>(
-    specP,
-    leaderOrMaker,
-    options,
-  ): Promise<ValueFollower<T>>;
-  export const iterateLatest;
-  export const iterateReverse;
-  export const makeLeader;
-}
-
 declare module '@agoric/wallet-backend' {
   export type PursesJSONState = {
     brand: Brand;

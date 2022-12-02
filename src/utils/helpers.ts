@@ -1,5 +1,5 @@
 import type { Brand } from '@agoric/ertp/src/types';
-import { PursesJSONState } from '@agoric/wallet-backend';
+import type { PursesJSONState } from '@agoric/wallet-backend';
 import { atom } from 'jotai';
 import { displayPetname } from 'utils/displayFunctions';
 
