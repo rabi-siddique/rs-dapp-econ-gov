@@ -26,6 +26,10 @@ const anchors = [
   'USDC_grv',
   'USDT_axl',
   'USDT_grv',
+  // DAI added in proposal 17 Dec 5, 2022
+  // https://bigdipper.live/agoric/proposals/17
+  'DAI_axl',
+  'DAI_grv',
 ];
 
 function Eligibility({
