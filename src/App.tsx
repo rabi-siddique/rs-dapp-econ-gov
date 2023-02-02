@@ -1,21 +1,10 @@
-import { useAtom } from 'jotai';
-import { Fragment, useContext, useEffect, MouseEventHandler } from 'react';
+import { Menu, Transition } from '@headlessui/react';
+import { Fragment, MouseEventHandler, useContext } from 'react';
+import { FiChevronDown, FiExternalLink } from 'react-icons/fi';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Menu, Transition } from '@headlessui/react';
-import { FiChevronDown, FiExternalLink } from 'react-icons/fi';
 
 import { INTER_LOGO } from 'assets/assets';
-import {
-  brandToInfoAtom,
-  governedParamsIndexAtom,
-  instanceIdsAtom,
-  metricsIndexAtom,
-  offersAtom,
-  pursesAtom,
-  walletAtom,
-} from 'store/app';
-import { watchContract, watchOffers, watchPurses } from 'utils/updates';
 
 import GovernanceTools from 'components/GovernanceTools';
 import { WalletContext } from 'lib/wallet';
@@ -87,42 +76,7 @@ const NetPicker = (props: { currentNet: string }) => {
 interface Props {}
 
 const App = (_props: Props) => {
-  const [wallet] = useAtom(walletAtom);
   const walletUtils = useContext(WalletContext);
-  const [_brandToInfo, mergeBrandToInfo] = useAtom(brandToInfoAtom);
-  const [_purses, setPurses] = useAtom(pursesAtom);
-  const [_offers, setOffers] = useAtom(offersAtom);
-  const [_metrics, setMetricsIndex] = useAtom(metricsIndexAtom);
-  const [_governedParams, setGovernedParamsIndex] = useAtom(
-    governedParamsIndexAtom,
-  );
-  const [_instanceIds, setInstanceIds] = useAtom(instanceIdsAtom);
-
-  useEffect(() => {
-    if (wallet === null) return;
-
-    // TODO: More user-friendly error handling, like a toast.
-    watchPurses(wallet, setPurses, mergeBrandToInfo).catch((err: Error) =>
-      console.error('got watchPurses err', err),
-    );
-    watchOffers(wallet, setOffers).catch((err: Error) =>
-      console.error('got watchOffers err', err),
-    );
-
-    watchContract(wallet, {
-      setMetricsIndex,
-      setGovernedParamsIndex,
-      setInstanceIds,
-    }).catch((err: Error) => console.error('got watchContract err', err));
-  }, [
-    wallet,
-    mergeBrandToInfo,
-    setPurses,
-    setOffers,
-    setMetricsIndex,
-    setGovernedParamsIndex,
-    setInstanceIds,
-  ]);
 
   const address = walletUtils.getWalletAddress();
   const explorerHref =
