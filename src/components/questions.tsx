@@ -3,6 +3,7 @@ import type { Amount } from '@agoric/ertp/src/types';
 import type {
   QuestionDetails as IQuestionDetails,
   OutcomeRecord,
+  ChangeParamsPosition,
 } from '@agoric/governance/src/types';
 import { stringifyValue } from '@agoric/ui-components';
 import { bigintStringify } from '@agoric/wallet-backend/src/bigintStringify.js';
@@ -88,7 +89,7 @@ const isSafeRatio = (value: Amount | Ratio) => {
   );
 };
 
-function ParamChanges(props: { changes: Record<string, unknown> }) {
+function ParamChanges(props: ChangeParamsPosition) {
   const { getDecimalPlaces } = useAtomValue(displayFunctionsAtom);
   const { changes } = props;
 
