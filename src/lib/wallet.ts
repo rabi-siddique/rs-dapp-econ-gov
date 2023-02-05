@@ -4,6 +4,7 @@ import type {
   DisplayInfo,
   Issuer,
 } from '@agoric/ertp/src/types';
+import { Position } from '@agoric/governance/src/types.js';
 import { Ratio } from '@agoric/zoe/src/contractSupport';
 import { SigningStargateClient as AmbientClient } from '@cosmjs/stargate';
 import { ERef } from '@endo/eventual-send';
@@ -89,7 +90,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
     },
     makeOfferToVote(
       ecOfferId: number,
-      chosenPositions: unknown[],
+      chosenPositions: Position[],
       questionHandle,
     ) {
       const ecInstance = agoricNames.instance['economicCommittee'];
