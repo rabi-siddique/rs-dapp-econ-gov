@@ -9,7 +9,7 @@ export default function AcceptInvitation(props: Props) {
     <WalletContext.Consumer>
       {walletUtils => (
         <button
-          className="btn-primary text-sm py-1 px-2 w-28"
+          className="btn-primary rounded text-sm py-1 px-2 m-2"
           title={props.sourceContract}
           onClick={() => {
             const offer = walletUtils.makeOfferToAcceptInvitation(

@@ -4,7 +4,7 @@ import { Menu, Transition } from '@headlessui/react';
 import { motion } from 'framer-motion';
 import {
   inferInvitationStatus,
-  psmCharterInvitationSpec,
+  charterInvitationSpec,
   usePublishedDatum,
   WalletContext,
 } from 'lib/wallet';
@@ -54,7 +54,7 @@ function Eligibility({
           <AcceptInvitation
             description={(invitation as any).description}
             // TODO validate earlier that this invitation is from this contract
-            sourceContract={psmCharterInvitationSpec.instanceName}
+            sourceContract={charterInvitationSpec.instanceName}
           />
           And then <b>reload the page</b>.
         </div>
@@ -86,7 +86,7 @@ export default function PsmPanel() {
 
   const invitationStatus = inferInvitationStatus(
     data,
-    psmCharterInvitationSpec.description,
+    charterInvitationSpec.description,
   );
 
   const previousOfferId = invitationStatus.acceptedIn;

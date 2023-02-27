@@ -22,9 +22,9 @@ import { makeRpcUtils } from './rpc.js';
 
 const marshaller = boardSlottingMarshaller();
 
-export const psmCharterInvitationSpec = {
-  instanceName: 'psmCharter',
-  description: 'PSM charter member invitation',
+export const charterInvitationSpec = {
+  instanceName: 'econCommitteeCharter',
+  description: 'charter member invitation',
 };
 
 export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
@@ -217,10 +217,8 @@ export const transactionInfoUrl = (transactionHash: string) => {
   switch (agoricNet) {
     case 'main':
       return `https://bigdipper.live/agoric/transactions/${transactionHash}`;
-    case 'local':
-      return '';
     default:
-      return `https://ollinet.explorer.agoric.net/agoric/tx/${transactionHash}`;
+      return `https://${agoricNet}.explorer.agoric.net/agoric/tx/${transactionHash}`;
   }
 };
 
@@ -309,6 +307,7 @@ export const inferInvitationStatus = (
   current: CurrentWalletRecord | undefined,
   descriptionSubstr: string,
 ) => {
+  console.log('current', current);
   if (!current?.offerToUsedInvitation) {
     return { status: 'nodata' };
   }
