@@ -66,12 +66,18 @@ export const AmountInput = ({
 export const PercentageInput = ({
   ratio,
   onChange,
+  max,
 }: {
   ratio: Ratio;
   onChange: (newRatio: Ratio) => void;
+  max?: string;
 }) => {
+  assert(
+    ratio.denominator.value <= 10_000n,
+    'Cannot handle denominators > 10_000n',
+  );
   const normalDenominator = 10_000n;
-  const scaleFactor = 10_000n / ratio.denominator.value;
+  const scaleFactor = normalDenominator / ratio.denominator.value;
   const normalizedRatio = {
     numerator: {
       ...ratio.numerator,
@@ -117,6 +123,7 @@ export const PercentageInput = ({
         onChange={handleInputChange}
         className="rounded bg-white bg-opacity-100 text-xl p-3 pr-10 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
         min="0"
+        max={max}
       />
       <span className="z-10 h-full leading-snug font-normal text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
         %

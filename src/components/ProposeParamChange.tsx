@@ -63,6 +63,7 @@ export default function ProposeParamChange(props: Props) {
                 [name]: newRatio,
               })
             }
+            max="100"
           />
         );
       default:
@@ -72,7 +73,7 @@ export default function ProposeParamChange(props: Props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log({ event });
+    console.debug({ event });
     const offer = walletUtils.makeVoteOnPSMParams(
       props.psmCharterOfferId,
       props.anchorName,

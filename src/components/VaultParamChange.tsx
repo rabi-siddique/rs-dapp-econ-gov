@@ -58,7 +58,7 @@ export default function VaultParamChange(props: Props) {
 
   console.log('ProposeParamChange', { data, paramPatch });
 
-  const canGovern = !!props.charterOfferId;
+  const canMakeProposal = !!props.charterOfferId && collateralBrand;
 
   function displayParam(name: string, { type, value }: ParameterValue) {
     console.log('display param', name, value, type);
@@ -96,7 +96,7 @@ export default function VaultParamChange(props: Props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log({ event });
+    console.debug({ event });
     const offer = walletUtils.makeVoteOnVaultManagerParams(
       props.charterOfferId,
       collateralBrand,
@@ -106,14 +106,8 @@ export default function VaultParamChange(props: Props) {
     void walletUtils.sendOffer(offer);
   }
 
-  let content = (
-    <div className="text-gray-500 mt-2">
-      <i>Waiting for existing parameter values...</i>
-    </div>
-  );
-
-  if (status === LoadStatus.Received) {
-    content = (
+  const content =
+    status === LoadStatus.Received ? (
       <motion.div
         className="px-1 overflow-hidden"
         initial={{ height: 0, opacity: 0 }}
@@ -146,15 +140,18 @@ export default function VaultParamChange(props: Props) {
               value="Propose Parameter Change"
               className={clsx(
                 'btn-primary p-2 rounded mt-2',
-                canGovern ? 'cursor-pointer' : 'cursor-not-allowed',
+                canMakeProposal ? 'cursor-pointer' : 'cursor-not-allowed',
               )}
-              disabled={!canGovern || !collateralBrand}
+              disabled={!canMakeProposal}
             />
           </div>
         </form>
       </motion.div>
+    ) : (
+      <div className="text-gray-500 mt-2">
+        <i>Waiting for existing parameter values...</i>
+      </div>
     );
-  }
 
   return (
     <div>
