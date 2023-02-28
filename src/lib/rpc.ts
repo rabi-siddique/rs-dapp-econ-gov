@@ -34,9 +34,9 @@ export let networkConfig: MinimalNetworkConfig = {
   chainName: 'agoric',
 };
 
-export const makeVStorage = () => {
+export const makeVStorage = (netConfig: MinimalNetworkConfig) => {
   const getJSON = path => {
-    const url = networkConfig.rpcAddrs[0] + path;
+    const url = netConfig.rpcAddrs[0] + path;
     console.warn('fetching', url);
     return fetch(url).then(res => res.json());
   };
@@ -241,7 +241,7 @@ export const makeRpcUtils = async ({ agoricNet }) => {
       ? { rpcAddrs: ['http://localhost:26657'], chainName: 'agoric' }
       : await fromAgoricNet(agoricNet);
 
-  const vstorage = makeVStorage();
+  const vstorage = makeVStorage(networkConfig);
   const fromBoard = makeFromBoard();
   const agoricNames = await makeAgoricNames(fromBoard, vstorage);
   const leader = makeLeader(networkConfig.rpcAddrs[0]);

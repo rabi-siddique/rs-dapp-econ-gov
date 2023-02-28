@@ -113,7 +113,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         proposal: {},
       };
     },
-    makeVoteOnParamChange(
+    makeVoteOnPSMParams(
       psmCharterOfferId: number,
       anchorName: string,
       changedParams: Record<string, Amount | Ratio>,
@@ -145,7 +145,38 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         proposal: {},
       };
     },
-    makeVoteOnPauseOffers(
+    makeVoteOnVaultManagerParams(
+      charterOfferId: number,
+      collateralBrand: Brand,
+      changedParams: Record<string, Amount | Ratio>,
+      relativeDeadlineMin: number,
+    ) {
+      console.log('AGORIC NAMES', agoricNames);
+      const instance = agoricNames.instance['VaultFactory'];
+      assert(instance, `no VaultFactory instance found`);
+      assert(charterOfferId, 'cannot makeOffer without  charter membership');
+
+      const deadline = BigInt(
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000),
+      );
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: charterOfferId,
+          invitationMakerName: 'VoteOnParamChange',
+        },
+        offerArgs: {
+          instance,
+          params: changedParams,
+          deadline,
+          path: { paramPath: { key: { collateralBrand } } },
+        },
+        proposal: {},
+      };
+    },
+    makeVoteOnPausePSMOffers(
       psmCharterOfferId: number,
       anchorName: string,
       toPause: string[],
@@ -211,7 +242,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
 const usp = new URLSearchParams(window.location.search);
 const agoricNet = usp.get('agoricNet') || 'devnet';
 console.log('RPC server:', agoricNet);
-const rpcUtils = await makeRpcUtils({ agoricNet });
+export const rpcUtils = await makeRpcUtils({ agoricNet });
 
 export const transactionInfoUrl = (transactionHash: string) => {
   switch (agoricNet) {
@@ -237,6 +268,25 @@ export enum LoadStatus {
   Waiting = 'waiting',
   Received = 'received',
 }
+
+export const usePublishedKeys = (path: string) => {
+  const [status, setStatus] = useState(LoadStatus.Idle);
+  const [data, setData] = useState([]);
+  const { vstorage } = rpcUtils;
+
+  useEffect(() => {
+    const fetchKeys = async () => {
+      console.debug('usePublishedKeys reading', `published.${path}`);
+      setStatus(LoadStatus.Waiting);
+      const keys = await vstorage.keys(`published.${path}`);
+      setData(keys);
+      setStatus(LoadStatus.Received);
+    };
+    fetchKeys().catch(console.error);
+  }, [path, vstorage]);
+
+  return { status, data };
+};
 
 export const usePublishedDatum = (path: string) => {
   const [status, setStatus] = useState(LoadStatus.Idle);
@@ -307,7 +357,6 @@ export const inferInvitationStatus = (
   current: CurrentWalletRecord | undefined,
   descriptionSubstr: string,
 ) => {
-  console.log('current', current);
   if (!current?.offerToUsedInvitation) {
     return { status: 'nodata' };
   }

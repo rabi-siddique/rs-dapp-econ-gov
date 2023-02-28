@@ -1,13 +1,20 @@
 import type { Amount } from '@agoric/ertp/src/types';
+import { Fragment } from 'react';
+import { FiChevronDown } from 'react-icons/fi';
 import clsx from 'clsx';
+import { Menu, Transition } from '@headlessui/react';
 import { motion } from 'framer-motion';
-import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
+import {
+  LoadStatus,
+  usePublishedDatum,
+  usePublishedKeys,
+  WalletContext,
+} from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
 
 interface Props {
-  anchorName: string;
-  psmCharterOfferId: number;
+  charterOfferId: number;
 }
 
 export type ParameterValue =
@@ -24,25 +31,42 @@ export type ParameterValue =
       value: Amount;
     };
 
-export default function ProposeParamChange(props: Props) {
+export default function VaultParamChange(props: Props) {
   const walletUtils = useContext(WalletContext);
+  const { data: vaultKeys, status: vaultKeysStatus } =
+    usePublishedKeys('vaultFactory');
+
+  const managerIds = vaultKeys.filter(key => key.startsWith('manager'));
+  const [managerId, setManagerId] = useState(null);
+
   const { data, status } = usePublishedDatum(
-    `psm.IST.${props.anchorName}.governance`,
+    `vaultFactory.${managerId}.governance`,
   );
+
+  const { data: selectedManagerMetrics } = usePublishedDatum(
+    `vaultFactory.${managerId}.metrics`,
+  );
+
+  const collateralBrand = selectedManagerMetrics?.totalCollateral?.brand;
+
+  // "Alleged: IbcATOM brand" -> "IbcATOM"
+  const collateralBrandLabel = collateralBrand?.iface?.split(' ')[1];
+
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
 
   const [paramPatch, setParamPatch] = useState({});
 
   console.log('ProposeParamChange', { data, paramPatch });
 
-  const canGovern = !!props.psmCharterOfferId;
+  const canGovern = !!props.charterOfferId;
 
   function displayParam(name: string, { type, value }: ParameterValue) {
+    console.log('display param', name, value, type);
     switch (type) {
       case 'amount':
         return (
           <AmountInput
-            suffix={name === 'MintLimit' && 'IST'}
+            suffix={name === 'DebtLimit' && 'IST'}
             value={(paramPatch[name] || value).value}
             brand={value.brand}
             onChange={newVal =>
@@ -73,9 +97,9 @@ export default function ProposeParamChange(props: Props) {
   function handleSubmit(event) {
     event.preventDefault();
     console.log({ event });
-    const offer = walletUtils.makeVoteOnPSMParams(
-      props.psmCharterOfferId,
-      props.anchorName,
+    const offer = walletUtils.makeVoteOnVaultManagerParams(
+      props.charterOfferId,
+      collateralBrand,
       paramPatch,
       minutesUntilClose,
     );
@@ -88,21 +112,6 @@ export default function ProposeParamChange(props: Props) {
     </div>
   );
 
-  const paramLabel = name => {
-    switch (name) {
-      case 'GiveMintedFee':
-        return 'Set GiveMinted Fee (Fee charged when user swaps IST for supported stable token)';
-      case 'WantMintedFee':
-        return 'Set WantMinted Fee (Fee charged when user swaps supported stable token for IST)';
-      case 'MintLimit':
-        return 'Set Mint Limit';
-      default:
-        return name;
-    }
-  };
-
-  // styling examples https://tailwindcss-forms.vercel.app/
-  // XXX tell user when the storage node doesn't exist, i.e. invalid anchor
   if (status === LoadStatus.Received) {
     content = (
       <motion.div
@@ -115,7 +124,7 @@ export default function ProposeParamChange(props: Props) {
           {Object.entries(data.current).map(([name, value]) => (
             <div className="mb-2" key={name}>
               <label className="block">
-                <span className="text-gray-700">{paramLabel(name)}</span>
+                <span className="text-gray-700">{name}</span>
                 <div className="w-full">
                   {displayParam(name, value as ParameterValue)}
                 </div>
@@ -139,7 +148,7 @@ export default function ProposeParamChange(props: Props) {
                 'btn-primary p-2 rounded mt-2',
                 canGovern ? 'cursor-pointer' : 'cursor-not-allowed',
               )}
-              disabled={!canGovern}
+              disabled={!canGovern || !collateralBrand}
             />
           </div>
         </form>
@@ -149,10 +158,62 @@ export default function ProposeParamChange(props: Props) {
 
   return (
     <div>
-      <h2 className="mb-2 block text-lg leading-5 font-medium text-gray-700">
-        Parameters
-      </h2>
-      {content}
+      <Menu as="div">
+        <h2 className="mb-2 block text-lg leading-5 font-medium text-gray-700">
+          Manager
+        </h2>
+        <Menu.Button
+          disabled={vaultKeysStatus !== LoadStatus.Received}
+          className="my-2 inline-flex rounded-md px-3 py-1 text-md font-regular text-slate-900 bg-gray-400 bg-opacity-5 hover:bg-opacity-10 border-2"
+        >
+          {managerId ? (
+            <>
+              {managerId} {collateralBrandLabel && `- ${collateralBrandLabel}`}
+            </>
+          ) : (
+            <i>
+              {vaultKeysStatus === LoadStatus.Received
+                ? 'Select Manager'
+                : 'Loading Managers...'}
+            </i>
+          )}
+          <FiChevronDown className="ml-2 -mr-1 h-6 w-5" aria-hidden="true" />
+        </Menu.Button>
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
+        >
+          <Menu.Items className="absolute w-56 divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30">
+            {managerIds.map(name => (
+              <Menu.Item key={name}>
+                {({ active }) => (
+                  <button
+                    onClick={() => setManagerId(name)}
+                    className={`${
+                      active ? 'bg-purple-50' : ''
+                    } text-gray-900 group flex w-full items-center px-2 py-2 text-md`}
+                  >
+                    {name}
+                  </button>
+                )}
+              </Menu.Item>
+            ))}
+          </Menu.Items>
+        </Transition>
+      </Menu>
+      {managerId && (
+        <>
+          <h2 className="mb-2 block text-lg leading-5 font-medium text-gray-700">
+            Parameters
+          </h2>
+          {content}
+        </>
+      )}
     </div>
   );
 }
