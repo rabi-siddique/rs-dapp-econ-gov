@@ -10,7 +10,7 @@ import { makeFollower, makeLeader } from '@agoric/casting';
 
 export const networkConfigUrl = (agoricNetName: string) => {
   if (agoricNetName === 'local') {
-    return 'http://0.0.0.0:3000/wallet/network-config';
+    return 'https://wallet.agoric.app/wallet/network-config';
   } else {
     return `https://${agoricNetName}.agoric.net/network-config`;
   }
@@ -30,13 +30,13 @@ const fromAgoricNet = (str: string): Promise<MinimalNetworkConfig> => {
 
 // XXX hard coded default to local
 export let networkConfig: MinimalNetworkConfig = {
-  rpcAddrs: ['http://0.0.0.0:26657'],
+  rpcAddrs: ['http://localhost:26657'],
   chainName: 'agoric',
 };
 
-export const makeVStorage = () => {
+export const makeVStorage = (netConfig: MinimalNetworkConfig) => {
   const getJSON = path => {
-    const url = networkConfig.rpcAddrs[0] + path;
+    const url = netConfig.rpcAddrs[0] + path;
     console.warn('fetching', url);
     return fetch(url).then(res => res.json());
   };
@@ -238,13 +238,12 @@ export const makeAgoricNames = async (ctx, vstorage) => {
 export const makeRpcUtils = async ({ agoricNet }) => {
   networkConfig =
     agoricNet === 'local'
-      ? { rpcAddrs: ['http://0.0.0.0:26657'], chainName: 'agoric' }
+      ? { rpcAddrs: ['http://localhost:26657'], chainName: 'agoric' }
       : await fromAgoricNet(agoricNet);
 
-  const vstorage = makeVStorage();
+  const vstorage = makeVStorage(networkConfig);
   const fromBoard = makeFromBoard();
   const agoricNames = await makeAgoricNames(fromBoard, vstorage);
-
   const leader = makeLeader(networkConfig.rpcAddrs[0]);
 
   const unserializer = boardSlottingMarshaller(fromBoard.convertSlotToVal);

@@ -63,21 +63,38 @@ export const AmountInput = ({
   );
 };
 
+// Standard denominator value to use for all percentages.
+const normalDenominator = 10_000n;
+
 export const PercentageInput = ({
   ratio,
   onChange,
+  max,
 }: {
   ratio: Ratio;
   onChange: (newRatio: Ratio) => void;
+  max?: string;
 }) => {
   assert(
-    ratio.denominator.value === 10_000n,
-    'only conventional denominator value supported',
+    ratio.denominator.value <= normalDenominator,
+    `Cannot handle denominators > ${normalDenominator}`,
   );
+  const scaleFactor = normalDenominator / ratio.denominator.value;
+  const normalizedRatio = {
+    numerator: {
+      ...ratio.numerator,
+      value: ratio.numerator.value * scaleFactor,
+    },
+    denominator: {
+      ...ratio.denominator,
+      value: normalDenominator,
+    },
+  };
+
   const valueString =
-    ratio.numerator.value === 0n
+    normalizedRatio.numerator.value === 0n
       ? ''
-      : String(Number(ratio.numerator.value) / 100);
+      : String(Number(normalizedRatio.numerator.value) / 100);
   const [fieldString, setFieldString] = useState(valueString);
 
   const parseFieldString = str => BigInt(Math.round(Number(str) * 100));
@@ -85,7 +102,7 @@ export const PercentageInput = ({
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = ev => {
     const str = ev.target?.value?.replace('-', '').replace('e', '');
     setFieldString(str);
-    const { numerator, denominator } = ratio;
+    const { numerator, denominator } = normalizedRatio;
     const newNumerator = {
       ...numerator,
       value: parseFieldString(str),
@@ -94,7 +111,7 @@ export const PercentageInput = ({
   };
 
   const displayString =
-    ratio.numerator.value === parseFieldString(fieldString)
+    normalizedRatio.numerator.value === parseFieldString(fieldString)
       ? fieldString
       : valueString;
 
@@ -108,7 +125,7 @@ export const PercentageInput = ({
         onChange={handleInputChange}
         className="rounded bg-white bg-opacity-100 text-xl p-3 pr-10 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300"
         min="0"
-        max="100"
+        max={max}
       />
       <span className="z-10 h-full leading-snug font-normal text-center text-slate-400 absolute bg-transparent rounded text-base items-center justify-center w-8 right-0 pr-3 py-3">
         %

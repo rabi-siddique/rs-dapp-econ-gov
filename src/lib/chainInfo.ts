@@ -38,18 +38,9 @@ const makeChainInfo = (networkConfig, rpcAddr, chainId, caption) => {
   );
   const hostname = new URL(networkConfig).hostname;
   const network = hostname.split('.')[0];
-  let rpc;
-  let api;
 
-  // XXX I don't know why this doesn't work here like it does in agoric-sdk
-  // eslint-disable-next-line no-constant-condition
-  if (false && network !== hostname) {
-    rpc = `https://${network}.rpc.agoric.net`;
-    api = `https://${network}.api.agoric.net`;
-  } else {
-    rpc = rpcAddr.match(/:\/\//) ? rpcAddr : `http://${rpcAddr}`;
-    api = rpc.replace(/(:\d+)?$/, ':1317');
-  }
+  const rpc = rpcAddr.match(/:\/\//) ? rpcAddr : `http://${rpcAddr}`;
+  const api = rpc.replace(/(:\d+)?$/, ':1317');
 
   return {
     rpc,

@@ -33,7 +33,7 @@ export default function ProposePauseOffers(props: Props) {
     const toPause = Object.entries(checked)
       .filter(([_, check]) => check)
       .map(([name]) => name);
-    const offer = walletUtils.makeVoteOnPauseOffers(
+    const offer = walletUtils.makeVoteOnPausePSMOffers(
       props.psmCharterOfferId,
       props.anchorName,
       toPause,

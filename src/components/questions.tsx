@@ -151,10 +151,20 @@ function paramChangeOutcome(
 ) {
   const name =
     instance && instance.find(([_n, i]) => i === issue.contract)?.[0];
+
+  const brandLabel =
+    // @ts-expect-error It thinks key is always a string, this is null-safe anyway.
+    issue.spec.paramPath?.key?.collateralBrand?.iface?.split(' ')[1];
+
   return (
     <>
       <p className="mb-2">
-        Change <code>{name}</code> parameters:
+        Change{' '}
+        <code>
+          {name}
+          {brandLabel && ` - ${brandLabel}`}
+        </code>{' '}
+        parameters:
       </p>
       <ParamChanges changes={issue.spec.changes} />
     </>

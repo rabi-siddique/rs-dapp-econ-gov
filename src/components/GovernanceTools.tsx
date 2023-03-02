@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { usePublishedDatum } from 'lib/wallet';
 import HistoryPanel from './HistoryPanel';
 import PsmPanel from './PsmPanel';
+import VaultsPanel from './VaultsPanel';
 import VotePanel from './VotePanel';
 
 interface Props {
@@ -44,8 +45,11 @@ export default function GovernanceTools(props: Props) {
           <Tab key="vote" className={tabClassname}>
             Vote
           </Tab>
-          <Tab key="propose" className={tabClassname}>
-            Propose Change
+          <Tab key="psm" className={tabClassname}>
+            PSM
+          </Tab>
+          <Tab key="vaults" className={tabClassname}>
+            Vaults
           </Tab>
         </Tab.List>
         <Tab.Panels className="relative mt-4 max-w-4xl mx-auto">
@@ -55,8 +59,11 @@ export default function GovernanceTools(props: Props) {
           <Tab.Panel key="vote">
             <VotePanel />
           </Tab.Panel>
-          <Tab.Panel key="propose">
+          <Tab.Panel key="psm">
             <PsmPanel />
+          </Tab.Panel>
+          <Tab.Panel key="vaults">
+            <VaultsPanel />
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>

@@ -4,17 +4,16 @@ import { Menu, Transition } from '@headlessui/react';
 import { motion } from 'framer-motion';
 import {
   inferInvitationStatus,
-  psmCharterInvitationSpec,
+  charterInvitationSpec,
   usePublishedDatum,
   WalletContext,
 } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { HiArrowNarrowDown } from 'react-icons/hi';
 import { FiChevronDown } from 'react-icons/fi';
-import AcceptInvitation from './AcceptInvitation';
 import ProposeParamChange from './ProposeParamChange';
 import ProposePauseOffers from './ProposePauseOffers';
-import { OfferId } from './questions.js';
+import Eligibility from './Eligibility';
 
 // TODO fetch list from RPC
 const anchors = [
@@ -32,45 +31,6 @@ const anchors = [
   'DAI_grv',
 ];
 
-function Eligibility({
-  status,
-  invitation,
-  acceptedIn,
-}: ReturnType<typeof inferInvitationStatus>) {
-  switch (status) {
-    case 'nodata':
-      return <p>Loading…</p>;
-    case 'missing':
-      return (
-        <p className="rounded-lg py-5 px-6 text-base mb-3 bg-red-100 text-red-700">
-          To govern you must first have received an invitation to the PSM
-          Charter.
-        </p>
-      );
-    case 'available':
-      return (
-        <div className="rounded-lg py-5 px-6 text-base mb-3 bg-yellow-100 text-yellow-700">
-          To vote you will need to accept your invitation to the PSM Charter.
-          <AcceptInvitation
-            description={(invitation as any).description}
-            // TODO validate earlier that this invitation is from this contract
-            sourceContract={psmCharterInvitationSpec.instanceName}
-          />
-          And then <b>reload the page</b>.
-        </div>
-      );
-    case 'accepted':
-      return (
-        <p className="rounded-lg py-5 px-6 text-base mb-3 bg-green-100 text-green-700">
-          You may vote using the invitation makers from offer{' '}
-          <OfferId id={acceptedIn} />
-        </p>
-      );
-    default:
-      return <strong>unknown status {status}</strong>;
-  }
-}
-
 const ProposalTypes = {
   paramChange: 'Parameter Change',
   pauseOffers: 'Pause Offers',
@@ -80,13 +40,13 @@ export default function PsmPanel() {
   const [anchorName, setAnchorName] = useState(anchors[0]);
   const [proposalType, setProposalType] = useState(ProposalTypes.paramChange);
   const walletUtils = useContext(WalletContext);
-  const { data } = usePublishedDatum(
+  const { data: walletCurrent } = usePublishedDatum(
     `wallet.${walletUtils.getWalletAddress()}.current`,
   );
 
   const invitationStatus = inferInvitationStatus(
-    data,
-    psmCharterInvitationSpec.description,
+    walletCurrent,
+    charterInvitationSpec.description,
   );
 
   const previousOfferId = invitationStatus.acceptedIn;
