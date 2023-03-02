@@ -58,7 +58,7 @@ export default function VaultParamChange(props: Props) {
 
   console.log('ProposeParamChange', { data, paramPatch });
 
-  const canMakeProposal = !!props.charterOfferId && collateralBrand;
+  const canMakeProposal = !!(props.charterOfferId && collateralBrand);
 
   function displayParam(name: string, { type, value }: ParameterValue) {
     console.log('display param', name, value, type);

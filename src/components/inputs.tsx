@@ -63,6 +63,9 @@ export const AmountInput = ({
   );
 };
 
+// Standard denominator value to use for all percentages.
+const normalDenominator = 10_000n;
+
 export const PercentageInput = ({
   ratio,
   onChange,
@@ -73,10 +76,9 @@ export const PercentageInput = ({
   max?: string;
 }) => {
   assert(
-    ratio.denominator.value <= 10_000n,
-    'Cannot handle denominators > 10_000n',
+    ratio.denominator.value <= normalDenominator,
+    `Cannot handle denominators > ${normalDenominator}`,
   );
-  const normalDenominator = 10_000n;
   const scaleFactor = normalDenominator / ratio.denominator.value;
   const normalizedRatio = {
     numerator: {
