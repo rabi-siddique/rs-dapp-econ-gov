@@ -197,7 +197,7 @@ export function QuestionDetails(props: {
     <>
       <div
         className={clsx(
-          'p-2 flex align-middle justify-between rounded-md',
+          'p-3 flex align-middle justify-between rounded-top-lg',
           outcomeColor(outcome),
         )}
       >
@@ -207,7 +207,7 @@ export function QuestionDetails(props: {
         </div>
       </div>
 
-      <div className="p-2 mt-2">
+      <div className="py-6 px-10">
         {details.electionType === 'offer_filter'
           ? // @ts-expect-error failure of inference
             offerFilterOutcome(details)
@@ -320,7 +320,7 @@ export function VoteOnQuestion(props: {
       animate={{ y: 0, opacity: 1 }}
       initial={{ y: 10, opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="shadow-md p-4 rounded-lg border-gray-200 border"
+      className="shadow-md rounded-lg border-gray-200 border"
     >
       <QuestionDetails
         details={details}
@@ -337,13 +337,13 @@ export function VoteOnQuestion(props: {
           </button>
         </div>
       ) : (
-        <>
+        <div className="px-4 pb-4">
           <ChoosePosition
             // @ts-expect-error not all positions are string[]
             positions={details.positions}
             onChoose={voteFor}
           />
-        </>
+        </div>
       )}
     </motion.div>
   );
