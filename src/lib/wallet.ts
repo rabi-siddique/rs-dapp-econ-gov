@@ -233,6 +233,30 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         proposal: {},
       };
     },
+    makeVoteOnPauseVaultOffers(
+      charterOfferId: number,
+      toPause: string[],
+      relativeDeadlineMin: number,
+    ) {
+      const instance = agoricNames.instance['VaultFactory'];
+      assert(instance, `no VaultFactory instance found`);
+      assert(charterOfferId, 'cannot makeOffer without charter membership');
+
+      const deadline = BigInt(
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000),
+      );
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: charterOfferId,
+          invitationMakerName: 'VoteOnPauseOffers',
+          invitationArgs: [instance, toPause, deadline],
+        },
+        proposal: {},
+      };
+    },
     prepareToSign() {
       console.log('will sign with', chainKit.signer);
 

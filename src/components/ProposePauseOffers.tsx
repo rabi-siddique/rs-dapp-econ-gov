@@ -29,7 +29,7 @@ export default function ProposePauseOffers(props: Props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log({ event, checked, minutesUntilClose });
+    console.debug({ event, checked, minutesUntilClose });
     const toPause = Object.entries(checked)
       .filter(([_, check]) => check)
       .map(([name]) => name);
@@ -65,9 +65,7 @@ export default function ProposePauseOffers(props: Props) {
         <h2 className="mb-2 block text-lg leading-5 font-medium text-gray-700">
           Pause Offers
         </h2>
-        <div className="text-gray-500">
-          <i>Current filter not displayed</i>
-        </div>
+        <p className="text-warning">Current filter not displayed</p>
         <div className="block my-4">
           {Object.keys(checked).map(str => (
             <div key={str} className="my-2 leading-5">
