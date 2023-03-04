@@ -93,8 +93,14 @@ function ParamChanges(props: ChangeParamsPosition) {
   const { getDecimalPlaces } = useAtomValue(displayFunctionsAtom);
   const { changes } = props;
 
-  const fmtVal = (value: Amount | Ratio) => {
-    if (typeof value === 'object' && 'brand' in value && 'value' in value) {
+  const fmtVal = (value: Amount | Ratio | string) => {
+    if (typeof value === 'string') {
+      return <>{value}</>;
+    } else if (
+      typeof value === 'object' &&
+      'brand' in value &&
+      'value' in value
+    ) {
       const decimalPlaces = getDecimalPlaces(value.brand) || 6;
       const numeral = stringifyValue(
         value.value,

@@ -151,10 +151,9 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number,
     ) {
-      console.log('AGORIC NAMES', agoricNames);
       const instance = agoricNames.instance['VaultFactory'];
       assert(instance, `no VaultFactory instance found`);
-      assert(charterOfferId, 'cannot makeOffer without  charter membership');
+      assert(charterOfferId, 'cannot makeOffer without charter membership');
 
       const deadline = BigInt(
         relativeDeadlineMin * 60 + Math.round(Date.now() / 1000),
@@ -172,6 +171,35 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
           params: changedParams,
           deadline,
           path: { paramPath: { key: { collateralBrand } } },
+        },
+        proposal: {},
+      };
+    },
+    makeVoteOnVaultDirectorParams(
+      charterOfferId: number,
+      changedParams: Record<string, Amount | Ratio>,
+      relativeDeadlineMin: number,
+    ) {
+      const instance = agoricNames.instance['VaultFactory'];
+      assert(instance, `no VaultFactory instance found`);
+      assert(charterOfferId, 'cannot makeOffer without charter membership');
+
+      const deadline = BigInt(
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000),
+      );
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: charterOfferId,
+          invitationMakerName: 'VoteOnParamChange',
+        },
+        offerArgs: {
+          instance,
+          params: changedParams,
+          deadline,
+          path: { paramPath: { key: 'governedParams' } },
         },
         proposal: {},
       };
