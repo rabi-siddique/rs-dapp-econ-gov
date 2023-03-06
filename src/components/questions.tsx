@@ -97,6 +97,7 @@ function ParamChanges(props: ChangeParamsPosition) {
     if (typeof value === 'string') {
       return <>{value}</>;
     } else if (
+      // is an Amount
       typeof value === 'object' &&
       'brand' in value &&
       'value' in value

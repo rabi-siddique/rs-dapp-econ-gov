@@ -23,6 +23,8 @@ export type ParameterValue =
       value: string;
     };
 
+type GovernedParams = { current: Record<string, ParameterValue> };
+
 interface Props {
   charterOfferId: number;
 }
@@ -30,7 +32,10 @@ interface Props {
 export default function DirectorParamChange(props: Props) {
   const walletUtils = useContext(WalletContext);
 
-  const { data, status } = usePublishedDatum(`vaultFactory.governance`);
+  const { data, status } = usePublishedDatum(`vaultFactory.governance`) as {
+    data: GovernedParams;
+    status: LoadStatus;
+  };
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
 
   const [paramPatch, setParamPatch] = useState({});
@@ -41,12 +46,14 @@ export default function DirectorParamChange(props: Props) {
 
   function displayParam(name: string, { type, value }: ParameterValue) {
     console.log('display param', name, value, type);
+    const arg = paramPatch[name] || value;
+
     switch (type) {
       case 'amount':
         return (
           <AmountInput
-            suffix={name === 'MinInitialDebt' && 'IST'}
-            value={(paramPatch[name] || value).value}
+            suffix={name === 'MinInitialDebt' ? 'IST' : null}
+            value={arg.value}
             brand={value.brand}
             onChange={newVal =>
               setParamPatch({
@@ -59,7 +66,7 @@ export default function DirectorParamChange(props: Props) {
       case 'ratio':
         return (
           <PercentageInput
-            ratio={paramPatch[name] || value}
+            ratio={arg}
             onChange={newRatio =>
               setParamPatch({
                 ...paramPatch,
@@ -74,7 +81,7 @@ export default function DirectorParamChange(props: Props) {
             <input
               type="text"
               placeholder="0"
-              value={paramPatch[name] || value}
+              value={arg}
               onChange={ev =>
                 setParamPatch({
                   ...paramPatch,
@@ -116,9 +123,7 @@ export default function DirectorParamChange(props: Props) {
             <div className="mb-2" key={name}>
               <label className="block">
                 <span className="text-gray-700">{name}</span>
-                <div className="w-full">
-                  {displayParam(name, value as ParameterValue)}
-                </div>
+                <div className="w-full">{displayParam(name, value)}</div>
               </label>
             </div>
           ))}

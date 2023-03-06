@@ -13,12 +13,15 @@ interface ManagerGroupProps {
   onChecked: (checked: Record<string, boolean>) => void;
 }
 
+const offerFilter = (managerId: string, invitationMaker: string) =>
+  `${managerId}: ${invitationMaker}`;
+
 const ManagerGroup = ({ managerId, onChecked }: ManagerGroupProps) => {
   const [checked, setChecked] = useState({
-    [`${managerId}: MakeVault`]: false,
-    [`${managerId}: AdjustBalances`]: false,
-    [`${managerId}: CloseVault`]: false,
-    [`${managerId}: TransferVault`]: false,
+    [offerFilter(managerId, 'MakeVault')]: false,
+    [offerFilter(managerId, 'AdjustBalances')]: false,
+    [offerFilter(managerId, 'CloseVault')]: false,
+    [offerFilter(managerId, 'TransferVault')]: false,
   });
 
   useEffect(() => {

@@ -38,12 +38,14 @@ export default function ProposeParamChange(props: Props) {
   const canGovern = !!props.psmCharterOfferId;
 
   function displayParam(name: string, { type, value }: ParameterValue) {
+    const arg = paramPatch[name] || value;
+
     switch (type) {
       case 'amount':
         return (
           <AmountInput
-            suffix={name === 'MintLimit' && 'IST'}
-            value={(paramPatch[name] || value).value}
+            suffix={name === 'MintLimit' ? 'IST' : null}
+            value={arg.value}
             brand={value.brand}
             onChange={newVal =>
               setParamPatch({
@@ -56,7 +58,7 @@ export default function ProposeParamChange(props: Props) {
       case 'ratio':
         return (
           <PercentageInput
-            ratio={paramPatch[name] || value}
+            ratio={arg}
             onChange={newRatio =>
               setParamPatch({
                 ...paramPatch,
