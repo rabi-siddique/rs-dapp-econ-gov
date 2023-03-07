@@ -12,12 +12,14 @@ import { useContext, useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import VaultParamChange from './VaultParamChange';
 import Eligibility from './Eligibility';
+import DirectorParamChange from './DirectorParamChange';
+import PauseVaultDirectorOffers from './PauseVaultDirectorOffers';
 
 const ProposalTypes = {
+  oracleNodes: 'Change Oracle Operators',
   managerParamChange: 'Change Manager Params',
   directorParamChange: 'Change Director Params',
   pauseOffers: 'Pause Offers',
-  endorseUI: 'Change Endorsed UI',
   manualBurn: 'Burn IST',
 };
 
@@ -40,6 +42,10 @@ export default function VaultsPanel() {
     switch (proposalType) {
       case ProposalTypes.managerParamChange:
         return <VaultParamChange charterOfferId={charterOfferId} />;
+      case ProposalTypes.directorParamChange:
+        return <DirectorParamChange charterOfferId={charterOfferId} />;
+      case ProposalTypes.pauseOffers:
+        return <PauseVaultDirectorOffers charterOfferId={charterOfferId} />;
       default:
         return <div>TODO</div>;
     }

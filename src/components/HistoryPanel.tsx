@@ -76,7 +76,7 @@ export default function VotePanel(_props: Props) {
     <motion.div
       key={index}
       variants={cardVariant}
-      className="p-4 rounded-lg border-gray border shadow-md mb-4"
+      className="rounded-lg border-gray border shadow-md mb-4"
     >
       <QuestionDetails
         details={qData}

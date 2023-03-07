@@ -5,11 +5,6 @@ import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
 
-interface Props {
-  anchorName: string;
-  psmCharterOfferId: number;
-}
-
 export type ParameterValue =
   | {
       type: 'invitation';
@@ -22,29 +17,42 @@ export type ParameterValue =
   | {
       type: 'amount';
       value: Amount;
+    }
+  | {
+      type: 'string';
+      value: string;
     };
 
-export default function ProposeParamChange(props: Props) {
+type GovernedParams = { current: Record<string, ParameterValue> };
+
+interface Props {
+  charterOfferId: number;
+}
+
+export default function DirectorParamChange(props: Props) {
   const walletUtils = useContext(WalletContext);
-  const { data, status } = usePublishedDatum(
-    `psm.IST.${props.anchorName}.governance`,
-  );
+
+  const { data, status } = usePublishedDatum(`vaultFactory.governance`) as {
+    data: GovernedParams;
+    status: LoadStatus;
+  };
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
 
   const [paramPatch, setParamPatch] = useState({});
 
   console.log('ProposeParamChange', { data, paramPatch });
 
-  const canGovern = !!props.psmCharterOfferId;
+  const canMakeProposal = !!props.charterOfferId;
 
   function displayParam(name: string, { type, value }: ParameterValue) {
+    console.log('display param', name, value, type);
     const arg = paramPatch[name] || value;
 
     switch (type) {
       case 'amount':
         return (
           <AmountInput
-            suffix={name === 'MintLimit' ? 'IST' : null}
+            suffix={name === 'MinInitialDebt' ? 'IST' : null}
             value={arg.value}
             brand={value.brand}
             onChange={newVal =>
@@ -65,8 +73,26 @@ export default function ProposeParamChange(props: Props) {
                 [name]: newRatio,
               })
             }
-            max="100"
           />
+        );
+      case 'string':
+        return (
+          <div className="relative flex-grow">
+            <input
+              type="text"
+              placeholder="0"
+              value={arg}
+              onChange={ev =>
+                setParamPatch({
+                  ...paramPatch,
+                  [name]: ev.target.value,
+                })
+              }
+              className={clsx(
+                'rounded bg-white bg-opacity-100 text-xl p-3 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300',
+              )}
+            />
+          </div>
         );
       default:
         return <i className="text-gray-500">{type} not supported</i>;
@@ -76,38 +102,16 @@ export default function ProposeParamChange(props: Props) {
   function handleSubmit(event) {
     event.preventDefault();
     console.debug({ event });
-    const offer = walletUtils.makeVoteOnPSMParams(
-      props.psmCharterOfferId,
-      props.anchorName,
+    const offer = walletUtils.makeVoteOnVaultDirectorParams(
+      props.charterOfferId,
       paramPatch,
       minutesUntilClose,
     );
     void walletUtils.sendOffer(offer);
   }
 
-  let content = (
-    <div className="text-gray-500 mt-2">
-      <i>Waiting for existing parameter values...</i>
-    </div>
-  );
-
-  const paramLabel = name => {
-    switch (name) {
-      case 'GiveMintedFee':
-        return 'Set GiveMinted Fee (Fee charged when user swaps IST for supported stable token)';
-      case 'WantMintedFee':
-        return 'Set WantMinted Fee (Fee charged when user swaps supported stable token for IST)';
-      case 'MintLimit':
-        return 'Set Mint Limit';
-      default:
-        return name;
-    }
-  };
-
-  // styling examples https://tailwindcss-forms.vercel.app/
-  // XXX tell user when the storage node doesn't exist, i.e. invalid anchor
-  if (status === LoadStatus.Received) {
-    content = (
+  const content =
+    status === LoadStatus.Received ? (
       <motion.div
         className="px-1 overflow-hidden"
         initial={{ height: 0, opacity: 0 }}
@@ -118,10 +122,8 @@ export default function ProposeParamChange(props: Props) {
           {Object.entries(data.current).map(([name, value]) => (
             <div className="mb-2" key={name}>
               <label className="block">
-                <span className="text-gray-700">{paramLabel(name)}</span>
-                <div className="w-full">
-                  {displayParam(name, value as ParameterValue)}
-                </div>
+                <span className="text-gray-700">{name}</span>
+                <div className="w-full">{displayParam(name, value)}</div>
               </label>
             </div>
           ))}
@@ -140,15 +142,18 @@ export default function ProposeParamChange(props: Props) {
               value="Propose Parameter Change"
               className={clsx(
                 'btn-primary p-2 rounded mt-2',
-                canGovern ? 'cursor-pointer' : 'cursor-not-allowed',
+                canMakeProposal ? 'cursor-pointer' : 'cursor-not-allowed',
               )}
-              disabled={!canGovern}
+              disabled={!canMakeProposal}
             />
           </div>
         </form>
       </motion.div>
+    ) : (
+      <div className="text-gray-500 mt-2">
+        <i>Waiting for existing parameter values...</i>
+      </div>
     );
-  }
 
   return (
     <div>

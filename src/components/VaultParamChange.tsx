@@ -62,12 +62,14 @@ export default function VaultParamChange(props: Props) {
 
   function displayParam(name: string, { type, value }: ParameterValue) {
     console.log('display param', name, value, type);
+    const arg = paramPatch[name] || value;
+
     switch (type) {
       case 'amount':
         return (
           <AmountInput
-            suffix={name === 'DebtLimit' && 'IST'}
-            value={(paramPatch[name] || value).value}
+            suffix={name === 'DebtLimit' ? 'IST' : null}
+            value={arg.value}
             brand={value.brand}
             onChange={newVal =>
               setParamPatch({
@@ -80,7 +82,7 @@ export default function VaultParamChange(props: Props) {
       case 'ratio':
         return (
           <PercentageInput
-            ratio={paramPatch[name] || value}
+            ratio={arg}
             onChange={newRatio =>
               setParamPatch({
                 ...paramPatch,
