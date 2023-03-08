@@ -3,7 +3,7 @@ import { OfferId } from './questions.js';
 import { charterInvitationSpec } from 'lib/wallet';
 import type { inferInvitationStatus } from 'lib/wallet';
 
-export default function Eligibility({
+export default function CharterGuidance({
   status,
   invitation,
   acceptedIn,
@@ -22,7 +22,7 @@ export default function Eligibility({
       return (
         <div className="rounded-lg py-5 px-6 text-base mb-3 bg-yellow-100 text-yellow-700">
           To propose you will need to accept your invitation to the Econ
-          Committe Charter.
+          Committee Charter.
           <AcceptInvitation
             description={(invitation as any).description}
             // TODO validate earlier that this invitation is from this contract

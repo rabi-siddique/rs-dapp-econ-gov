@@ -27,7 +27,7 @@ export const charterInvitationSpec = {
   description: 'charter member invitation',
 };
 
-const computedDeadline = (relativeDeadlineMin: number) =>
+const absoluteDeadline = (relativeDeadlineMin: number) =>
   BigInt(relativeDeadlineMin * 60 + Math.round(Date.now() / 1000));
 
 export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
@@ -130,7 +130,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         'cannot makeOffer without PSM charter membership',
       );
 
-      const deadline = computedDeadline(relativeDeadlineMin);
+      const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
         id: nextOfferId(),
@@ -157,7 +157,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       assert(instance, `no VaultFactory instance found`);
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
-      const deadline = computedDeadline(relativeDeadlineMin);
+      const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
         id: nextOfferId(),
@@ -184,7 +184,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       assert(instance, `no VaultFactory instance found`);
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
-      const deadline = computedDeadline(relativeDeadlineMin);
+      const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
         id: nextOfferId(),
@@ -216,7 +216,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         'cannot makeOffer without PSM charter membership',
       );
 
-      const deadline = computedDeadline(relativeDeadlineMin);
+      const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
         id: nextOfferId(),
@@ -238,7 +238,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       assert(instance, `no VaultFactory instance found`);
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
-      const deadline = computedDeadline(relativeDeadlineMin);
+      const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
         id: nextOfferId(),
@@ -261,7 +261,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       assert(instance, `price feed instance ${priceFeed} not found`);
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
-      const deadline = computedDeadline(relativeDeadlineMin);
+      const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
         id: nextOfferId(),
@@ -284,7 +284,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       assert(instance, `price feed instance ${priceFeed} not found`);
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
-      const deadline = computedDeadline(relativeDeadlineMin);
+      const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
         id: nextOfferId(),

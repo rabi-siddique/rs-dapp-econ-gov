@@ -11,7 +11,7 @@ import {
 import { useContext, useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import VaultParamChange from './VaultParamChange';
-import Eligibility from './Eligibility';
+import CharterGuidance from './CharterGuidance';
 import DirectorParamChange from './DirectorParamChange';
 import PauseVaultDirectorOffers from './PauseVaultDirectorOffers';
 import ChangeOracles, { ChangeOraclesMode } from './ChangeOracles';
@@ -70,7 +70,7 @@ export default function VaultsPanel() {
   return (
     <div>
       <motion.div layout>
-        <Eligibility {...charterInvitationStatus} />
+        <CharterGuidance {...charterInvitationStatus} />
       </motion.div>
       <motion.div layout="position" className="w-full mt-2">
         <div className="p-4 rounded-lg border border-gray-200 shadow-md">
