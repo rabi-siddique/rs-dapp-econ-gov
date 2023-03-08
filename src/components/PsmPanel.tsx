@@ -13,7 +13,7 @@ import { HiArrowNarrowDown } from 'react-icons/hi';
 import { FiChevronDown } from 'react-icons/fi';
 import ProposeParamChange from './ProposeParamChange';
 import ProposePauseOffers from './ProposePauseOffers';
-import Eligibility from './Eligibility';
+import CharterGuidance from './CharterGuidance';
 
 // TODO fetch list from RPC
 const anchors = [
@@ -74,7 +74,7 @@ export default function PsmPanel() {
   return (
     <div>
       <motion.div layout>
-        <Eligibility {...invitationStatus} />
+        <CharterGuidance {...invitationStatus} />
       </motion.div>
       <motion.div layout="position" className="w-full mt-2">
         <div className="p-4 rounded-lg border border-gray-200 shadow-md">
