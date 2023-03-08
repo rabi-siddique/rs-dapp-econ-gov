@@ -14,9 +14,11 @@ import VaultParamChange from './VaultParamChange';
 import Eligibility from './Eligibility';
 import DirectorParamChange from './DirectorParamChange';
 import PauseVaultDirectorOffers from './PauseVaultDirectorOffers';
+import ChangeOracles, { ChangeOraclesMode } from './ChangeOracles';
 
 const ProposalTypes = {
-  oracleNodes: 'Change Oracle Operators',
+  addOracles: 'Add Oracle Operators',
+  removeOracles: 'Remove Oracle Operators',
   managerParamChange: 'Change Manager Params',
   directorParamChange: 'Change Director Params',
   pauseOffers: 'Pause Offers',
@@ -46,6 +48,20 @@ export default function VaultsPanel() {
         return <DirectorParamChange charterOfferId={charterOfferId} />;
       case ProposalTypes.pauseOffers:
         return <PauseVaultDirectorOffers charterOfferId={charterOfferId} />;
+      case ProposalTypes.addOracles:
+        return (
+          <ChangeOracles
+            mode={ChangeOraclesMode.Add}
+            charterOfferId={charterOfferId}
+          />
+        );
+      case ProposalTypes.removeOracles:
+        return (
+          <ChangeOracles
+            mode={ChangeOraclesMode.Remove}
+            charterOfferId={charterOfferId}
+          />
+        );
       default:
         return <div>TODO</div>;
     }

@@ -257,6 +257,56 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         proposal: {},
       };
     },
+    makeVoteOnAddOracles(
+      charterOfferId: number,
+      priceFeed: string,
+      oracles: string[],
+      relativeDeadlineMin: number,
+    ) {
+      const instance = agoricNames.instance[priceFeed];
+      assert(instance, `price feed instance ${priceFeed} not found`);
+      assert(charterOfferId, 'cannot makeOffer without charter membership');
+
+      const deadline = BigInt(
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000),
+      );
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: charterOfferId,
+          invitationMakerName: 'VoteOnApiCall',
+          invitationArgs: [instance, 'addOracles', [oracles], deadline],
+        },
+        proposal: {},
+      };
+    },
+    makeVoteOnRemoveOracles(
+      charterOfferId: number,
+      priceFeed: string,
+      oracles: string[],
+      relativeDeadlineMin: number,
+    ) {
+      const instance = agoricNames.instance[priceFeed];
+      assert(instance, `price feed instance ${priceFeed} not found`);
+      assert(charterOfferId, 'cannot makeOffer without charter membership');
+
+      const deadline = BigInt(
+        relativeDeadlineMin * 60 + Math.round(Date.now() / 1000),
+      );
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: charterOfferId,
+          invitationMakerName: 'VoteOnApiCall',
+          invitationArgs: [instance, 'removeOracles', [oracles], deadline],
+        },
+        proposal: {},
+      };
+    },
     prepareToSign() {
       console.log('will sign with', chainKit.signer);
 

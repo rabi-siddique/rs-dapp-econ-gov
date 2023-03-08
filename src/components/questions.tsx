@@ -186,6 +186,15 @@ function offerFilterOutcome({ issue }: OfferFilterSpec) {
   );
 }
 
+function apiInvocationOutcome({ issue }) {
+  return (
+    <>
+      Invoke method <code>{issue.apiMethodName}</code> with arguments{' '}
+      <code>{bigintStringify(issue.methodArgs).replace(',', ', ')}</code>
+    </>
+  );
+}
+
 export function QuestionDetails(props: {
   details: IQuestionDetails;
   outcome?: OutcomeRecord;
@@ -215,6 +224,8 @@ export function QuestionDetails(props: {
           : details.electionType === 'param_change'
           ? // @ts-expect-error failure of inference
             paramChangeOutcome(details, instance)
+          : details.electionType === 'api_invocation'
+          ? apiInvocationOutcome(details)
           : '???'}
       </div>
     </>
