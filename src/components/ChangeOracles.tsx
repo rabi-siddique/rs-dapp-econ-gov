@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 import { FiChevronDown, FiPlus, FiX } from 'react-icons/fi';
-import { bech32 } from 'bech32';
+import { fromBech32 } from '@cosmjs/encoding';
 
 interface ListItemProps {
   address: string;
@@ -20,8 +20,8 @@ interface ListItemProps {
 
 const ListItem = ({ address, onRemove }: ListItemProps) => {
   return (
-    <div className="flex flex-row justify-between  text-purple-500 bg-purple-50 rounded-lg p-2">
-      <span className="leading-8">{address}</span>
+    <div className="flex flex-row flex-wrap font-medium justify-between  text-purple-500 bg-purple-50 rounded-lg p-2">
+      <span className="leading-8 max-w-full break-words">{address}</span>
       <button
         className="p-2 rounded hover:bg-purple-200"
         type="button"
@@ -34,9 +34,21 @@ const ListItem = ({ address, onRemove }: ListItemProps) => {
 };
 
 export enum ChangeOraclesMode {
-  Add = 0,
-  Remove = 1,
+  Add,
+  Remove,
 }
+
+const submitButtonLabels = {
+  [ChangeOraclesMode.Add]: 'Propose Add Oracles',
+  [ChangeOraclesMode.Remove]: 'Propose Remove Oracles',
+};
+
+const inputPlaceholders = {
+  [ChangeOraclesMode.Add]:
+    'Oracle address to add, i.e. something that looks like "agoric1XXXX..."',
+  [ChangeOraclesMode.Remove]:
+    'Oracle address to remove, i.e. something that looks like "agoric1XXXX..."',
+};
 
 interface Props {
   charterOfferId: number;
@@ -68,7 +80,7 @@ export default function ChangeOracles({ charterOfferId, mode }: Props) {
       return 'Already added';
     }
     try {
-      const { prefix } = bech32.decode(currentInput);
+      const { prefix } = fromBech32(currentInput);
       return prefix === 'agoric' ? '' : 'Invalid address';
     } catch (e) {
       return 'Invalid address';
@@ -93,16 +105,13 @@ export default function ChangeOracles({ charterOfferId, mode }: Props) {
   function handleSubmit(event) {
     event.preventDefault();
     console.debug({ event, addresses, minutesUntilClose });
-    const offerFn = (() => {
-      switch (mode) {
-        case ChangeOraclesMode.Add:
-          return walletUtils.makeVoteOnAddOracles;
-        case ChangeOraclesMode.Remove:
-          return walletUtils.makeVoteOnRemoveOracles;
-      }
-    })();
 
-    const offer = offerFn(
+    const offerFns = {
+      [ChangeOraclesMode.Add]: walletUtils.makeVoteOnAddOracles,
+      [ChangeOraclesMode.Remove]: walletUtils.makeVoteOnRemoveOracles,
+    };
+
+    const offer = offerFns[mode](
       charterOfferId,
       priceFeed,
       addresses,
@@ -133,23 +142,8 @@ export default function ChangeOracles({ charterOfferId, mode }: Props) {
     </ul>
   );
 
-  const submitButtonLabel = useMemo(() => {
-    switch (mode) {
-      case ChangeOraclesMode.Add:
-        return 'Propose Add Oracles';
-      case ChangeOraclesMode.Remove:
-        return 'Propose Remove Oracles';
-    }
-  }, [mode]);
-
-  const inputPlaceholder = useMemo(() => {
-    switch (mode) {
-      case ChangeOraclesMode.Add:
-        return 'Oracle address to add, i.e. something that looks like "agoric1XXXX..."';
-      case ChangeOraclesMode.Remove:
-        return 'Oracle address to remove, i.e. something that looks like "agoric1XXXX..."';
-    }
-  }, [mode]);
+  const submitButtonLabel = submitButtonLabels[mode];
+  const inputPlaceholder = inputPlaceholders[mode];
 
   const content = priceFeed && (
     <motion.div

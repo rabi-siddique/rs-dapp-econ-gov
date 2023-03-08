@@ -34,7 +34,6 @@
     "@endo/eventual-send": "~0.16.5",
     "@endo/init": "0.5.49",
     "@headlessui/react": "^1.7.2",
-    "bech32": "^2.0.0",
     "clsx": "^1.2.1",
     "cosmjs-types": "^0.5.1",
     "daisyui": "^2.41.0",
