@@ -438,11 +438,16 @@ type BrandDescriptor = {
   petname: string | string[];
 };
 
+type LegacyOfferToUsedInvitation = Record<number, Amount>;
 type CurrentWalletRecord = {
   brands: BrandDescriptor[];
   purses: Array<{ brand: Brand; balance: Amount }>;
-  offerToUsedInvitation: Record<number, Amount>;
-  lastOfferId: number;
+  offerToUsedInvitation: Array<[string, Amount]> | LegacyOfferToUsedInvitation;
+};
+
+const coerceEntries = mapOrEntries => {
+  if (Array.isArray(mapOrEntries)) return mapOrEntries;
+  return Object.entries(mapOrEntries);
 };
 
 export const inferInvitationStatus = (
@@ -453,10 +458,9 @@ export const inferInvitationStatus = (
     return { status: 'nodata' };
   }
   // first check for accepted
-  const usedInvitationEntry = Object.entries(
-    current.offerToUsedInvitation,
-  ).find(([_, invitationAmount]) =>
-    invitationAmount.value[0].description.includes(descriptionSubstr),
+  const usedInvitationEntry = coerceEntries(current.offerToUsedInvitation).find(
+    ([_, invitationAmount]) =>
+      invitationAmount.value[0].description.includes(descriptionSubstr),
   );
   if (usedInvitationEntry) {
     return {
