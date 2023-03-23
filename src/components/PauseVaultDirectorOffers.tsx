@@ -60,7 +60,7 @@ const ManagerGroup = ({ managerId, onChecked }: ManagerGroupProps) => {
               checked={checked[str]}
               onChange={handleCheckChange}
             />
-            <span className="ml-2">{str.split(' ')[1]}</span>
+            <span className="ml-2">Pause {str.split(' ')[1]}</span>
           </label>
         </div>
       ))}
