@@ -229,6 +229,36 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         proposal: {},
       };
     },
+    poseBurnIst(
+      charterOfferId: number,
+      amount: Amount,
+      relativeDeadlineMin: number,
+    ) {
+      console.log('BRAND', amount.brand);
+      console.log('VALUE', amount.value, typeof amount.value);
+      const reserveInstance = agoricNames.instance['reserve'];
+      assert(reserveInstance, `no instance found for reserve`);
+
+      assert(charterOfferId, 'cannot makeOffer without charter membership');
+
+      const deadline = absoluteDeadline(relativeDeadlineMin);
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: charterOfferId,
+          invitationMakerName: 'VoteOnApiCall',
+          invitationArgs: [
+            reserveInstance,
+            'burnFeesToReduceShortfall',
+            [amount],
+            deadline,
+          ],
+        },
+        proposal: {},
+      };
+    },
     makeVoteOnPauseVaultOffers(
       charterOfferId: number,
       toPause: string[],

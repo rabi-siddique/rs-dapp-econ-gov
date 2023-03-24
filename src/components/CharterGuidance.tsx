@@ -28,7 +28,7 @@ export default function CharterGuidance({
             // TODO validate earlier that this invitation is from this contract
             sourceContract={charterInvitationSpec.instanceName}
           />
-          And then <b>reload the page</b>.
+          and then <b>reload the page</b>.
         </div>
       );
     case 'accepted':

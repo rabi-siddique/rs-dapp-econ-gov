@@ -1,24 +1,29 @@
 @tailwind utilities;
 
 @layer utilities {
-  .position-swap-icon {
-    top: 93.5%;
-  }
-
-  .position-swap-icon-remove {
-    top: 41%;
-  }
-
   /* hiding arrows from number input */
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
+
   /* Firefox */
   input[type='number'] {
     appearance: textfield;
     -moz-appearance: textfield;
     -webkit-appearance: textfield;
+  }
+
+  .bg-pending {
+    @apply bg-yellow-500 border border-yellow-100 bg-opacity-5;
+  }
+
+  .bg-failed {
+    @apply bg-red-400 bg-opacity-5;
+  }
+
+  .bg-succeeded {
+    @apply bg-green-400 bg-opacity-10;
   }
 }
