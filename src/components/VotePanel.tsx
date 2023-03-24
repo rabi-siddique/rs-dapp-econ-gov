@@ -40,7 +40,7 @@ function Eligibility({
             // TODO validate earlier that this invitation is from this contract
             sourceContract="economicCommittee"
           />
-          And then <b>reload the page</b>.
+          and then <b>reload the page</b>.
         </div>
       );
     case 'accepted':

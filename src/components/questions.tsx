@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import { capitalize } from 'utils/displayFunctions.js';
 import { timestampPassed } from 'utils/helpers.js';
 import { OfferFilterSpec, ParamChangeSpec, RpcRemote } from '../govTypes.js';
-import { Outcome, outcomeMessage } from '../lib/governance';
+import { outcomeMessage } from '../lib/governance';
 
 export function OfferId(props: { id: number }) {
   const { id } = props;
@@ -35,26 +35,16 @@ export function OfferId(props: { id: number }) {
   return <code title={title}>{id}</code>;
 }
 
-function outcomeColor(outcome?: OutcomeRecord) {
-  switch (outcome?.outcome) {
-    case Outcome.Win:
-      return 'bg-green-400 bg-opacity-10';
-    case Outcome.Fail:
-      return 'bg-red-400 bg-opacity-5';
-    default:
-      return 'bg-yellow-500 border border-yellow-100 bg-opacity-5';
-  }
-}
-
 export function Deadline(props: { seconds: bigint; outcome?: OutcomeRecord }) {
   const { seconds } = props;
 
   const date = new Date(Number(seconds) * 1000);
   const relativeDate = capitalize(formatRelative(date, new Date()));
+  const { message } = outcomeMessage(props.outcome);
 
   return (
     <div className="font-medium text-gray-900">
-      <span className="pl-1">{outcomeMessage(props.outcome)} - </span>
+      <span className="pl-1">{message} - </span>
       <span className="font-normal inline-flex flex-row align-baseline">
         <div>{relativeDate}</div>
         <span className="text-sm pl-1 flex flex-col justify-center">
@@ -203,12 +193,15 @@ export function QuestionDetails(props: {
 }) {
   const { details, outcome, instance } = props;
   console.debug('QuestionDetails', details);
+
+  const { color } = outcomeMessage(outcome);
+
   return (
     <>
       <div
         className={clsx(
           'p-3 flex align-middle justify-between rounded-top-lg',
-          outcomeColor(outcome),
+          color,
         )}
       >
         <Deadline outcome={outcome} seconds={details.closingRule.deadline} />

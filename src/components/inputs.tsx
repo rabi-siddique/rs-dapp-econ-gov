@@ -12,11 +12,13 @@ export const AmountInput = ({
   onChange,
   brand,
   suffix,
+  disabled,
 }: {
   onChange: (value: bigint) => void;
   value: bigint;
   brand: Brand;
   suffix?: string;
+  disabled?: boolean;
 }) => {
   const { getDecimalPlaces } = useAtomValue(displayFunctionsAtom);
 
@@ -45,6 +47,7 @@ export const AmountInput = ({
   return (
     <div className="relative flex-grow">
       <input
+        disabled={disabled}
         type="text"
         placeholder="0"
         value={displayString}

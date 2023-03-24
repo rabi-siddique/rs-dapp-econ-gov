@@ -9,25 +9,38 @@ export enum Outcome {
 
 export function outcomeMessage(outcome?: OutcomeRecord) {
   if (!outcome) {
-    return '⏳ Vote Closes';
+    return {
+      message: '⏳ Vote Closes',
+      color: 'bg-yellow-500 border border-yellow-100 bg-opacity-5',
+    };
   }
 
   if (outcome.outcome === Outcome.Fail) {
-    return `❌ ${outcome.reason}`;
+    return {
+      message: `❌ ${outcome.reason}`,
+      color: 'bg-red-400 bg-opacity-5',
+    };
   }
 
   if (outcome.outcome === Outcome.Win) {
     const positionKeys = Object.keys(outcome.position);
-    assert(
-      positionKeys.length === 1,
-      'Only single position outcomes supported',
-    );
+
     const positionKey = positionKeys[0];
-    if (['noChange', 'dontUpdate'].includes(positionKey)) {
-      return '❌ Change Rejected';
+    if (['noChange', 'dontUpdate', 'dontInvoke'].includes(positionKey)) {
+      return {
+        message: '❌ Change Rejected',
+        color: 'bg-red-400 bg-opacity-5',
+      };
     }
-    return '✅ Change Accepted';
+
+    return {
+      message: '✅ Change Accepted',
+      color: 'bg-green-400 bg-opacity-10',
+    };
   }
 
-  return `???`;
+  return {
+    message: `???`,
+    color: 'bg-yellow-500 border border-yellow-100 bg-opacity-5',
+  };
 }
