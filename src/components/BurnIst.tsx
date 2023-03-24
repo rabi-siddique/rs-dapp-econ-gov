@@ -21,20 +21,22 @@ export default function BurnIst({ charterOfferId }: Props) {
   const brand = data?.shortfallBalance?.brand;
   const availableToBurn = data?.allocations?.Fee?.value ?? 0n;
 
-  const availableToBurnString = brand
-    ? 'IST to Burn (' +
-      new Intl.NumberFormat().format(
-        Number(
-          stringifyValue(
-            availableToBurn,
-            AssetKind.NAT,
-            getDecimalPlaces(brand),
-            0,
-          ),
+  const formattedAvailableToBurn =
+    brand &&
+    new Intl.NumberFormat().format(
+      Number(
+        stringifyValue(
+          availableToBurn,
+          AssetKind.NAT,
+          getDecimalPlaces(brand),
+          0,
         ),
-      ) +
-      ' Available in Reserve)'
-    : 'Loading Reserve Balance...';
+      ),
+    );
+
+  const toBurnLabel = formattedAvailableToBurn
+    ? `IST to burn (${formattedAvailableToBurn} available in reserve)`
+    : 'Loading reserve balance...';
 
   const [currentInput, setCurrentInput] = useState(null);
 
@@ -53,7 +55,7 @@ export default function BurnIst({ charterOfferId }: Props) {
     event.preventDefault();
     console.debug({ event, currentInput, minutesUntilClose });
 
-    const offer = walletUtils.makeBurnIstOffer(
+    const offer = walletUtils.poseBurnIst(
       charterOfferId,
       { brand, value: currentInput },
       minutesUntilClose,
@@ -77,7 +79,7 @@ export default function BurnIst({ charterOfferId }: Props) {
         animate={{ height: 'auto', opacity: 1 }}
         transition={{ type: 'tween' }}
       >
-        <p className="my-1">{availableToBurnString}</p>
+        <p className="my-1">{toBurnLabel}</p>
         {brand && (
           <AmountInput
             disabled={isLoading}

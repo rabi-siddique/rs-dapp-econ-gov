@@ -229,7 +229,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         proposal: {},
       };
     },
-    makeBurnIstOffer(
+    poseBurnIst(
       charterOfferId: number,
       amount: Amount,
       relativeDeadlineMin: number,
