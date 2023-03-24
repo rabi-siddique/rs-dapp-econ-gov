@@ -11,14 +11,14 @@ export function outcomeMessage(outcome?: OutcomeRecord) {
   if (!outcome) {
     return {
       message: '⏳ Vote Closes',
-      color: 'bg-yellow-500 border border-yellow-100 bg-opacity-5',
+      color: 'bg-pending',
     };
   }
 
   if (outcome.outcome === Outcome.Fail) {
     return {
       message: `❌ ${outcome.reason}`,
-      color: 'bg-red-400 bg-opacity-5',
+      color: 'bg-failed',
     };
   }
 
@@ -29,18 +29,18 @@ export function outcomeMessage(outcome?: OutcomeRecord) {
     if (['noChange', 'dontUpdate', 'dontInvoke'].includes(positionKey)) {
       return {
         message: '❌ Change Rejected',
-        color: 'bg-red-400 bg-opacity-5',
+        color: 'bg-failed',
       };
     }
 
     return {
       message: '✅ Change Accepted',
-      color: 'bg-green-400 bg-opacity-10',
+      color: 'bg-succeeded',
     };
   }
 
   return {
     message: `???`,
-    color: 'bg-yellow-500 border border-yellow-100 bg-opacity-5',
+    color: 'bg-pending',
   };
 }
