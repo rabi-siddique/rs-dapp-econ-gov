@@ -281,6 +281,28 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
         proposal: {},
       };
     },
+    makeVoteOnPauseLiquidationOffers(
+      charterOfferId: number,
+      toPause: string[],
+      relativeDeadlineMin: number,
+    ) {
+      const instance = agoricNames.instance['auctioneer'];
+      assert(instance, `no auctioneer instance found`);
+      assert(charterOfferId, 'cannot makeOffer without charter membership');
+
+      const deadline = absoluteDeadline(relativeDeadlineMin);
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: charterOfferId,
+          invitationMakerName: 'VoteOnPauseOffers',
+          invitationArgs: [instance, toPause, deadline],
+        },
+        proposal: {},
+      };
+    },
     makeVoteOnAddOracles(
       charterOfferId: number,
       priceFeed: string,
