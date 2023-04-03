@@ -10,7 +10,14 @@ import GovernanceTools from 'components/GovernanceTools';
 import { WalletContext } from 'lib/wallet';
 import 'styles/globals.css';
 
-const supportedNetworks = ['main', 'emerynet', 'ollinet', 'devnet', 'xnet', 'local'];
+const supportedNetworks = [
+  'main',
+  'emerynet',
+  'ollinet',
+  'devnet',
+  'xnet',
+  'local',
+];
 
 const Item = ({
   label,
