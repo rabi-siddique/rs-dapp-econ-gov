@@ -4,21 +4,23 @@ import { useContext, useState } from 'react';
 import { SubmitInput } from './SubmitButton';
 
 interface Props {
-  anchorName: string;
-  psmCharterOfferId: number;
+  charterOfferId: number;
 }
 
-export default function ProposePauseOffers(props: Props) {
+const invitationDescriptions = {
+  newBid: 'new bid',
+};
+
+export default function PauseLiquidations(props: Props) {
   const walletUtils = useContext(WalletContext);
-  // read the initial state from rpc?
+  // XXX read the initial state from rpc?
   const [checked, setChecked] = useState({
-    wantMinted: false,
-    giveMinted: false,
+    [invitationDescriptions.newBid]: false,
   });
 
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
 
-  const canGovern = !!props.psmCharterOfferId;
+  const canGovern = !!props.charterOfferId;
 
   function handleCheckChange(event) {
     const { target } = event;
@@ -29,13 +31,9 @@ export default function ProposePauseOffers(props: Props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.debug({ event, checked, minutesUntilClose });
-    const toPause = Object.entries(checked)
-      .filter(([_, check]) => check)
-      .map(([name]) => name);
-    const offer = walletUtils.makeVoteOnPausePSMOffers(
-      props.psmCharterOfferId,
-      props.anchorName,
+    const toPause = Object.keys(checked).filter(name => checked[name]);
+    const offer = walletUtils.makeVoteOnPauseLiquidationOffers(
+      props.charterOfferId,
       toPause,
       minutesUntilClose,
     );
@@ -44,16 +42,13 @@ export default function ProposePauseOffers(props: Props) {
 
   const optionMessage = option => {
     switch (option) {
-      case 'wantMinted':
-        return 'Pause wantMinted (IST minting) — Users will not be able to swap supported stable tokens for IST in PSM';
-      case 'giveMinted':
-        return 'Pause giveMinted (IST burning) - Users will not be able to swap IST for supported stable tokens in PSM';
+      case invitationDescriptions.newBid:
+        return `Pause '${invitationDescriptions.newBid}' — Users will not be able to make new bids on liquidation auctions.`;
       default:
         return option;
     }
   };
 
-  // styling examples https://tailwindcss-forms.vercel.app/
   return (
     <motion.div
       className="overflow-hidden px-1"
@@ -92,7 +87,7 @@ export default function ProposePauseOffers(props: Props) {
           />
         </label>
         <div className="w-full flex flex-row justify-end mt-2">
-          <SubmitInput canSubmit={canGovern} value="Propose Parameter Change" />
+          <SubmitInput canSubmit={canGovern} value="Propose Pause Offers" />
         </div>
       </form>
     </motion.div>

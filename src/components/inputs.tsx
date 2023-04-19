@@ -55,6 +55,7 @@ export const AmountInput = ({
         className={clsx(
           'rounded bg-white bg-opacity-100 text-xl p-3 leading-6 w-full border-gray-300 focus:border-purple-300 focus:ring-purple-300',
           suffix ? 'pr-10' : '',
+          disabled ? 'cursor-not-allowed' : '',
         )}
       />
       {suffix && (

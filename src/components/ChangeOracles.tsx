@@ -12,6 +12,7 @@ import {
 } from 'react';
 import { FiChevronDown, FiPlus, FiX } from 'react-icons/fi';
 import { fromBech32 } from '@cosmjs/encoding';
+import { SubmitButton } from './SubmitButton';
 
 interface ListItemProps {
   address: string;
@@ -204,16 +205,11 @@ export default function ChangeOracles({ charterOfferId, mode }: Props) {
         />
       </label>
       <div className="w-full flex flex-row justify-end mt-2">
-        <button
-          className={clsx(
-            'btn-primary px-3 py-2 rounded mt-2',
-            canMakeProposal ? 'cursor-pointer' : 'cursor-not-allowed',
-          )}
-          disabled={!canMakeProposal}
-          onClick={handleSubmit}
-        >
-          {submitButtonLabel}
-        </button>
+        <SubmitButton
+          canSubmit={canMakeProposal}
+          handleSubmit={handleSubmit}
+          text={submitButtonLabel}
+        />
       </div>
     </motion.div>
   );

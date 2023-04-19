@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import {
   LoadStatus,
@@ -7,6 +6,7 @@ import {
   WalletContext,
 } from 'lib/wallet';
 import { useContext, useEffect, useState } from 'react';
+import { SubmitInput } from './SubmitButton';
 
 interface ManagerGroupProps {
   managerId: string;
@@ -132,14 +132,9 @@ export default function PauseVaultDirectorOffers(props: Props) {
             />
           </label>
           <div className="w-full flex flex-row justify-end mt-2">
-            <input
-              type="submit"
+            <SubmitInput
               value="Propose Pause Offers"
-              className={clsx(
-                'btn-primary p-2 rounded mt-2',
-                canMakeProposal ? 'cursor-pointer' : 'cursor-not-allowed',
-              )}
-              disabled={!canMakeProposal}
+              canSubmit={canMakeProposal}
             />
           </div>
         </form>

@@ -22,6 +22,7 @@ import { capitalize } from 'utils/displayFunctions.js';
 import { timestampPassed } from 'utils/helpers.js';
 import { OfferFilterSpec, ParamChangeSpec, RpcRemote } from '../govTypes.js';
 import { outcomeMessage } from '../lib/governance';
+import { SubmitInput } from './SubmitButton.js';
 
 export function OfferId(props: { id: number }) {
   const { id } = props;
@@ -283,15 +284,7 @@ function ChoosePosition(props: {
         </div>
       </RadioGroup>
       <div className="mt-2 px-2 flex justify-end">
-        <input
-          type="submit"
-          value="Submit vote"
-          disabled={!position}
-          className={clsx(
-            'btn-primary rounded mt-2 p-2',
-            position ? 'cursor-pointer' : 'cursor-not-allowed',
-          )}
-        />
+        <SubmitInput canSubmit={!!position} value="Submit Vote" />
       </div>
     </form>
   );

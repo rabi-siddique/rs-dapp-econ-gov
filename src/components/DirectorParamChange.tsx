@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
+import { SubmitInput } from './SubmitButton';
 
 export type ParameterValue =
   | {
@@ -137,14 +138,9 @@ export default function DirectorParamChange(props: Props) {
             />
           </label>
           <div className="w-full flex flex-row justify-end mt-2">
-            <input
-              type="submit"
+            <SubmitInput
               value="Propose Parameter Change"
-              className={clsx(
-                'btn-primary p-2 rounded mt-2',
-                canMakeProposal ? 'cursor-pointer' : 'cursor-not-allowed',
-              )}
-              disabled={!canMakeProposal}
+              canSubmit={canMakeProposal}
             />
           </div>
         </form>

@@ -61,14 +61,21 @@ const getLogoForBrandPetname = (brandPetname: string) => {
 export const displayPetname = (pn: Array<string> | string) =>
   Array.isArray(pn) ? pn.join('.') : pn;
 
+const DEFAULT_DECIMAL_PLACES = 6;
+
 export const makeDisplayFunctions = (brandToInfo: Map<Brand, BrandInfo>) => {
-  const getDecimalPlaces = (brand: Brand) => {
+  const getDecimalPlaces = (brand?: Brand) => {
+    if (!brand) return DEFAULT_DECIMAL_PLACES;
+
     // XXX for rpc brands that don't come in the purse watcher
     if ('boardId' in brand) {
       const { boardId } = brand as unknown as { boardId: string };
       const info = wellKnownBrands[boardId];
-      assert(info, `unknown boardId ${boardId}`);
-      return info.decimalPlaces;
+      if (info) {
+        return info.decimalPlaces;
+      }
+      console.warn('unknown brand boardId', boardId, 'using default');
+      return DEFAULT_DECIMAL_PLACES;
     }
     brandToInfo.get(brand)?.decimalPlaces;
   };
