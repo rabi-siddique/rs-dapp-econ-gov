@@ -71,8 +71,11 @@ export const makeDisplayFunctions = (brandToInfo: Map<Brand, BrandInfo>) => {
     if ('boardId' in brand) {
       const { boardId } = brand as unknown as { boardId: string };
       const info = wellKnownBrands[boardId];
-      assert(info, `unknown boardId ${boardId}`);
-      return info.decimalPlaces;
+      if (info) {
+        return info.decimalPlaces;
+      }
+      console.warn('unknown brand boardId', boardId, 'using default');
+      return DEFAULT_DECIMAL_PLACES;
     }
     brandToInfo.get(brand)?.decimalPlaces;
   };

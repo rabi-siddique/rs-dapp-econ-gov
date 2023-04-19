@@ -1,9 +1,9 @@
 import type { Amount } from '@agoric/ertp/src/types';
-import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
+import { SubmitInput } from './SubmitButton';
 
 interface Props {
   anchorName: string;
@@ -135,14 +135,9 @@ export default function ProposeParamChange(props: Props) {
             />
           </label>
           <div className="w-full flex flex-row justify-end mt-2">
-            <input
-              type="submit"
+            <SubmitInput
+              canSubmit={canGovern}
               value="Propose Parameter Change"
-              className={clsx(
-                'btn-primary p-2 rounded mt-2',
-                canGovern ? 'cursor-pointer' : 'cursor-not-allowed',
-              )}
-              disabled={!canGovern}
             />
           </div>
         </form>

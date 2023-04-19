@@ -1,12 +1,12 @@
 import { AssetKind } from '@agoric/ertp';
 import { stringifyValue } from '@agoric/ui-components';
-import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAtomValue } from 'jotai';
 import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useMemo, useState } from 'react';
 import { displayFunctionsAtom } from 'store/app';
 import { AmountInput } from './inputs';
+import { SubmitButton } from './SubmitButton';
 
 interface Props {
   charterOfferId: number;
@@ -80,7 +80,7 @@ export default function BurnIst({ charterOfferId }: Props) {
         brand={data?.shortfallBalance?.brand}
         suffix="IST"
         onChange={setCurrentInput}
-      ></AmountInput>
+      />
       <AnimatePresence>
         {inputError && (
           <motion.div
@@ -104,16 +104,11 @@ export default function BurnIst({ charterOfferId }: Props) {
         />
       </label>
       <div className="w-full flex flex-row justify-end mt-2">
-        <button
-          className={clsx(
-            'btn-primary px-3 py-2 rounded mt-2',
-            canMakeProposal ? 'cursor-pointer' : 'cursor-not-allowed',
-          )}
-          disabled={!canMakeProposal}
-          onClick={handleSubmit}
-        >
-          Propose Burn
-        </button>
+        <SubmitButton
+          canSubmit={canMakeProposal}
+          handleSubmit={handleSubmit}
+          text="Propose Burn"
+        />
       </div>
     </motion.div>
   );

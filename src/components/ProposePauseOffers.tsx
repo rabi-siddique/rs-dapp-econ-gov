@@ -1,7 +1,7 @@
-import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
+import { SubmitInput } from './SubmitButton';
 
 interface Props {
   anchorName: string;
@@ -92,15 +92,7 @@ export default function ProposePauseOffers(props: Props) {
           />
         </label>
         <div className="w-full flex flex-row justify-end mt-2">
-          <input
-            type="submit"
-            value="Propose Pause Offers"
-            className={clsx(
-              'btn-primary p-2 rounded mt-2',
-              canGovern ? 'cursor-pointer' : 'cursor-not-allowed',
-            )}
-            disabled={!canGovern}
-          />
+          <SubmitInput canSubmit={canGovern} value="Propose Parameter Change" />
         </div>
       </form>
     </motion.div>
