@@ -31,10 +31,7 @@ export default function PauseLiquidations(props: Props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.debug({ event, checked, minutesUntilClose });
-    const toPause = Object.entries(checked)
-      .filter(([_, check]) => check)
-      .map(([name]) => name);
+    const toPause = Object.keys(checked).filter(name => checked[name]);
     const offer = walletUtils.makeVoteOnPauseLiquidationOffers(
       props.charterOfferId,
       toPause,
