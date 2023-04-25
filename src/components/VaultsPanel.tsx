@@ -24,7 +24,7 @@ const ProposalTypes = {
   managerParamChange: 'Change Manager Params',
   directorParamChange: 'Change Director Params',
   pauseOffers: 'Pause Vault Offers',
-  pauseLiquidations: 'Pause Liquidation Bids',
+  pauseLiquidations: 'Pause Liquidations',
   manualBurn: 'Burn IST',
 };
 
