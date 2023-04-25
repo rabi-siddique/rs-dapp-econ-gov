@@ -9,6 +9,7 @@ interface Props {
 
 const invitationDescriptions = {
   newBid: 'new bid',
+  depositCollateral: 'deposit Collateral',
 };
 
 export default function PauseLiquidations(props: Props) {
@@ -16,6 +17,7 @@ export default function PauseLiquidations(props: Props) {
   // XXX read the initial state from rpc?
   const [checked, setChecked] = useState({
     [invitationDescriptions.newBid]: false,
+    [invitationDescriptions.depositCollateral]: false,
   });
 
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
@@ -44,6 +46,8 @@ export default function PauseLiquidations(props: Props) {
     switch (option) {
       case invitationDescriptions.newBid:
         return `Pause '${invitationDescriptions.newBid}' — Users will not be able to make new bids on liquidation auctions.`;
+      case invitationDescriptions.depositCollateral:
+        return `Pause '${invitationDescriptions.depositCollateral}' — Vaults will not have their collateral be put up for auction.`;
       default:
         return option;
     }
