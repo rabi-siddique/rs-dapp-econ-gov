@@ -17,6 +17,7 @@ import PauseVaultDirectorOffers from './PauseVaultDirectorOffers';
 import ChangeOracles, { ChangeOraclesMode } from './ChangeOracles';
 import BurnIst from './BurnIst';
 import PauseLiquidations from './PauseLiquidations';
+import AuctioneerParamChange from './AuctioneerParamChange';
 
 const ProposalTypes = {
   addOracles: 'Add Oracle Operators',
@@ -26,6 +27,15 @@ const ProposalTypes = {
   pauseOffers: 'Pause Vault Offers',
   pauseLiquidations: 'Pause Liquidations',
   manualBurn: 'Burn IST',
+  auctioneerParamChange: 'Change Auctioneer Params',
+};
+
+const networkProposalFilter = walletUtils => {
+  if (walletUtils.agoricNet === 'main') {
+    return p => p !== ProposalTypes.auctioneerParamChange;
+  }
+  // no filter
+  return Boolean;
 };
 
 export default function VaultsPanel() {
@@ -33,6 +43,8 @@ export default function VaultsPanel() {
     ProposalTypes.managerParamChange,
   );
   const walletUtils = useContext(WalletContext);
+  const filterProposals = networkProposalFilter(walletUtils);
+
   const { data: walletCurrent } = usePublishedDatum(
     `wallet.${walletUtils.getWalletAddress()}.current`,
   );
@@ -69,10 +81,16 @@ export default function VaultsPanel() {
         return <BurnIst charterOfferId={charterOfferId} />;
       case ProposalTypes.pauseLiquidations:
         return <PauseLiquidations charterOfferId={charterOfferId} />;
+      case ProposalTypes.auctioneerParamChange:
+        return <AuctioneerParamChange charterOfferId={charterOfferId} />;
       default:
         return <div>TODO</div>;
     }
   })();
+
+  // Don't allow certain proposal types on mainnet.
+  const proposalTypesForSelectedNetwork =
+    Object.values(ProposalTypes).filter(filterProposals);
 
   return (
     <div>
@@ -102,7 +120,7 @@ export default function VaultsPanel() {
               leaveTo="transform opacity-0 scale-95"
             >
               <Menu.Items className="absolute w-56 divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30">
-                {Object.values(ProposalTypes).map(v => (
+                {proposalTypesForSelectedNetwork.map(v => (
                   <Menu.Item key={v}>
                     {({ active }) => (
                       <button
