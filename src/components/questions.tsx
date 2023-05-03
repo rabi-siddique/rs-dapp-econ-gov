@@ -67,6 +67,9 @@ export function Deadline(props: { seconds: bigint; outcome?: OutcomeRecord }) {
  *   - values are safe integers
  */
 const isSafeRatio = (value: Amount | Ratio) => {
+  if (typeof value !== 'object') {
+    return false;
+  }
   if (!('numerator' in value && 'denominator' in value)) {
     return false;
   }
@@ -105,6 +108,14 @@ function ParamChanges(props: ChangeParamsPosition) {
       const { numerator, denominator } = value;
       const pct = (100 * Number(numerator.value)) / Number(denominator.value);
       return <>{pct}%</>;
+    } else if (
+      typeof value === 'object' &&
+      'relValue' in value &&
+      'timerBrand' in value
+    ) {
+      return (
+        <>{new Intl.NumberFormat().format(Number(value.relValue))} seconds</>
+      );
     }
     // fallback
     return bigintStringify(value);

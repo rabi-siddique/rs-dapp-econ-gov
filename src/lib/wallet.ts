@@ -20,6 +20,8 @@ import { makeInteractiveSigner } from './keyManagement.js';
 import { boardSlottingMarshaller, networkConfigUrl, RpcUtils } from './rpc';
 import { makeRpcUtils } from './rpc.js';
 
+export type RelativeTime = { timerBrand: Brand; relValue: bigint };
+
 const marshaller = boardSlottingMarshaller();
 
 export const charterInvitationSpec = {
@@ -32,6 +34,13 @@ const absoluteDeadline = (relativeDeadlineMin: number) =>
 
 export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
   const { agoricNames, fromBoard } = rpcUtils;
+
+  const lookupAgoricInstance = name => {
+    const instance = agoricNames.instance[name];
+    assert(instance, `no instance ${name} found`);
+    return instance;
+  };
+
   const makeChainKit = async () => {
     const chainInfo: ChainInfo = await suggestChain(
       networkConfigUrl(agoricNet),
@@ -77,8 +86,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       sourceContractName: string,
       description: string,
     ) {
-      const sourceContract = agoricNames.instance[sourceContractName];
-      assert(sourceContract, `missing contract ${sourceContractName}`);
+      const sourceContract = lookupAgoricInstance(sourceContractName);
 
       /** @type {import('../lib/psm.js').OfferSpec} */
       return {
@@ -96,8 +104,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       chosenPositions: Position[],
       questionHandle,
     ) {
-      const ecInstance = agoricNames.instance['economicCommittee'];
-      assert(ecInstance, 'no contract instance for economicCommittee');
+      const ecInstance = lookupAgoricInstance('economicCommittee');
 
       assert(
         ecOfferId,
@@ -122,8 +129,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number,
     ) {
-      const psmInstance = agoricNames.instance[`psm-IST-${anchorName}`];
-      assert(psmInstance, `no PSM contract instance for IST.${anchorName}`);
+      const psmInstance = lookupAgoricInstance(`psm-IST-${anchorName}`);
 
       assert(
         psmCharterOfferId,
@@ -153,8 +159,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number,
     ) {
-      const instance = agoricNames.instance['VaultFactory'];
-      assert(instance, `no VaultFactory instance found`);
+      const instance = lookupAgoricInstance('VaultFactory');
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
       const deadline = absoluteDeadline(relativeDeadlineMin);
@@ -180,8 +185,33 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number,
     ) {
-      const instance = agoricNames.instance['VaultFactory'];
-      assert(instance, `no VaultFactory instance found`);
+      const instance = lookupAgoricInstance('VaultFactory');
+      assert(charterOfferId, 'cannot makeOffer without charter membership');
+
+      const deadline = absoluteDeadline(relativeDeadlineMin);
+
+      return {
+        id: nextOfferId(),
+        invitationSpec: {
+          source: 'continuing',
+          previousOffer: charterOfferId,
+          invitationMakerName: 'VoteOnParamChange',
+        },
+        offerArgs: {
+          instance,
+          params: changedParams,
+          deadline,
+          path: { paramPath: { key: 'governedParams' } },
+        },
+        proposal: {},
+      };
+    },
+    makeVoteOnVaultAuctioneerParams(
+      charterOfferId: number,
+      changedParams: Record<string, RelativeTime | bigint>,
+      relativeDeadlineMin: number,
+    ) {
+      const instance = lookupAgoricInstance('auctioneer');
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
       const deadline = absoluteDeadline(relativeDeadlineMin);
@@ -208,8 +238,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       toPause: string[],
       relativeDeadlineMin: number,
     ) {
-      const psmInstance = agoricNames.instance[`psm-IST-${anchorName}`];
-      assert(psmInstance, `no PSM contract instance for IST.${anchorName}`);
+      const psmInstance = lookupAgoricInstance(`psm-IST-${anchorName}`);
 
       assert(
         psmCharterOfferId,
@@ -234,11 +263,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       amount: Amount,
       relativeDeadlineMin: number,
     ) {
-      console.log('BRAND', amount.brand);
-      console.log('VALUE', amount.value, typeof amount.value);
-      const reserveInstance = agoricNames.instance['reserve'];
-      assert(reserveInstance, `no instance found for reserve`);
-
+      const reserveInstance = lookupAgoricInstance('reserve');
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
       const deadline = absoluteDeadline(relativeDeadlineMin);
@@ -264,8 +289,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       toPause: string[],
       relativeDeadlineMin: number,
     ) {
-      const instance = agoricNames.instance['VaultFactory'];
-      assert(instance, `no VaultFactory instance found`);
+      const instance = lookupAgoricInstance('VaultFactory');
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
       const deadline = absoluteDeadline(relativeDeadlineMin);
@@ -286,8 +310,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       toPause: string[],
       relativeDeadlineMin: number,
     ) {
-      const instance = agoricNames.instance['auctioneer'];
-      assert(instance, `no auctioneer instance found`);
+      const instance = lookupAgoricInstance('auctioneer');
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
       const deadline = absoluteDeadline(relativeDeadlineMin);
@@ -309,8 +332,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       oracles: string[],
       relativeDeadlineMin: number,
     ) {
-      const instance = agoricNames.instance[priceFeed];
-      assert(instance, `price feed instance ${priceFeed} not found`);
+      const instance = lookupAgoricInstance(priceFeed);
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
       const deadline = absoluteDeadline(relativeDeadlineMin);
@@ -332,8 +354,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       oracles: string[],
       relativeDeadlineMin: number,
     ) {
-      const instance = agoricNames.instance[priceFeed];
-      assert(instance, `price feed instance ${priceFeed} not found`);
+      const instance = lookupAgoricInstance(priceFeed);
       assert(charterOfferId, 'cannot makeOffer without charter membership');
 
       const deadline = absoluteDeadline(relativeDeadlineMin);
