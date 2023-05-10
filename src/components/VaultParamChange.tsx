@@ -12,6 +12,7 @@ import {
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
 import { SubmitInput } from './SubmitButton';
+import { displayBrandLabel } from 'utils/displayFunctions';
 
 interface Props {
   charterOfferId: number;
@@ -33,24 +34,24 @@ export type ParameterValue =
 
 export default function VaultParamChange(props: Props) {
   const walletUtils = useContext(WalletContext);
-  const { data: vaultKeys, status: vaultKeysStatus } =
-    usePublishedKeys('vaultFactory');
+  const { data: vaultKeys, status: vaultKeysStatus } = usePublishedKeys(
+    'vaultFactory.managers',
+  );
 
   const managerIds = vaultKeys.filter(key => key.startsWith('manager'));
   const [managerId, setManagerId] = useState(null);
 
   const { data, status } = usePublishedDatum(
-    `vaultFactory.${managerId}.governance`,
+    `vaultFactory.managers.${managerId}.governance`,
   );
 
   const { data: selectedManagerMetrics } = usePublishedDatum(
-    `vaultFactory.${managerId}.metrics`,
+    `vaultFactory.managers.${managerId}.metrics`,
   );
 
   const collateralBrand = selectedManagerMetrics?.totalCollateral?.brand;
 
-  // "Alleged: IbcATOM brand" -> "IbcATOM"
-  const collateralBrandLabel = collateralBrand?.iface?.split(' ')[1];
+  const collateralBrandLabel = displayBrandLabel(collateralBrand);
 
   const [minutesUntilClose, setMinutesUntilClose] = useState(10);
 
