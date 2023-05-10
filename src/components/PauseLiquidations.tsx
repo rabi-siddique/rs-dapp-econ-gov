@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import { SubmitInput } from './SubmitButton';
 
 interface Props {
-  charterOfferId: number;
+  charterOfferId: string;
 }
 
 const invitationDescriptions = {

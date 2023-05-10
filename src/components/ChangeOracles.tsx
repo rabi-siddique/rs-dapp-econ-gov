@@ -52,7 +52,7 @@ const inputPlaceholders = {
 };
 
 interface Props {
-  charterOfferId: number;
+  charterOfferId: string;
   mode: ChangeOraclesMode;
 }
 

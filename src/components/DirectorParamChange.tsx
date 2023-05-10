@@ -27,7 +27,7 @@ export type ParameterValue =
 type GovernedParams = { current: Record<string, ParameterValue> };
 
 interface Props {
-  charterOfferId: number;
+  charterOfferId: string;
 }
 
 export default function DirectorParamChange(props: Props) {

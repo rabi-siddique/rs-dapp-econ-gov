@@ -9,7 +9,7 @@ import { AmountInput } from './inputs';
 import { SubmitButton } from './SubmitButton';
 
 interface Props {
-  charterOfferId: number;
+  charterOfferId: string;
 }
 
 export default function BurnIst({ charterOfferId }: Props) {
