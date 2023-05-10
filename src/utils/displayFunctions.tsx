@@ -37,6 +37,9 @@ export const notifySuccess = (toastId: ToastId, tx: DeliverTxResponse) => {
   });
 };
 
+export const displayBrandLabel = (brand?: Brand) =>
+  brand?.toString()?.split(' ')?.slice(-2, -1)[0];
+
 export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);
 
 export const notifyError = (toastId: ToastId, err: Error) => {

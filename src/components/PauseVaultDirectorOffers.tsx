@@ -29,13 +29,16 @@ const ManagerGroup = ({ managerId, onChecked }: ManagerGroupProps) => {
   }, [onChecked, checked]);
 
   const { data: selectedManagerMetrics } = usePublishedDatum(
-    `vaultFactory.${managerId}.metrics`,
+    `vaultFactory.managers.${managerId}.metrics`,
   );
 
   const collateralBrand = selectedManagerMetrics?.totalCollateral?.brand;
 
   // "Alleged: IbcATOM brand" -> "IbcATOM"
-  const collateralBrandLabel = collateralBrand?.iface?.split(' ')[1];
+  const collateralBrandLabel = collateralBrand
+    ?.toString()
+    ?.split(' ')
+    ?.slice(-2, -1)[0];
 
   const handleCheckChange = event => {
     const { target } = event;
@@ -74,10 +77,9 @@ interface Props {
 
 export default function PauseVaultDirectorOffers(props: Props) {
   const walletUtils = useContext(WalletContext);
-  const { data: vaultKeys, status: vaultKeysStatus } =
-    usePublishedKeys('vaultFactory');
-
-  const managerIds = vaultKeys.filter(key => key.startsWith('manager'));
+  const { data: managerIds, status: vaultKeysStatus } = usePublishedKeys(
+    'vaultFactory.managers',
+  );
 
   const [checked, setChecked] = useState({});
 

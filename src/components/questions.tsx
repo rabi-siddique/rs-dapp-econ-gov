@@ -18,7 +18,7 @@ import { FiCheck, FiInfo } from 'react-icons/fi';
 import { displayFunctionsAtom } from 'store/app';
 
 import clsx from 'clsx';
-import { capitalize } from 'utils/displayFunctions.js';
+import { capitalize, displayBrandLabel } from 'utils/displayFunctions.js';
 import { timestampPassed } from 'utils/helpers.js';
 import { OfferFilterSpec, ParamChangeSpec, RpcRemote } from '../govTypes.js';
 import { outcomeMessage } from '../lib/governance';
@@ -161,9 +161,10 @@ function paramChangeOutcome(
   const name =
     instance && instance.find(([_n, i]) => i === issue.contract)?.[0];
 
-  const brandLabel =
-    // @ts-expect-error It thinks key is always a string, this is null-safe anyway.
-    issue.spec.paramPath?.key?.collateralBrand?.iface?.split(' ')[1];
+  const brandLabel = displayBrandLabel(
+    // @ts-expect-error It thinks key is always a string, this is null-safe anyway
+    issue.spec.paramPath?.key?.collateralBrand,
+  );
 
   return (
     <>
@@ -217,9 +218,6 @@ export function QuestionDetails(props: {
         )}
       >
         <Deadline outcome={outcome} seconds={details.closingRule.deadline} />
-        <div className="text-sm px-2 text-gray-500">
-          {details.questionHandle.boardId}
-        </div>
       </div>
 
       <div className="py-6 px-10">

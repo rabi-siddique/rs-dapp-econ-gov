@@ -78,7 +78,7 @@ function VoteOnQuestions(props: {
         <VoteOnQuestion
           {...props}
           details={details}
-          key={details.counterInstance.boardId}
+          key={details.closingRule.deadline}
         />
       ))}
     </>

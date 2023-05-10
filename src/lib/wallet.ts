@@ -17,12 +17,10 @@ import {
 } from 'utils/displayFunctions.js';
 import { suggestChain } from './chainInfo.js';
 import { makeInteractiveSigner } from './keyManagement.js';
-import { boardSlottingMarshaller, networkConfigUrl, RpcUtils } from './rpc';
+import { marshal, networkConfigUrl, RpcUtils } from './rpc';
 import { makeRpcUtils } from './rpc.js';
 
 export type RelativeTime = { timerBrand: Brand; relValue: bigint };
-
-const marshaller = boardSlottingMarshaller();
 
 export const charterInvitationSpec = {
   instanceName: 'econCommitteeCharter',
@@ -33,7 +31,7 @@ const absoluteDeadline = (relativeDeadlineMin: number) =>
   BigInt(relativeDeadlineMin * 60 + Math.round(Date.now() / 1000));
 
 export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
-  const { agoricNames, fromBoard } = rpcUtils;
+  const { agoricNames } = rpcUtils;
 
   const lookupAgoricInstance = name => {
     const instance = agoricNames.instance[name];
@@ -59,7 +57,6 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
 
     return {
       chainInfo,
-      fromBoard,
       signer,
     };
   };
@@ -104,8 +101,6 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       chosenPositions: Position[],
       questionHandle,
     ) {
-      const ecInstance = lookupAgoricInstance('economicCommittee');
-
       assert(
         ecOfferId,
         'cannot makeOffer without economicCommittee membership',
@@ -385,12 +380,12 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
     },
     sendOffer(offer) {
       const toastId = notifySigning();
-      const payload = {
+      const payload = harden({
         method: 'executeOffer',
         offer,
-      };
+      });
 
-      const capData = marshaller.serialize(payload);
+      const capData = marshal.serialize(payload);
       console.log('submitting spend action', capData, 'for offer', offer);
       const message = JSON.stringify(capData);
 
@@ -543,11 +538,10 @@ export const inferInvitationStatus = (
   }
   // if that's not available, see if there's an invitation that can be used
 
-  const invitationPurse = current.purses.find(p =>
+  const invitationPurse = current.purses.find(p => {
     // xxx take this as param
-    // @ts-expect-error RpcRemote
-    p.brand.iface.includes('Invitation'),
-  );
+    return p.brand.toString().includes('Invitation');
+  });
 
   const invitation: Amount<'set'> | undefined =
     invitationPurse.balance.value.find(a =>
