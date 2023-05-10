@@ -1,5 +1,7 @@
 // @ts-check
 // Copied and tweaked from @agoric/smart-wallet
+// XXX import directly from @agoric/smart-wallet once it supports
+// null slots and proper type exports.
 import { makeScalarMapStore } from '@agoric/store';
 import { Far, makeMarshal } from '@endo/marshal';
 import { DEFAULT_PREFIX } from '@agoric/vats/src/lib-board.js';

@@ -22,10 +22,10 @@ export const networkConfigUrl = (agoricNetName: string) => {
   }
 };
 
-export const marshal = makeImportContext().fromBoard;
-
 const rpcUrl = agoricNetSubdomain =>
   `https://${agoricNetSubdomain}.rpc.agoric.net:443`;
+
+export const marshal = makeImportContext().fromBoard;
 
 type MinimalNetworkConfig = { rpcAddrs: string[]; chainName: string };
 
