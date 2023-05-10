@@ -7,7 +7,7 @@ import { SubmitInput } from './SubmitButton';
 
 interface Props {
   anchorName: string;
-  psmCharterOfferId: number;
+  psmCharterOfferId: string;
 }
 
 export type ParameterValue =

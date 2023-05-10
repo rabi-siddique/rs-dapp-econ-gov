@@ -72,7 +72,7 @@ const ManagerGroup = ({ managerId, onChecked }: ManagerGroupProps) => {
 };
 
 interface Props {
-  charterOfferId: number;
+  charterOfferId: string;
 }
 
 export default function PauseVaultDirectorOffers(props: Props) {

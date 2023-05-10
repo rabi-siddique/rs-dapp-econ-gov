@@ -15,7 +15,7 @@ import { SubmitInput } from './SubmitButton';
 import { displayBrandLabel } from 'utils/displayFunctions';
 
 interface Props {
-  charterOfferId: number;
+  charterOfferId: string;
 }
 
 export type ParameterValue =

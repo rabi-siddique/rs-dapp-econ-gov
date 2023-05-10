@@ -24,7 +24,7 @@ import { OfferFilterSpec, ParamChangeSpec, RpcRemote } from '../govTypes.js';
 import { outcomeMessage } from '../lib/governance';
 import { SubmitInput } from './SubmitButton.js';
 
-export function OfferId(props: { id: number }) {
+export function OfferId(props: { id: string }) {
   const { id } = props;
 
   let title = '';
@@ -96,7 +96,7 @@ function ParamChanges(props: ChangeParamsPosition) {
       'brand' in value &&
       'value' in value
     ) {
-      const decimalPlaces = getDecimalPlaces(value.brand) || 6;
+      const decimalPlaces = getDecimalPlaces(value.brand);
       const numeral = stringifyValue(
         value.value,
         AssetKind.NAT,
@@ -300,7 +300,7 @@ function ChoosePosition(props: {
 }
 
 export function VoteOnQuestion(props: {
-  ecOfferId: number;
+  ecOfferId: string;
   instance?: [property: string, value: RpcRemote][];
   details: IQuestionDetails;
 }) {

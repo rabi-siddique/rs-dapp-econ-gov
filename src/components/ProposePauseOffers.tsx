@@ -5,7 +5,7 @@ import { SubmitInput } from './SubmitButton';
 
 interface Props {
   anchorName: string;
-  psmCharterOfferId: number;
+  psmCharterOfferId: string;
 }
 
 export default function ProposePauseOffers(props: Props) {

@@ -23,7 +23,6 @@ export const AmountInput = ({
   const { getDecimalPlaces } = useAtomValue(displayFunctionsAtom);
 
   const decimalPlaces = getDecimalPlaces(brand);
-
   const amountString = stringifyValue(value, AssetKind.NAT, decimalPlaces, 4);
   const [fieldString, setFieldString] = useState(
     value === null ? '0' : amountString,

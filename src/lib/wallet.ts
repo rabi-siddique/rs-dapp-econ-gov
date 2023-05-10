@@ -97,7 +97,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeOfferToVote(
-      ecOfferId: number,
+      ecOfferId: string,
       chosenPositions: Position[],
       questionHandle,
     ) {
@@ -119,7 +119,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnPSMParams(
-      psmCharterOfferId: number,
+      psmCharterOfferId: string,
       anchorName: string,
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number,
@@ -149,7 +149,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnVaultManagerParams(
-      charterOfferId: number,
+      charterOfferId: string,
       collateralBrand: Brand,
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number,
@@ -176,7 +176,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnVaultDirectorParams(
-      charterOfferId: number,
+      charterOfferId: string,
       changedParams: Record<string, Amount | Ratio>,
       relativeDeadlineMin: number,
     ) {
@@ -202,7 +202,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnVaultAuctioneerParams(
-      charterOfferId: number,
+      charterOfferId: string,
       changedParams: Record<string, RelativeTime | bigint>,
       relativeDeadlineMin: number,
     ) {
@@ -228,7 +228,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnPausePSMOffers(
-      psmCharterOfferId: number,
+      psmCharterOfferId: string,
       anchorName: string,
       toPause: string[],
       relativeDeadlineMin: number,
@@ -254,7 +254,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     poseBurnIst(
-      charterOfferId: number,
+      charterOfferId: string,
       amount: Amount,
       relativeDeadlineMin: number,
     ) {
@@ -280,7 +280,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnPauseVaultOffers(
-      charterOfferId: number,
+      charterOfferId: string,
       toPause: string[],
       relativeDeadlineMin: number,
     ) {
@@ -301,7 +301,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnPauseLiquidationOffers(
-      charterOfferId: number,
+      charterOfferId: string,
       toPause: string[],
       relativeDeadlineMin: number,
     ) {
@@ -322,7 +322,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnAddOracles(
-      charterOfferId: number,
+      charterOfferId: string,
       priceFeed: string,
       oracles: string[],
       relativeDeadlineMin: number,
@@ -344,7 +344,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       };
     },
     makeVoteOnRemoveOracles(
-      charterOfferId: number,
+      charterOfferId: string,
       priceFeed: string,
       oracles: string[],
       relativeDeadlineMin: number,
@@ -533,7 +533,7 @@ export const inferInvitationStatus = (
   if (usedInvitationEntry) {
     return {
       status: 'accepted',
-      acceptedIn: Number(usedInvitationEntry[0]),
+      acceptedIn: usedInvitationEntry[0],
     };
   }
   // if that's not available, see if there's an invitation that can be used

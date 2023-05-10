@@ -7,7 +7,6 @@ import {
 } from '@agoric/ui-components';
 import { DeliverTxResponse } from '@cosmjs/stargate';
 import { IST_ICON } from 'assets/assets';
-import { wellKnownBrands } from 'config';
 import { transactionInfoUrl } from 'lib/wallet';
 import { Id as ToastId, toast } from 'react-toastify';
 import type { BrandInfo } from 'store/app';
@@ -70,17 +69,7 @@ export const makeDisplayFunctions = (brandToInfo: Map<Brand, BrandInfo>) => {
   const getDecimalPlaces = (brand?: Brand) => {
     if (!brand) return DEFAULT_DECIMAL_PLACES;
 
-    // XXX for rpc brands that don't come in the purse watcher
-    if ('boardId' in brand) {
-      const { boardId } = brand as unknown as { boardId: string };
-      const info = wellKnownBrands[boardId];
-      if (info) {
-        return info.decimalPlaces;
-      }
-      console.warn('unknown brand boardId', boardId, 'using default');
-      return DEFAULT_DECIMAL_PLACES;
-    }
-    brandToInfo.get(brand)?.decimalPlaces;
+    return brandToInfo.get(brand)?.decimalPlaces ?? DEFAULT_DECIMAL_PLACES;
   };
 
   const getPetname = (brand?: Brand | null) =>

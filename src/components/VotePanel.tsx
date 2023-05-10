@@ -56,7 +56,7 @@ function Eligibility({
 }
 
 function VoteOnQuestions(props: {
-  ecOfferId: number;
+  ecOfferId: string;
   instance?: [property: string, value: RpcRemote][];
 }) {
   const history = usePublishedHistory(
