@@ -11,6 +11,20 @@ import { transactionInfoUrl } from 'lib/wallet';
 import { Id as ToastId, toast } from 'react-toastify';
 import type { BrandInfo } from 'store/app';
 
+// We pretend the contract already uses the desired param names.
+export const displayParamName = (name: string) => {
+  if (name === 'EndorsedUI') {
+    return 'ReferencedUI';
+  }
+
+  // UNTIL https://github.com/Agoric/agoric-sdk/issues/7588
+  if (name === 'InterestRate') {
+    return 'StabilityFee';
+  }
+
+  return name;
+};
+
 export const notifySigning = () =>
   toast.loading(<p>Awaiting sign and broadcast...</p>);
 

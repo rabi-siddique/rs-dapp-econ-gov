@@ -12,7 +12,7 @@ import {
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
 import { SubmitInput } from './SubmitButton';
-import { displayBrandLabel } from 'utils/displayFunctions';
+import { displayBrandLabel, displayParamName } from 'utils/displayFunctions';
 
 interface Props {
   charterOfferId: string;
@@ -121,7 +121,7 @@ export default function VaultParamChange(props: Props) {
           {Object.entries(data.current).map(([name, value]) => (
             <div className="mb-2" key={name}>
               <label className="block">
-                <span className="text-gray-700">{name}</span>
+                <span className="text-gray-700">{displayParamName(name)}</span>
                 <div className="w-full">
                   {displayParam(name, value as ParameterValue)}
                 </div>

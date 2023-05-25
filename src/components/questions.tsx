@@ -18,7 +18,11 @@ import { FiCheck, FiInfo } from 'react-icons/fi';
 import { displayFunctionsAtom } from 'store/app';
 
 import clsx from 'clsx';
-import { capitalize, displayBrandLabel } from 'utils/displayFunctions.js';
+import {
+  capitalize,
+  displayBrandLabel,
+  displayParamName,
+} from 'utils/displayFunctions.js';
 import { timestampPassed } from 'utils/helpers.js';
 import { OfferFilterSpec, ParamChangeSpec, RpcRemote } from '../govTypes.js';
 import { outcomeMessage } from '../lib/governance';
@@ -139,7 +143,7 @@ function ParamChanges(props: ChangeParamsPosition) {
         {changeEntries.length ? (
           changeEntries.map(([name, value]) => (
             <tr className="border-b" key={name}>
-              <td className="p-2">{name}</td>
+              <td className="p-2">{displayParamName(name)}</td>
               <td className="p-2">{fmtVal(value as Amount | Ratio)}</td>
             </tr>
           ))
