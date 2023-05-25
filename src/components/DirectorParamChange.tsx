@@ -5,6 +5,7 @@ import { LoadStatus, usePublishedDatum, WalletContext } from 'lib/wallet';
 import { useContext, useState } from 'react';
 import { AmountInput, PercentageInput } from './inputs';
 import { SubmitInput } from './SubmitButton';
+import { displayParamName } from 'utils/displayFunctions';
 
 export type ParameterValue =
   | {
@@ -81,7 +82,7 @@ export default function DirectorParamChange(props: Props) {
           <div className="relative flex-grow">
             <input
               type="text"
-              placeholder="0"
+              placeholder="Not set"
               value={arg}
               onChange={ev =>
                 setParamPatch({
@@ -123,7 +124,7 @@ export default function DirectorParamChange(props: Props) {
           {Object.entries(data.current).map(([name, value]) => (
             <div className="mb-2" key={name}>
               <label className="block">
-                <span className="text-gray-700">{name}</span>
+                <span className="text-gray-700">{displayParamName(name)}</span>
                 <div className="w-full">{displayParam(name, value)}</div>
               </label>
             </div>
