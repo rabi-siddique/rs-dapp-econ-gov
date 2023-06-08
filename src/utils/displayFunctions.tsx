@@ -7,7 +7,7 @@ import {
 } from '@agoric/ui-components';
 import { DeliverTxResponse } from '@cosmjs/stargate';
 import { IST_ICON } from 'assets/assets';
-import { transactionInfoUrl } from 'lib/wallet';
+import { transactionInfoUrl } from 'config';
 import { Id as ToastId, toast } from 'react-toastify';
 import type { BrandInfo } from 'store/app';
 
@@ -28,14 +28,18 @@ export const displayParamName = (name: string) => {
 export const notifySigning = () =>
   toast.loading(<p>Awaiting sign and broadcast...</p>);
 
-export const notifySuccess = (toastId: ToastId, tx: DeliverTxResponse) => {
+export const notifySuccess = (
+  toastId: ToastId,
+  agoricNet: string,
+  tx: DeliverTxResponse,
+) => {
   const txHash = tx.transactionHash;
   toast.update(toastId, {
     render: (
       <p>
         <a
           className="no-underline hover:underline"
-          href={transactionInfoUrl(txHash)}
+          href={transactionInfoUrl(agoricNet, txHash)}
           target={txHash}
           title={txHash}
         >

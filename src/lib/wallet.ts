@@ -396,7 +396,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       return chainKit.signer
         .submitSpendAction(message)
         .then(tx => {
-          notifySuccess(toastId, tx);
+          notifySuccess(toastId, agoricNet, tx);
         })
         .catch(err => notifyError(toastId, err));
     },
@@ -407,15 +407,6 @@ const usp = new URLSearchParams(window.location.search);
 const agoricNet = usp.get('agoricNet') || 'devnet';
 console.log('RPC server:', agoricNet);
 export const rpcUtils = await makeRpcUtils({ agoricNet });
-
-export const transactionInfoUrl = (transactionHash: string) => {
-  switch (agoricNet) {
-    case 'main':
-      return `https://bigdipper.live/agoric/transactions/${transactionHash}`;
-    default:
-      return `https://${agoricNet}.explorer.agoric.net/agoric/tx/${transactionHash}`;
-  }
-};
 
 const { keplr } = window as import('@keplr-wallet/types').Window;
 if (!keplr) {

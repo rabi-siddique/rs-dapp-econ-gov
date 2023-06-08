@@ -21,5 +21,15 @@ export const accountInfoUrl = (agoricNet: string, account: string) => {
       return `https://${agoricNet}.explorer.agoric.net/agoric/account/${account}`;
   }
 };
+
+export const transactionInfoUrl = (
+  agoricNet: string,
+  transactionHash: string,
+) => {
+  switch (agoricNet) {
+    case 'main':
+      return `https://bigdipper.live/agoric/transactions/${transactionHash}`;
+    default:
+      return `https://${agoricNet}.explorer.agoric.net/agoric/tx/${transactionHash}`;
   }
 };
