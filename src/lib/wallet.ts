@@ -63,14 +63,11 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
   };
 
   const chainKit = await makeChainKit();
-  console.log({ chainKit });
 
   const walletKey = await keplr.getKey(chainKit.chainInfo.chainId);
 
-  // TODO query RPC for the high water mark
-  const nextOfferId = () => {
-    // xxx some message was sent in milliseconds so the high water got very high
-    return Date.now();
+  const makeOfferId = () => {
+    return `econgov-${Date.now()}`;
   };
 
   return {
@@ -91,7 +88,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
 
       /** @type {import('../lib/psm.js').OfferSpec} */
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'purse',
           instance: sourceContract,
@@ -111,7 +108,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       );
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: ecOfferId,
@@ -138,7 +135,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: psmCharterOfferId,
@@ -164,7 +161,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: charterOfferId,
@@ -190,7 +187,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: charterOfferId,
@@ -216,7 +213,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: charterOfferId,
@@ -247,7 +244,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: psmCharterOfferId,
@@ -268,7 +265,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: charterOfferId,
@@ -294,7 +291,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: charterOfferId,
@@ -315,7 +312,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: charterOfferId,
@@ -337,7 +334,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: charterOfferId,
@@ -359,7 +356,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       const deadline = absoluteDeadline(relativeDeadlineMin);
 
       return {
-        id: nextOfferId(),
+        id: makeOfferId(),
         invitationSpec: {
           source: 'continuing',
           previousOffer: charterOfferId,
