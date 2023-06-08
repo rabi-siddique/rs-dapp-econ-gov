@@ -76,6 +76,15 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
     agoricNet,
     chainKit,
     rpcUtils,
+    getAddressExplorerHref() {
+      const addr = walletKey.bech32Address;
+      switch (agoricNet) {
+        case 'main':
+          return `https://bigdipper.live/agoric/accounts/${addr}`;
+        default:
+          return `https://${agoricNet}.explorer.agoric.net/agoric/account/${addr}`;
+      }
+    },
     getWalletAddress() {
       return walletKey.bech32Address;
     },
