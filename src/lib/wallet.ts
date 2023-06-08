@@ -19,6 +19,7 @@ import { suggestChain } from './chainInfo.js';
 import { makeInteractiveSigner } from './keyManagement.js';
 import { marshal, networkConfigUrl, RpcUtils } from './rpc';
 import { makeRpcUtils } from './rpc.js';
+import { accountInfoUrl } from 'config.js';
 
 export type RelativeTime = { timerBrand: Brand; relValue: bigint };
 
@@ -77,13 +78,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
     chainKit,
     rpcUtils,
     getAddressExplorerHref() {
-      const addr = walletKey.bech32Address;
-      switch (agoricNet) {
-        case 'main':
-          return `https://bigdipper.live/agoric/accounts/${addr}`;
-        default:
-          return `https://${agoricNet}.explorer.agoric.net/agoric/account/${addr}`;
-      }
+      return accountInfoUrl(agoricNet, walletKey.bech32Address);
     },
     getWalletAddress() {
       return walletKey.bech32Address;

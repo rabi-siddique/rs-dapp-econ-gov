@@ -12,3 +12,14 @@ export const supportedNetworks = [
   'xnet',
   'local',
 ];
+
+export const accountInfoUrl = (agoricNet: string, account: string) => {
+  switch (agoricNet) {
+    case 'main':
+      return `https://bigdipper.live/agoric/accounts/${account}`;
+    default:
+      return `https://${agoricNet}.explorer.agoric.net/agoric/account/${account}`;
+  }
+};
+  }
+};
