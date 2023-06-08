@@ -33,3 +33,14 @@ export const transactionInfoUrl = (
       return `https://${agoricNet}.explorer.agoric.net/agoric/tx/${transactionHash}`;
   }
 };
+
+export const networkConfigUrl = (agoricNetName: string) => {
+  if (agoricNetName === 'local') {
+    return 'https://wallet.agoric.app/wallet/network-config';
+  } else {
+    return `https://${agoricNetName}.agoric.net/network-config`;
+  }
+};
+
+export const rpcUrl = agoricNetSubdomain =>
+  `https://${agoricNetSubdomain}.rpc.agoric.net:443`;

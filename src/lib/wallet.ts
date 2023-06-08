@@ -17,9 +17,9 @@ import {
 } from 'utils/displayFunctions.js';
 import { suggestChain } from './chainInfo.js';
 import { makeInteractiveSigner } from './keyManagement.js';
-import { marshal, networkConfigUrl, RpcUtils } from './rpc';
+import { marshal, RpcUtils } from './rpc';
 import { makeRpcUtils } from './rpc.js';
-import { accountInfoUrl } from 'config.js';
+import { accountInfoUrl, networkConfigUrl } from 'config.js';
 
 export type RelativeTime = { timerBrand: Brand; relValue: bigint };
 

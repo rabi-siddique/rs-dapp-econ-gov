@@ -9,21 +9,11 @@ import {
   makeLeader,
 } from '@agoric/casting';
 import { makeImportContext } from './makeImportContext';
+import { networkConfigUrl, rpcUrl } from 'config';
 
 /**
  * @typedef {{boardId: string, iface: string}} RpcRemote
  */
-
-export const networkConfigUrl = (agoricNetName: string) => {
-  if (agoricNetName === 'local') {
-    return 'https://wallet.agoric.app/wallet/network-config';
-  } else {
-    return `https://${agoricNetName}.agoric.net/network-config`;
-  }
-};
-
-const rpcUrl = agoricNetSubdomain =>
-  `https://${agoricNetSubdomain}.rpc.agoric.net:443`;
 
 export const marshal = makeImportContext().fromBoard;
 
