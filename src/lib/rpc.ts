@@ -9,7 +9,7 @@ import {
   makeLeader,
 } from '@agoric/casting';
 import { makeImportContext } from './makeImportContext';
-import { networkConfigUrl, rpcUrl } from 'config';
+import { archivingAlternative, networkConfigUrl, rpcUrl } from 'config';
 
 /**
  * @typedef {{boardId: string, iface: string}} RpcRemote
@@ -82,7 +82,10 @@ export const makeRpcUtils = async ({ agoricNet }) => {
 
   const { rpcAddrs } = networkConfig;
 
-  const leader = makeLeader(networkConfig.rpcAddrs[0], {});
+  const leader = makeLeader(
+    archivingAlternative(networkConfig.rpcAddrs[0]),
+    {},
+  );
 
   // XXX memoize on path
   const follow = (path: string) =>
