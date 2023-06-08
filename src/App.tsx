@@ -9,15 +9,7 @@ import { INTER_LOGO } from 'assets/assets';
 import GovernanceTools from 'components/GovernanceTools';
 import { WalletContext } from 'lib/wallet';
 import 'styles/globals.css';
-
-const supportedNetworks = [
-  'main',
-  'emerynet',
-  'ollinet',
-  'devnet',
-  'xnet',
-  'local',
-];
+import { supportedNetworks } from 'config';
 
 const Item = ({
   label,
