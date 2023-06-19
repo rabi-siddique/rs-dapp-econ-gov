@@ -49,6 +49,8 @@ export const rpcUrl = agoricNetSubdomain =>
  * Look up an archiving version of the host, if available.
  */
 export const archivingAlternative = (rpcHost: string) => {
+  // XXX archive node regressed
+  return rpcHost;
   switch (rpcHost) {
     case 'https://agoric-rpc.polkachu.com:443':
     case 'https://main.rpc.agoric.net:443':
