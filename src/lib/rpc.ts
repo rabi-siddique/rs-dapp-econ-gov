@@ -9,21 +9,11 @@ import {
   makeLeader,
 } from '@agoric/casting';
 import { makeImportContext } from './makeImportContext';
+import { archivingAlternative, networkConfigUrl, rpcUrl } from 'config';
 
 /**
  * @typedef {{boardId: string, iface: string}} RpcRemote
  */
-
-export const networkConfigUrl = (agoricNetName: string) => {
-  if (agoricNetName === 'local') {
-    return 'https://wallet.agoric.app/wallet/network-config';
-  } else {
-    return `https://${agoricNetName}.agoric.net/network-config`;
-  }
-};
-
-const rpcUrl = agoricNetSubdomain =>
-  `https://${agoricNetSubdomain}.rpc.agoric.net:443`;
 
 export const marshal = makeImportContext().fromBoard;
 
@@ -92,7 +82,10 @@ export const makeRpcUtils = async ({ agoricNet }) => {
 
   const { rpcAddrs } = networkConfig;
 
-  const leader = makeLeader(networkConfig.rpcAddrs[0], {});
+  const leader = makeLeader(
+    archivingAlternative(networkConfig.rpcAddrs[0]),
+    {},
+  );
 
   // XXX memoize on path
   const follow = (path: string) =>

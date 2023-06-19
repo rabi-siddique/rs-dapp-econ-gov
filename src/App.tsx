@@ -9,15 +9,7 @@ import { INTER_LOGO } from 'assets/assets';
 import GovernanceTools from 'components/GovernanceTools';
 import { WalletContext } from 'lib/wallet';
 import 'styles/globals.css';
-
-const supportedNetworks = [
-  'main',
-  'emerynet',
-  'ollinet',
-  'devnet',
-  'xnet',
-  'local',
-];
+import { supportedNetworks } from 'config';
 
 const Item = ({
   label,
@@ -86,10 +78,6 @@ const App = (_props: Props) => {
   const walletUtils = useContext(WalletContext);
 
   const address = walletUtils.getWalletAddress();
-  const explorerHref =
-    walletUtils.agoricNet === 'main'
-      ? `https://bigdipper.live/agoric/accounts/${address}`
-      : `https://${walletUtils.agoricNet}.explorer.agoric.net/agoric/account/${address}`;
 
   return (
     <>
@@ -111,7 +99,7 @@ const App = (_props: Props) => {
             <NetPicker currentNet={walletUtils.agoricNet} />
             <a
               target="block-explorer"
-              href={explorerHref}
+              href={walletUtils.getAddressExplorerHref()}
               title="Block Explorer"
               className="shadow-md no-underline inline-flex justify-center rounded-md bg-blue-900/10 px-4 py-2 text-md font-medium text-primary hover:bg-slate-100 hover:text-purple-300 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
             >
