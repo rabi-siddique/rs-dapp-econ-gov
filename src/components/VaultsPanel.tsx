@@ -30,10 +30,7 @@ const ProposalTypes = {
   auctioneerParamChange: 'Change Auctioneer Params',
 };
 
-const networkProposalFilter = walletUtils => {
-  if (walletUtils.agoricNet === 'main') {
-    return p => p !== ProposalTypes.auctioneerParamChange;
-  }
+const networkProposalFilter = _walletUtils => {
   // no filter
   return Boolean;
 };
