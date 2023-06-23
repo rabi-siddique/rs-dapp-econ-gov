@@ -11,6 +11,7 @@ import {
 import { makeImportContext } from './makeImportContext';
 import { archivingAlternative, networkConfigUrl, rpcUrl } from 'config';
 import { makeAgoricChainStorageWatcher } from '@agoric/rpc';
+import { sample } from 'lodash-es';
 
 /**
  * @typedef {{boardId: string, iface: string}} RpcRemote
@@ -93,18 +94,13 @@ export const makeRpcUtils = async ({ agoricNet }) => {
     makeFollower(path, leader, { unserializer: marshal, proof: 'none' });
 
   const agoricNames = await makeAgoricNames(follow);
-
   const vstorage = {
     keys: (path: string, blockHeight?: number) =>
-      fetchVstorageKeys(
-        rpcAddrs[Math.floor(Math.random() * rpcAddrs.length)],
-        path,
-        blockHeight,
-      ),
+      fetchVstorageKeys(sample(rpcAddrs), path, blockHeight),
   };
 
   const storageWatcher = makeAgoricChainStorageWatcher(
-    rpcAddrs[Math.floor(Math.random() * rpcAddrs.length)],
+    sample(rpcAddrs),
     networkConfig.chainName,
     marshal.unserialize,
   );

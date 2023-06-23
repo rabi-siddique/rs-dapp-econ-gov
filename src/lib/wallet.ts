@@ -47,7 +47,6 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       {
         fetch: window.fetch,
         keplr,
-        random: Math.random,
       },
     );
 
@@ -445,7 +444,6 @@ export const usePublishedDatum = (path: string) => {
   const [status, setStatus] = useState(LoadStatus.Idle);
   const [data, setData] = useState({} as any);
 
-  // XXX cleanup? await next?
   useEffect(() => {
     const { storageWatcher } = rpcUtils;
 
