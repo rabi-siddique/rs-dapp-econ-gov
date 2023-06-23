@@ -10,6 +10,7 @@ import {
 } from '@agoric/casting';
 import { makeImportContext } from './makeImportContext';
 import { archivingAlternative, networkConfigUrl, rpcUrl } from 'config';
+import { makeAgoricChainStorageWatcher } from '@agoric/rpc';
 
 /**
  * @typedef {{boardId: string, iface: string}} RpcRemote
@@ -89,7 +90,7 @@ export const makeRpcUtils = async ({ agoricNet }) => {
 
   // XXX memoize on path
   const follow = (path: string) =>
-    makeFollower(path, leader, { unserializer: marshal });
+    makeFollower(path, leader, { unserializer: marshal, proof: 'none' });
 
   const agoricNames = await makeAgoricNames(follow);
 
@@ -102,11 +103,18 @@ export const makeRpcUtils = async ({ agoricNet }) => {
       ),
   };
 
+  const storageWatcher = makeAgoricChainStorageWatcher(
+    rpcAddrs[Math.floor(Math.random() * rpcAddrs.length)],
+    networkConfig.chainName,
+    marshal.unserialize,
+  );
+
   return {
     agoricNames,
     follow,
     leader,
     vstorage,
+    storageWatcher,
   };
 };
 export type RpcUtils = Awaited<ReturnType<typeof makeRpcUtils>>;
