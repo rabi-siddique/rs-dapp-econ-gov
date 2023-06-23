@@ -197,7 +197,7 @@ function apiInvocationOutcome({ issue }) {
   return (
     <>
       Invoke method <code>{issue.apiMethodName}</code> with arguments{' '}
-      <code>{bigintStringify(issue.methodArgs).replace(',', ', ')}</code>
+      <code>{bigintStringify(issue.methodArgs).replaceAll(',', ', ')}</code>
     </>
   );
 }

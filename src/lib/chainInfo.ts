@@ -1,4 +1,5 @@
 import type { Bech32Config, Currency } from '@keplr-wallet/types';
+import { sample } from 'lodash-es';
 
 export const AGORIC_COIN_TYPE = 564;
 export const COSMOS_COIN_TYPE = 118;
@@ -64,12 +65,11 @@ const makeChainInfo = (networkConfig, rpcAddr, chainId, caption) => {
  * @param {object} io
  * @param {typeof fetch} io.fetch
  * @param {import('@keplr-wallet/types').Keplr} io.keplr
- * @param {typeof Math.random} io.random
  * @param {string} [caption]
  */
 export async function suggestChain(
   networkConfig,
-  { fetch, keplr, random },
+  { fetch, keplr },
   caption = undefined,
 ) {
   console.log('suggestChain: fetch', networkConfig); // log net IO
@@ -78,7 +78,7 @@ export async function suggestChain(
     throw Error(`Cannot fetch network: ${res.status}`);
   }
   const { chainName: chainId, rpcAddrs } = await res.json();
-  const rpcAddr = rpcAddrs[Math.floor(random() * rpcAddrs.length)];
+  const rpcAddr = sample(rpcAddrs);
 
   const chainInfo = makeChainInfo(networkConfig, rpcAddr, chainId, caption);
   console.log('chainInfo', chainInfo);

@@ -20,6 +20,7 @@ import { makeInteractiveSigner } from './keyManagement.js';
 import { marshal, RpcUtils } from './rpc';
 import { makeRpcUtils } from './rpc.js';
 import { accountInfoUrl, networkConfigUrl } from 'config.js';
+import { AgoricChainStoragePathKind } from '@agoric/rpc/index.js';
 
 export type RelativeTime = { timerBrand: Brand; relValue: bigint };
 
@@ -46,7 +47,6 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
       {
         fetch: window.fetch,
         keplr,
-        random: Math.random,
       },
     );
 
@@ -443,24 +443,21 @@ export const usePublishedKeys = (path: string) => {
 export const usePublishedDatum = (path: string) => {
   const [status, setStatus] = useState(LoadStatus.Idle);
   const [data, setData] = useState({} as any);
-  const walletUtils = useContext(WalletContext);
 
-  // XXX cleanup? await next?
   useEffect(() => {
-    const { follow } = rpcUtils;
-    const fetchData = async () => {
-      console.debug('usePublishedDatum following', `:published.${path}`);
-      const follower = await follow(`:published.${path}`);
-      const iterable: AsyncIterable<Record<string, unknown>> =
-        await follower.getLatestIterable();
-      const iterator = iterable[Symbol.asyncIterator]();
-      setStatus(LoadStatus.Waiting);
-      const { value: publishedValue } = await iterator.next();
-      setData(publishedValue.value);
-      setStatus(LoadStatus.Received);
-    };
-    fetchData().catch(e => console.error('useEffect error', e));
-  }, [path, walletUtils]);
+    const { storageWatcher } = rpcUtils;
+
+    setStatus(LoadStatus.Waiting);
+
+    return storageWatcher.watchLatest(
+      [AgoricChainStoragePathKind.Data, `published.${path}`],
+      value => {
+        setData(value);
+        setStatus(LoadStatus.Received);
+      },
+      e => console.error('useEffect error', path, e),
+    );
+  }, [path]);
 
   return { status, data };
 };
