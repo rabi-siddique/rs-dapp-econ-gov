@@ -29,6 +29,12 @@ const anchors = [
   // https://bigdipper.live/agoric/proposals/17
   'DAI_axl',
   'DAI_grv',
+  // Start USDC (Noble) PSM #59 Nov 1, 2023
+  // https://bigdipper.live/agoric/proposals/59
+  'USDC',
+  // Start USDT (Kava) PSM #60 Nov 1, 2023
+  // https://bigdipper.live/agoric/proposals/60
+  'USDT',
 ];
 
 const ProposalTypes = {
