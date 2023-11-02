@@ -82,12 +82,9 @@ export const makeRpcUtils = async ({ agoricNet }) => {
       ? { rpcAddrs: ['http://localhost:26657'], chainName: 'agoric' }
       : await fromAgoricNet(agoricNet);
 
-  const { rpcAddrs } = networkConfig;
+  const { rpcAddrs, chainName } = networkConfig;
 
-  const leader = makeLeader(
-    archivingAlternative(networkConfig.rpcAddrs[0]),
-    {},
-  );
+  const leader = makeLeader(archivingAlternative(chainName, rpcAddrs[0]), {});
 
   // XXX memoize on path
   const follow = (path: string) =>
@@ -101,7 +98,7 @@ export const makeRpcUtils = async ({ agoricNet }) => {
 
   const storageWatcher = makeAgoricChainStorageWatcher(
     sample(rpcAddrs),
-    networkConfig.chainName,
+    chainName,
     marshal.unserialize,
   );
 
