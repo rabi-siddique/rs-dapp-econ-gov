@@ -48,12 +48,5 @@ export const rpcUrl = agoricNetSubdomain =>
 /**
  * Look up an archiving version of the host, if available.
  */
-export const archivingAlternative = (rpcHost: string) => {
-  switch (rpcHost) {
-    case 'https://agoric-rpc.polkachu.com:443':
-    case 'https://main.rpc.agoric.net:443':
-      return 'https://main-a.rpc.agoric.net:443';
-    default:
-      return rpcHost;
-  }
-};
+export const archivingAlternative = (chainName: string, defaultRpc: string) =>
+  chainName === 'agoric-3' ? 'https://main-a.rpc.agoric.net:443' : defaultRpc;
