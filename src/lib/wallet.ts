@@ -401,7 +401,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
 };
 
 const usp = new URLSearchParams(window.location.search);
-const agoricNet = usp.get('agoricNet') || 'devnet';
+const agoricNet = usp.get('agoricNet') || 'main';
 console.log('RPC server:', agoricNet);
 export const rpcUtils = await makeRpcUtils({ agoricNet });
 
