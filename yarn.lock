@@ -1179,6 +1179,11 @@
   resolved "https://registry.yarnpkg.com/@endo/base64/-/base64-0.2.31.tgz#92378462cd791e0258a2291d44d2cfd15415cf32"
   integrity sha512-7IndkaZ7buIuFw8oBovNZV7epuyFWs0gdusSJ/zrx6fMXRqX0ycSTtxr6M5xADQGss1I9fqP3vteVLiNFlyIbw==
 
+"@endo/base64@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@endo/base64/-/base64-1.0.2.tgz#0a18544ba834ba4db6c3351b384a0abba9e9b794"
+  integrity sha512-oug5UaEsp1+ImflnjDxARkGlcr+Er+cgKU4RIDgu4uxYBl9w/xmugEMFkUkVXnTAoeAaqvdde5qm/3C0FCYRDg==
+
 "@endo/bundle-source@^2.5.1":
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/@endo/bundle-source/-/bundle-source-2.5.1.tgz#6ec870335bd88ee561e6c2a323080c3b4a1894b4"
@@ -1231,10 +1236,22 @@
     "@endo/zip" "^0.2.31"
     ses "^0.18.4"
 
-"@endo/eventual-send@^0.17.2", "@endo/eventual-send@~0.17.2":
+"@endo/env-options@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@endo/env-options/-/env-options-1.1.1.tgz#eee630f8eff01580ec49e0dedcb1b6cef05d89a4"
+  integrity sha512-uCwlJ8Vkndx/VBBo36BdYHdxSoQPy7ZZpwyJNfv86Rh4B1IZfqzCRPf0u0mPgJdzOr7lShQey60SuYwoMSZ9Xg==
+
+"@endo/eventual-send@^0.17.2":
   version "0.17.2"
   resolved "https://registry.yarnpkg.com/@endo/eventual-send/-/eventual-send-0.17.2.tgz#c8710d557c2f57723be05fe99e941cd893acc5d2"
   integrity sha512-nux02l2yYXXUeUA2PigOO1K0gbVVMYx3prfYrW/G7Ny6PiDLtOyaeMWwKQwFTgJV2yAkOfvycr4LC1+tm7hu/Q==
+
+"@endo/eventual-send@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@endo/eventual-send/-/eventual-send-1.1.2.tgz#496e97c572462d2552a114810ace61af548bdb1c"
+  integrity sha512-6zax3s7cJv4fHt3r9yQcgyllXYCfOtTqFUYkNMRMOxewwY80nz18H2MlhL9PJfOBHzTo34O3SDgpZvcMPxdmRA==
+  dependencies:
+    "@endo/env-options" "^1.1.1"
 
 "@endo/exo@^0.2.2":
   version "0.2.2"
@@ -1270,12 +1287,29 @@
     "@endo/lockdown" "^0.1.28"
     "@endo/promise-kit" "^0.2.56"
 
+"@endo/init@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@endo/init/-/init-1.0.4.tgz#09df92dea145acbaa0fd0bea7a497076ba305337"
+  integrity sha512-dpTVXocJHNOTgjfdlrYIIzXZc7vGgMcd8kWhFEpKhONH7uPF7xv3Dr7VdCn3qgYVJhV/McUSp/NXQErqY/Ws1g==
+  dependencies:
+    "@endo/base64" "^1.0.2"
+    "@endo/eventual-send" "^1.1.2"
+    "@endo/lockdown" "^1.0.4"
+    "@endo/promise-kit" "^1.0.4"
+
 "@endo/lockdown@^0.1.28":
   version "0.1.28"
   resolved "https://registry.yarnpkg.com/@endo/lockdown/-/lockdown-0.1.28.tgz#43f23dcbb12b6ebd3ad2a3dc8c6bb3609dd9e95f"
   integrity sha512-YqurtDU23+0kuWq4J2c94HyRB1aqSB8xEwrx5xTZA9IY/anrtppEiTFGU8tQXqZFhE6bfRzSGWDIVKaXCcm4Lw==
   dependencies:
     ses "^0.18.4"
+
+"@endo/lockdown@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@endo/lockdown/-/lockdown-1.0.4.tgz#eefe6df51ed56bc1c5b0269ce8766f467bf5d25b"
+  integrity sha512-kkTZZqWi+m5mz9fXHmhabtRWo0i2kxL8cXq8x2e0Ee/y2QXoKVCKU+rdDl/oxVnx1fs2045W4Ru9VlX36n1Fug==
+  dependencies:
+    ses "^1.3.0"
 
 "@endo/marshal@^0.8.5":
   version "0.8.5"
@@ -1324,6 +1358,13 @@
   integrity sha512-eKlOg353jJCHwDAwXCajtcAiTTjGkd7oWBXniEEc97gZHK83MeB3pnGT2lhoeq3xzdNw3Xv2DDsowBI194AXeA==
   dependencies:
     ses "^0.18.4"
+
+"@endo/promise-kit@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@endo/promise-kit/-/promise-kit-1.0.4.tgz#809569fe23af9a065a311aa11747e5f00c6e481c"
+  integrity sha512-b4U6S7wZpfXw9BVSvbRHo0VvdznHsJPrHiMSg+2Upw7W1uVrT1SzDTu4bi4gL0udptCD6wGYJ7bIrMjShyzvww==
+  dependencies:
+    ses "^1.3.0"
 
 "@endo/static-module-record@^0.7.19":
   version "0.7.19"
@@ -5446,10 +5487,17 @@ semver@^7.3.5, semver@^7.3.7:
   dependencies:
     lru-cache "^6.0.0"
 
-ses@0.18.4, ses@^0.18.4:
+ses@^0.18.4:
   version "0.18.4"
   resolved "https://registry.yarnpkg.com/ses/-/ses-0.18.4.tgz#28781719870262afc6928b7d6d94dc16318dbd86"
   integrity sha512-Ph0PC38Q7uutHmMM9XPqA7rp/2taiRwW6pIZJwTr4gz90DtrBvy/x7AmNPH2uqNPhKriZpYKvPi1xKWjM9xJuQ==
+
+ses@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/ses/-/ses-1.3.0.tgz#4de8a2e740e5ff9e3cdbc4fd4a3574075c493f40"
+  integrity sha512-TURVgXm/fs38N4iJfhU9NjUiNvnU7Z/G7gVjM17jD+nrChRzMmR57fbvAzbQeGCS8Cm0m1fBs0jYCqmU6GZ7Tg==
+  dependencies:
+    "@endo/env-options" "^1.1.1"
 
 sha.js@^2.4.0, sha.js@^2.4.11, sha.js@^2.4.8:
   version "2.4.11"
