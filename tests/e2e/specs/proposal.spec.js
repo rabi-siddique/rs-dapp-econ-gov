@@ -21,8 +21,6 @@ describe('Make Proposal Tests', () => {
     });
 
     it('should allow gov1 to create a proposal', () => {
-      cy.visit('/?agoricNet=local');
-
       // open PSM and select USDT_axl
       cy.get('button').contains('PSM').click();
       cy.get('button').contains('AUSD').click();
