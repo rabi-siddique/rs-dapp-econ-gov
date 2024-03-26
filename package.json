@@ -15,7 +15,8 @@
     "postinstall": "patch-package",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "test:e2e": "EXTENSION=keplr SKIP_EXTENSION_SETUP=true synpress run --configFile=tests/e2e/synpress.config.cjs"
+    "test:e2e": "EXTENSION=keplr SKIP_EXTENSION_SETUP=true synpress run --configFile=tests/e2e/synpress.config.cjs",
+    "test:e2e:ci": "start-server-and-test 'yarn dev' http-get://localhost:5173 'yarn test:e2e'"
   },
   "dependencies": {
     "@agoric/rpc": "^0.0.2-dev-2c6fbc5.0",
@@ -71,6 +72,7 @@
     "patch-package": "^6.5.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^2.7.1",
+    "start-server-and-test": "^2.0.3",
     "typescript": "^4.9.3",
     "vite": "^3.2.7",
     "vite-tsconfig-paths": "^3.5.1",
