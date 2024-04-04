@@ -214,4 +214,36 @@ describe('Tests for creating proposals', () => {
         });
     });
   });
+
+  context('Creating Vaults', () => {
+    it('should navigate to Vaults UI, setup connection settings and connect with chain', () => {
+      cy.visit(
+        'https://bafybeidafiu4scsvzjshz4zlaqilb62acjzwhf4np4qw7xzrommn3jkgti.ipfs.cf-ipfs.com/#/vaults',
+      );
+
+      cy.get('button[aria-label="Settings"]').click();
+
+      cy.contains('p', 'RPC Endpoint:')
+        .next('div')
+        .find('input')
+        .clear()
+        .type('http://localhost:26657');
+      cy.contains('li', 'Add "http://localhost:26657"').click();
+
+      cy.contains('p', 'API Endpoint:')
+        .next('div')
+        .find('input')
+        .clear()
+        .type('http://localhost:1317');
+      cy.contains('li', 'Add "http://localhost:1317"').click();
+      cy.contains('button', 'Save').click();
+
+      cy.contains('button', 'Connect Wallet').click();
+      cy.get('label.cursor-pointer input[type="checkbox"]').check();
+      cy.contains('Proceed').click();
+
+      cy.acceptAccess();
+      cy.acceptAccess();
+    });
+  });
 });
