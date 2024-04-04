@@ -216,6 +216,12 @@ describe('Tests for creating proposals', () => {
   });
 
   context('Creating Vaults', () => {
+    it('should setup wallet using 24 word phrase', () => {
+      cy.setupWallet().then(setupFinished => {
+        expect(setupFinished).to.be.true;
+      });
+    });
+
     it('should navigate to Vaults UI, setup connection settings and connect with chain', () => {
       cy.visit(
         'https://bafybeidafiu4scsvzjshz4zlaqilb62acjzwhf4np4qw7xzrommn3jkgti.ipfs.cf-ipfs.com/#/vaults',
@@ -227,23 +233,53 @@ describe('Tests for creating proposals', () => {
         .next('div')
         .find('input')
         .clear()
-        .type('http://localhost:26657');
-      cy.contains('li', 'Add "http://localhost:26657"').click();
+        .type('https://emerynet.rpc.agoric.net:443');
+      cy.contains('li', 'Add "https://emerynet.rpc.agoric.net:443"').click();
 
       cy.contains('p', 'API Endpoint:')
         .next('div')
         .find('input')
         .clear()
-        .type('http://localhost:1317');
-      cy.contains('li', 'Add "http://localhost:1317"').click();
+        .type('https://emerynet.api.agoric.net:443');
+      cy.contains('li', 'Add "https://emerynet.api.agoric.net:443"').click();
       cy.contains('button', 'Save').click();
-
+      cy.contains('button', 'Keep using Old Version').click();
       cy.contains('button', 'Connect Wallet').click();
       cy.get('label.cursor-pointer input[type="checkbox"]').check();
       cy.contains('Proceed').click();
 
       cy.acceptAccess();
       cy.acceptAccess();
+    });
+
+    it('should create a new vault and approve the transaction successfully', () => {
+      cy.contains('button', /ATOM/).click();
+
+      cy.contains('.input-label', 'ATOM to lock up *')
+        .next()
+        .within(() => {
+          cy.get('input[type="number"]').click();
+          cy.get('input[type="number"]').clear();
+          cy.get('input[type="number"]').type(1);
+        });
+
+      cy.contains('.input-label', 'IST to receive *')
+        .next()
+        .within(() => {
+          cy.get('input[type="number"]').click();
+          cy.get('input[type="number"]').clear();
+          cy.get('input[type="number"]').type(1);
+        });
+
+      cy.contains('button', 'Create Vault').click();
+
+      cy.confirmTransaction().then(taskCompleted => {
+        expect(taskCompleted).to.be.true;
+        cy.contains(
+          'p',
+          'You can manage your vaults from the "My Vaults" view.',
+        ).should('exist');
+      });
     });
   });
 });
