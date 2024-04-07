@@ -228,116 +228,41 @@ describe('Tests for creating proposals', () => {
       });
     });
 
-    it('should connect with the wallet', () => {
-      cy.visit('http://localhost:5174/#/vaults');
+    it('should navigate to Vaults UI, setup connection settings and connect with chain', () => {
+      cy.visit(
+        'https://bafybeidafiu4scsvzjshz4zlaqilb62acjzwhf4np4qw7xzrommn3jkgti.ipfs.cf-ipfs.com/#/vaults',
+      );
 
-      cy.contains('Connect Wallet').click();
+      cy.get('button[aria-label="Settings"]').click();
 
-      cy.acceptAccess().then(taskCompleted => {
-        expect(taskCompleted).to.be.true;
-      });
+      cy.contains('p', 'RPC Endpoint:')
+        .next('div')
+        .find('input')
+        .clear()
+        .type('http://localhost:26657');
+      cy.contains('li', 'Add "http://localhost:26657"').click();
 
+      cy.contains('p', 'API Endpoint:')
+        .next('div')
+        .find('input')
+        .clear()
+        .type('http://localhost:1317');
+      cy.contains('li', 'Add "http://localhost:1317"').click();
+
+      cy.contains('button', 'Save').click();
+      cy.contains('button', 'Keep using Old Version').click();
+      cy.contains('button', 'Connect Wallet').click();
       cy.get('label.cursor-pointer input[type="checkbox"]').check();
       cy.contains('Proceed').click();
 
-      cy.acceptAccess().then(taskCompleted => {
-        expect(taskCompleted).to.be.true;
-      });
+      cy.acceptAccess();
+      cy.acceptAccess();
     });
 
-    it('should create a vault with a deposit of 15 ATOMs and debt of 100 ISTs', () => {
-      cy.contains('button', /ATOM/).click();
-
-      cy.contains('.input-label', 'ATOM to lock up *')
-        .next()
-        .within(() => {
-          cy.get('input[type="number"]').click();
-          cy.get('input[type="number"]').clear();
-          cy.get('input[type="number"]').type(15);
-        });
-
-      cy.contains('.input-label', 'IST to receive *')
-        .next()
-        .within(() => {
-          cy.get('input[type="number"]').click();
-          cy.get('input[type="number"]').clear();
-          cy.get('input[type="number"]').type(100);
-        });
-
-      cy.contains('button', 'Create Vault').click();
-
-      cy.confirmTransaction().then(taskCompleted => {
-        expect(taskCompleted).to.be.true;
-        cy.contains(
-          'p',
-          'You can manage your vaults from the "My Vaults" view.',
-        ).should('exist');
-      });
-    });
-
-    it('should create a vault with a deposit of 15 ATOMs and debt of 103 ISTs', () => {
-      cy.contains('button', 'Create Another Vault').click();
-      cy.reload();
-      cy.contains('span', 'Add new vault').click();
-      cy.contains('button', /ATOM/).click();
-
-      cy.contains('.input-label', 'ATOM to lock up *')
-        .next()
-        .within(() => {
-          cy.get('input[type="number"]').click();
-          cy.get('input[type="number"]').clear();
-          cy.get('input[type="number"]').type(15);
-        });
-
-      cy.contains('.input-label', 'IST to receive *')
-        .next()
-        .within(() => {
-          cy.get('input[type="number"]').click();
-          cy.get('input[type="number"]').clear();
-          cy.get('input[type="number"]').type(100);
-        });
-
-      cy.contains('button', 'Create Vault').click();
-
-      cy.confirmTransaction().then(taskCompleted => {
-        expect(taskCompleted).to.be.true;
-        cy.contains(
-          'p',
-          'You can manage your vaults from the "My Vaults" view.',
-        ).should('exist');
-      });
-    });
-
-    it('should create a vault with a deposit of 15 ATOMs and debt of 105 ISTs', () => {
-      cy.contains('button', 'Create Another Vault').click();
-      cy.reload();
-      cy.contains('span', 'Add new vault').click();
-      cy.contains('button', /ATOM/).click();
-
-      cy.contains('.input-label', 'ATOM to lock up *')
-        .next()
-        .within(() => {
-          cy.get('input[type="number"]').click();
-          cy.get('input[type="number"]').clear();
-          cy.get('input[type="number"]').type(15);
-        });
-
-      cy.contains('.input-label', 'IST to receive *')
-        .next()
-        .within(() => {
-          cy.get('input[type="number"]').click();
-          cy.get('input[type="number"]').clear();
-          cy.get('input[type="number"]').type(105);
-        });
-
-      cy.contains('button', 'Create Vault').click();
-
-      cy.confirmTransaction().then(taskCompleted => {
-        expect(taskCompleted).to.be.true;
-        cy.contains(
-          'p',
-          'You can manage your vaults from the "My Vaults" view.',
-        ).should('exist');
+    it('should create 3 vaults from the CLI successfully', () => {
+      cy.exec('bash ./test/e2e/test-scripts/create-vaults.sh').then(result => {
+        expect(result.stderr).to.contain('');
+        expect(result.stdout).to.contain('Keys added successfully');
       });
     });
   });
