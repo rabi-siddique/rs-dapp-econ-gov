@@ -5,12 +5,12 @@ describe('Tests for creating proposals', () => {
     it('should set up wallets for two members of the econ committee.', () => {
       cy.setupWallet({
         secretWords:
-          'purse park grow equip size away dismiss used evolve live blouse scorpion enjoy crunch combine day second news off crowd broken crop zoo subject',
+          'such field health riot cost kitten silly tube flash wrap festival portion imitate this make question host bitter puppy wait area glide soldier knee',
         walletName: 'gov2',
       });
       cy.setupWallet({
         secretWords:
-          'tilt add stairs mandate extra wash choose fashion earth feature reopen until move lazy carbon pledge sure own comfort this nasty clap tower table',
+          'physical immune cargo feel crawl style fox require inhale law local glory cheese bring swear royal spy buyer diesel field when task spin alley',
         walletName: 'gov1',
       });
     });
