@@ -5,12 +5,12 @@ describe('Tests for creating proposals', () => {
     it('should set up wallets for two members of the econ committee.', () => {
       cy.setupWallet({
         secretWords:
-          'purse park grow equip size away dismiss used evolve live blouse scorpion enjoy crunch combine day second news off crowd broken crop zoo subject',
+          'such field health riot cost kitten silly tube flash wrap festival portion imitate this make question host bitter puppy wait area glide soldier knee',
         walletName: 'gov2',
       });
       cy.setupWallet({
         secretWords:
-          'tilt add stairs mandate extra wash choose fashion earth feature reopen until move lazy carbon pledge sure own comfort this nasty clap tower table',
+          'physical immune cargo feel crawl style fox require inhale law local glory cheese bring swear royal spy buyer diesel field when task spin alley',
         walletName: 'gov1',
       });
     });
@@ -212,6 +212,58 @@ describe('Tests for creating proposals', () => {
         .within(() => {
           cy.get('span').contains('Change Accepted').should('be.visible');
         });
+    });
+  });
+
+  context('Creating Vaults', () => {
+    it('should setup wallet using 24 word phrase', () => {
+      cy.setupWallet({
+        secretWords:
+          'tackle hen gap lady bike explain erode midnight marriage wide upset culture model select dial trial swim wood step scan intact what card symptom',
+        password: 'Test1234',
+        newAccount: true,
+        walletName: 'My Wallet 2',
+      }).then(setupFinished => {
+        expect(setupFinished).to.be.true;
+      });
+    });
+
+    it('should navigate to Vaults UI, setup connection settings and connect with chain', () => {
+      cy.visit(
+        'https://bafybeidafiu4scsvzjshz4zlaqilb62acjzwhf4np4qw7xzrommn3jkgti.ipfs.cf-ipfs.com/#/vaults',
+      );
+
+      cy.get('button[aria-label="Settings"]').click();
+
+      cy.contains('p', 'RPC Endpoint:')
+        .next('div')
+        .find('input')
+        .clear()
+        .type('http://localhost:26657');
+      cy.contains('li', 'Add "http://localhost:26657"').click();
+
+      cy.contains('p', 'API Endpoint:')
+        .next('div')
+        .find('input')
+        .clear()
+        .type('http://localhost:1317');
+      cy.contains('li', 'Add "http://localhost:1317"').click();
+
+      cy.contains('button', 'Save').click();
+      cy.contains('button', 'Keep using Old Version').click();
+      cy.contains('button', 'Connect Wallet').click();
+      cy.get('label.cursor-pointer input[type="checkbox"]').check();
+      cy.contains('Proceed').click();
+
+      cy.acceptAccess();
+      cy.acceptAccess();
+    });
+
+    it('should create 3 vaults from the CLI successfully', () => {
+      cy.exec('bash ./test/e2e/test-scripts/create-vaults.sh').then(result => {
+        expect(result.stderr).to.contain('');
+        expect(result.stdout).to.contain('Keys added successfully');
+      });
     });
   });
 });
