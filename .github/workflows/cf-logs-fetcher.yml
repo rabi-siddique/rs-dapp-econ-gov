@@ -11,7 +11,7 @@ jobs:
         uses: agoric-labs/cf-logs-fetcher@v1
         with:
           cf_account_id: '0c4635effffcd7f36d1b9f0425a4367a'
-          cf_project: 'dapp-psm'
+          cf_project: 'dapp-econ-gov'
           cf_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Comment PR
