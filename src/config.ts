@@ -16,7 +16,7 @@ export const supportedNetworks = [
 export const accountInfoUrl = (agoricNet: string, account: string) => {
   switch (agoricNet) {
     case 'main':
-      return `https://bigdipper.live/agoric/accounts/${account}`;
+      return `https://agoric.explorers.guru/account/${account}`;
     default:
       return `https://${agoricNet}.explorer.agoric.net/agoric/account/${account}`;
   }
@@ -28,7 +28,7 @@ export const transactionInfoUrl = (
 ) => {
   switch (agoricNet) {
     case 'main':
-      return `https://bigdipper.live/agoric/transactions/${transactionHash}`;
+      return `https://agoric.explorers.guru/transaction/${transactionHash}`;
     default:
       return `https://${agoricNet}.explorer.agoric.net/agoric/tx/${transactionHash}`;
   }
