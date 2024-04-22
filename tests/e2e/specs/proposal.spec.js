@@ -1,70 +1,38 @@
 /* eslint-disable ui-testing/no-disabled-tests */
-describe('Tests for creating proposals', () => {
+describe('Make Proposal Tests', () => {
   let startTime;
-  context('Setting up accounts', () => {
-    it('should set up wallets for two members of the econ committee.', () => {
+  context('PSM tests', () => {
+    it('should setup two econ committee member wallets', () => {
       cy.setupWallet({
         secretWords:
           'purse park grow equip size away dismiss used evolve live blouse scorpion enjoy crunch combine day second news off crowd broken crop zoo subject',
-        walletName: 'gov2',
+        walletName: 'gov1',
       });
       cy.setupWallet({
         secretWords:
           'tilt add stairs mandate extra wash choose fashion earth feature reopen until move lazy carbon pledge sure own comfort this nasty clap tower table',
-        walletName: 'gov1',
+        walletName: 'gov2',
       });
     });
 
-    it('should connect with chain and wallet', () => {
+    it('should connect to wallet', () => {
       cy.visit('/?agoricNet=local');
       cy.acceptAccess();
     });
-  });
 
-  context('Adjusting Vault Params', () => {
     it('should allow gov1 to create a proposal', () => {
-      cy.visit('/?agoricNet=local');
-      cy.acceptAccess();
+      // open PSM and select USDT_axl
+      cy.get('button').contains('PSM').click();
+      cy.get('button').contains('AUSD').click();
+      cy.get('button').contains('USDT_axl').click();
 
-      cy.get('button').contains('Vaults').click();
-      cy.get('button').contains('Select Manager').click();
-      cy.get('button').contains('manager0').click();
-
+      // Change mint limit to 100 and proposal time to 1 min
       cy.get('label')
-        .contains('LiquidationMargin')
+        .contains('Set Mint Limit')
         .parent()
         .within(() => {
-          cy.get('input').clear().type('150');
+          cy.get('input').clear().type(100);
         });
-
-      cy.get('label')
-        .contains('LiquidationPadding')
-        .parent()
-        .within(() => {
-          cy.get('input').clear().type('25');
-        });
-
-      cy.get('label')
-        .contains('LiquidationPenalty')
-        .parent()
-        .within(() => {
-          cy.get('input').clear().type('1');
-        });
-
-      cy.get('label')
-        .contains('StabilityFee')
-        .parent()
-        .within(() => {
-          cy.get('input').clear().type('1');
-        });
-
-      cy.get('label')
-        .contains('MintFee')
-        .parent()
-        .within(() => {
-          cy.get('input').clear().type('0.5');
-        });
-
       cy.get('label')
         .contains('Minutes until close of vote')
         .parent()
@@ -73,6 +41,7 @@ describe('Tests for creating proposals', () => {
         });
       cy.get('[value="Propose Parameter Change"]').click();
 
+      // Submit proposal and wait for confirmation
       cy.confirmTransaction();
       cy.get('p')
         .contains('sent')
@@ -82,37 +51,44 @@ describe('Tests for creating proposals', () => {
         });
     });
 
-    it('should allow gov1 to vote on the proposal', () => {
+    it('should allow gov2 to vote on the proposal', () => {
       cy.visit('/?agoricNet=local');
 
+      // Open vote, click on yes and submit
       cy.get('button').contains('Vote').click();
       cy.get('p').contains('YES').click();
       cy.get('input:enabled[value="Submit Vote"]').click();
 
+      // Wait for vote to confirm
       cy.confirmTransaction();
       cy.get('p').contains('sent').should('be.visible');
     });
 
-    it('should allow gov2 to vote on the proposal', () => {
-      cy.switchWallet('gov2');
+    it('should allow gov1 to vote on the proposal', () => {
+      cy.switchWallet('gov1');
       cy.visit('/?agoricNet=local');
 
+      // Open vote, click on yes and submit
       cy.get('button').contains('Vote').click();
       cy.get('p').contains('YES').click();
       cy.get('input:enabled[value="Submit Vote"]').click();
 
+      // Wait for vote to confirm
       cy.confirmTransaction();
       cy.get('p').contains('sent').should('be.visible');
     });
 
     it('should wait for proposal to pass', () => {
+      // Wait for 1 minute to pass
       cy.wait(60000 - Date.now() + startTime);
       cy.visit('/?agoricNet=local');
 
       cy.get('button').contains('History').click();
 
+      // Select the first element proposal containing USDT_axl and check
+      // its status should be accepted
       cy.get('code')
-        .contains('VaultFactory - ATOM')
+        .contains('psm-IST-USDT_axl')
         .parent()
         .parent()
         .parent()
@@ -122,42 +98,22 @@ describe('Tests for creating proposals', () => {
     });
   });
 
-  context('Adjusting Auction Params', () => {
-    it('should allow gov2 to create a proposal', () => {
+  context('Vaults tests', () => {
+    it('should allow gov1 to create a proposal', () => {
       cy.visit('/?agoricNet=local');
 
+      // open Values and select manager 0
       cy.get('button').contains('Vaults').click();
-      cy.get('button').contains('Change Manager Params').click();
-      cy.get('button').contains('Change Auctioneer Params').click();
+      cy.get('button').contains('Select Manager').click();
+      cy.get('button').contains('manager0').click();
 
+      // Change debt limit to 1.22M and proposal time to 1 min
       cy.get('label')
-        .contains('StartingRate')
+        .contains('DebtLimit')
         .parent()
         .within(() => {
-          cy.get('input').clear().type('105');
+          cy.get('input').clear().type('122,000,000');
         });
-
-      cy.get('label')
-        .contains('LowestRate')
-        .parent()
-        .within(() => {
-          cy.get('input').clear().type('65');
-        });
-
-      cy.get('label')
-        .contains('DiscountStep')
-        .parent()
-        .within(() => {
-          cy.get('input').clear().type('5');
-        });
-
-      cy.get('label')
-        .contains('AuctionStartDelay')
-        .parent()
-        .within(() => {
-          cy.get('input').clear().type('2');
-        });
-
       cy.get('label')
         .contains('Minutes until close of vote')
         .parent()
@@ -166,6 +122,7 @@ describe('Tests for creating proposals', () => {
         });
       cy.get('[value="Propose Parameter Change"]').click();
 
+      // Submit proposal and wait for confirmation
       cy.confirmTransaction();
       cy.get('p')
         .contains('sent')
@@ -175,35 +132,42 @@ describe('Tests for creating proposals', () => {
         });
     });
 
-    it('should allow gov2 to vote on the proposal', () => {
+    it('should allow gov1 to vote on the proposal', () => {
       cy.visit('/?agoricNet=local');
 
+      // Open vote, click on yes and submit
       cy.get('button').contains('Vote').click();
       cy.get('p').contains('YES').click();
       cy.get('input:enabled[value="Submit Vote"]').click();
 
+      // Wait for vote to confirm
       cy.confirmTransaction();
       cy.get('p').contains('sent').should('be.visible');
     });
 
-    it('should allow gov1 to vote on the proposal', () => {
-      cy.switchWallet('gov1');
+    it('should allow gov2 to vote on the proposal', () => {
+      cy.switchWallet('gov2');
       cy.visit('/?agoricNet=local');
 
+      // Open vote, click on yes and submit
       cy.get('button').contains('Vote').click();
       cy.get('p').contains('YES').click();
       cy.get('input:enabled[value="Submit Vote"]').click();
 
+      // Wait for vote to confirm
       cy.confirmTransaction();
       cy.get('p').contains('sent').should('be.visible');
     });
 
     it('should wait for proposal to pass', () => {
+      // Wait for 1 minute to pass
       cy.wait(60000 - Date.now() + startTime);
       cy.visit('/?agoricNet=local');
 
       cy.get('button').contains('History').click();
 
+      // Select the first element proposal containing ATOM and check
+      // its status should be accepted
       cy.get('code')
         .contains('VaultFactory - ATOM')
         .parent()
