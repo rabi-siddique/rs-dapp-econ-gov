@@ -1,50 +1,73 @@
 /* eslint-disable ui-testing/no-disabled-tests */
+import { phrasesList, getTimeUntilVoteClose, DEFAULT_TIMEOUT } from '../utils';
+
 describe('Make Proposal Tests', () => {
   let startTime;
+  const networkPhrases = phrasesList[Cypress.env('AGORIC_NET') || 'local'];
   context('PSM tests', () => {
     it('should setup two econ committee member wallets', () => {
       cy.setupWallet({
-        secretWords:
-          'purse park grow equip size away dismiss used evolve live blouse scorpion enjoy crunch combine day second news off crowd broken crop zoo subject',
+        secretWords: networkPhrases.gov1Phrase,
         walletName: 'gov1',
       });
       cy.setupWallet({
-        secretWords:
-          'tilt add stairs mandate extra wash choose fashion earth feature reopen until move lazy carbon pledge sure own comfort this nasty clap tower table',
+        secretWords: networkPhrases.gov2Phrase,
         walletName: 'gov2',
       });
     });
 
     it('should connect to wallet', () => {
-      cy.visit('/?agoricNet=local');
+      if (!networkPhrases.isLocal) {
+        cy.origin('https://wallet.agoric.app/', () => {
+          cy.visit('/');
+        });
+        cy.acceptAccess();
+        cy.origin('https://wallet.agoric.app/', () => {
+          cy.visit('/wallet/');
+
+          cy.get('input.PrivateSwitchBase-input').click();
+          cy.contains('Proceed').click();
+
+          cy.get('button[aria-label="Settings"]').click();
+
+          cy.get('#demo-simple-select').click();
+          cy.get('li[data-value="testnet"]').click();
+          cy.contains('button', 'Connect').click();
+        });
+
+        cy.acceptAccess();
+      }
+      cy.visit(`/?agoricNet=${networkPhrases.network}`);
       cy.acceptAccess();
     });
 
     it('should allow gov1 to create a proposal', () => {
-      // open PSM and select USDT_axl
+      // open PSM and select token
       cy.get('button').contains('PSM').click();
       cy.get('button').contains('AUSD').click();
-      cy.get('button').contains('USDT_axl').click();
+      cy.get('button').contains(networkPhrases.token).click();
 
-      // Change mint limit to 100 and proposal time to 1 min
+      // Change mint limit and proposal time to 1 min
       cy.get('label')
         .contains('Set Mint Limit')
         .parent()
         .within(() => {
-          cy.get('input').clear().type(100);
+          cy.get('input').spread(element => {
+            cy.get('input').clear().type(element.value);
+          });
         });
       cy.get('label')
         .contains('Minutes until close of vote')
         .parent()
         .within(() => {
-          cy.get('input').clear().type(1);
+          cy.get('input').clear().type(networkPhrases.minutes);
         });
       cy.get('[value="Propose Parameter Change"]').click();
 
       // Submit proposal and wait for confirmation
       cy.confirmTransaction();
       cy.get('p')
-        .contains('sent')
+        .contains('sent', { timeout: DEFAULT_TIMEOUT })
         .should('be.visible')
         .then(() => {
           startTime = Date.now();
@@ -52,7 +75,7 @@ describe('Make Proposal Tests', () => {
     });
 
     it('should allow gov2 to vote on the proposal', () => {
-      cy.visit('/?agoricNet=local');
+      cy.visit(`/?agoricNet=${networkPhrases.network}`);
 
       // Open vote, click on yes and submit
       cy.get('button').contains('Vote').click();
@@ -61,12 +84,14 @@ describe('Make Proposal Tests', () => {
 
       // Wait for vote to confirm
       cy.confirmTransaction();
-      cy.get('p').contains('sent').should('be.visible');
+      cy.get('p')
+        .contains('sent', { timeout: DEFAULT_TIMEOUT })
+        .should('be.visible');
     });
 
     it('should allow gov1 to vote on the proposal', () => {
       cy.switchWallet('gov1');
-      cy.visit('/?agoricNet=local');
+      cy.visit(`/?agoricNet=${networkPhrases.network}`);
 
       // Open vote, click on yes and submit
       cy.get('button').contains('Vote').click();
@@ -75,20 +100,22 @@ describe('Make Proposal Tests', () => {
 
       // Wait for vote to confirm
       cy.confirmTransaction();
-      cy.get('p').contains('sent').should('be.visible');
+      cy.get('p')
+        .contains('sent', { timeout: DEFAULT_TIMEOUT })
+        .should('be.visible');
     });
 
     it('should wait for proposal to pass', () => {
       // Wait for 1 minute to pass
-      cy.wait(60000 - Date.now() + startTime);
-      cy.visit('/?agoricNet=local');
+      cy.wait(getTimeUntilVoteClose(startTime, networkPhrases.minutes));
+      cy.visit(`/?agoricNet=${networkPhrases.network}`);
 
       cy.get('button').contains('History').click();
 
-      // Select the first element proposal containing USDT_axl and check
+      // Select the first element proposal containing token and check
       // its status should be accepted
       cy.get('code')
-        .contains('psm-IST-USDT_axl')
+        .contains(`psm-IST-${networkPhrases.token}`)
         .parent()
         .parent()
         .parent()
@@ -100,32 +127,34 @@ describe('Make Proposal Tests', () => {
 
   context('Vaults tests', () => {
     it('should allow gov1 to create a proposal', () => {
-      cy.visit('/?agoricNet=local');
+      cy.visit(`/?agoricNet=${networkPhrases.network}`);
 
       // open Values and select manager 0
       cy.get('button').contains('Vaults').click();
       cy.get('button').contains('Select Manager').click();
       cy.get('button').contains('manager0').click();
 
-      // Change debt limit to 1.22M and proposal time to 1 min
+      // Change debt limit and proposal time to 1 min
       cy.get('label')
         .contains('DebtLimit')
         .parent()
         .within(() => {
-          cy.get('input').clear().type('122,000,000');
+          cy.get('input').spread(element => {
+            cy.get('input').clear().type(element.value);
+          });
         });
       cy.get('label')
         .contains('Minutes until close of vote')
         .parent()
         .within(() => {
-          cy.get('input').clear().type(1);
+          cy.get('input').clear().type(networkPhrases.minutes);
         });
       cy.get('[value="Propose Parameter Change"]').click();
 
       // Submit proposal and wait for confirmation
       cy.confirmTransaction();
       cy.get('p')
-        .contains('sent')
+        .contains('sent', { timeout: DEFAULT_TIMEOUT })
         .should('be.visible')
         .then(() => {
           startTime = Date.now();
@@ -133,7 +162,7 @@ describe('Make Proposal Tests', () => {
     });
 
     it('should allow gov1 to vote on the proposal', () => {
-      cy.visit('/?agoricNet=local');
+      cy.visit(`/?agoricNet=${networkPhrases.network}`);
 
       // Open vote, click on yes and submit
       cy.get('button').contains('Vote').click();
@@ -142,12 +171,14 @@ describe('Make Proposal Tests', () => {
 
       // Wait for vote to confirm
       cy.confirmTransaction();
-      cy.get('p').contains('sent').should('be.visible');
+      cy.get('p')
+        .contains('sent', { timeout: DEFAULT_TIMEOUT })
+        .should('be.visible');
     });
 
     it('should allow gov2 to vote on the proposal', () => {
       cy.switchWallet('gov2');
-      cy.visit('/?agoricNet=local');
+      cy.visit(`/?agoricNet=${networkPhrases.network}`);
 
       // Open vote, click on yes and submit
       cy.get('button').contains('Vote').click();
@@ -156,13 +187,15 @@ describe('Make Proposal Tests', () => {
 
       // Wait for vote to confirm
       cy.confirmTransaction();
-      cy.get('p').contains('sent').should('be.visible');
+      cy.get('p')
+        .contains('sent', { timeout: DEFAULT_TIMEOUT })
+        .should('be.visible');
     });
 
     it('should wait for proposal to pass', () => {
       // Wait for 1 minute to pass
-      cy.wait(60000 - Date.now() + startTime);
-      cy.visit('/?agoricNet=local');
+      cy.wait(getTimeUntilVoteClose(startTime, networkPhrases.minutes));
+      cy.visit(`/?agoricNet=${networkPhrases.network}`);
 
       cy.get('button').contains('History').click();
 
