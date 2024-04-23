@@ -63,7 +63,7 @@ jobs:
 
       - name: Archive e2e artifacts
         uses: actions/upload-artifact@v3
-        if: always()
+        if: github.event_name != 'schedule'
         with:
           name: e2e-artifacts
           path: |
