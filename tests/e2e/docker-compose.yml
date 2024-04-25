@@ -43,7 +43,6 @@ services:
     depends_on:
       - display
       - video
-      - agd
     entrypoint: []
     working_dir: /app
     volumes:
