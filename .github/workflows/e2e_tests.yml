@@ -17,6 +17,9 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
+    env:
+      IS_EMERYNET_TEST: github.event_name == 'schedule'
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -40,8 +43,8 @@ jobs:
           docker-compose -f tests/e2e/docker-compose.yml --profile $SYNPRESS_PROFILE up --build --exit-code-from synpress
         env:
           # conditionals based on github event
-          SYNPRESS_PROFILE: ${{ github.event_name == 'schedule' && 'daily-tests' || 'synpress' }}
-          CYPRESS_AGORIC_NET: ${{ github.event_name == 'schedule' && 'emerynet' || 'local' }}
+          SYNPRESS_PROFILE: ${{ env.IS_EMERYNET_TEST && 'daily-tests' || 'synpress' }}
+          CYPRESS_AGORIC_NET: ${{ env.IS_EMERYNET_TEST && 'emerynet' || 'local' }}
           # for docker-compose.yml
           COMPOSE_DOCKER_CLI_BUILD: 1
           DOCKER_BUILDKIT: 1
@@ -63,7 +66,7 @@ jobs:
 
       - name: Archive e2e artifacts
         uses: actions/upload-artifact@v3
-        if: github.event_name != 'schedule'
+        if: ${{ !env.IS_EMERYNET_TEST  }}
         with:
           name: e2e-artifacts
           path: |
