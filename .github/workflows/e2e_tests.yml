@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       network:
-        description: 'Network'
+        description: 'Select the blockchain network for testing'
         required: false
         default: 'emerynet'
         type: choice
