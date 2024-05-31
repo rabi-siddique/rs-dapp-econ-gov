@@ -1,9 +1,11 @@
 import type { Amount, Brand, DisplayInfo } from '@agoric/ertp/src/types';
 import type { Ratio } from '@agoric/zoe/src/contractSupport';
+import { networkConfigs } from 'config';
 import { atom } from 'jotai';
-
+import { atomWithStorage } from 'jotai/utils';
 import { makeDisplayFunctions } from 'utils/displayFunctions';
 import { mapAtom } from 'utils/helpers';
+import { loadNetworkConfig } from 'utils/networkConfig';
 
 export type BrandInfo = DisplayInfo<'nat'> & {
   petname: string;
@@ -32,3 +34,12 @@ export const displayFunctionsAtom = atom(get => {
 
 /**  Experimental feature flag. */
 export const previewEnabledAtom = atom(_get => false);
+
+const networkConfigAtom = atomWithStorage(
+  'agoric-network-config',
+  networkConfigs.mainnet
+);
+
+export const networkConfigPAtom = atom(async get =>
+  loadNetworkConfig(get(networkConfigAtom).url)
+);

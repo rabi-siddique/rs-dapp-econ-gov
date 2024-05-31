@@ -1,7 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   mode: 'jit', // update this line
-  content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+  content: [
+    './src/**/*.{js,jsx,ts,tsx}',
+    './public/index.html',
+    './node_modules/@agoric/react-components/**/*.{ts,tsx,mjs}',
+  ],
   theme: {
     extend: {
       colors: {
