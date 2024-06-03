@@ -14,3 +14,21 @@ export type MinimalNetworkConfig = {
 
 export const loadNetworkConfig = (url: string): Promise<MinimalNetworkConfig> =>
   fetch(url).then(res => res.json());
+
+export const activeNotices = (
+  config: Pick<MinimalNetworkConfig, 'notices'>,
+) => {
+  const { notices } = config;
+  if (!notices) return [];
+
+  const now = Date.now();
+  const active = notices.filter(n => {
+    const startD = Date.parse(n.start);
+    if (startD > now) {
+      return false;
+    }
+    const endD = Date.parse(n.end);
+    return startD < endD;
+  });
+  return active.map(n => n.message);
+};

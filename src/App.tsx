@@ -1,5 +1,4 @@
-import { NoticeBanner } from '@agoric/react-components';
-import { loadable, useAtomValue } from 'jotai/utils';
+import NoticeBanner from 'components/NoticeBanner';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment, MouseEventHandler, useContext } from 'react';
 import { FiChevronDown, FiExternalLink } from 'react-icons/fi';
@@ -12,7 +11,6 @@ import GovernanceTools from 'components/GovernanceTools';
 import { WalletContext } from 'lib/wallet';
 import 'styles/globals.css';
 import { supportedNetworks } from 'config';
-import { networkConfigPAtom } from 'store/app';
 
 const Item = ({
   label,
@@ -82,11 +80,9 @@ const App = (_props: Props) => {
 
   const address = walletUtils.getWalletAddress();
 
-  const config = useAtomValue(loadable(networkConfigPAtom));
-  const notices = config.state === 'hasData' && config.data.notices;
   return (
     <>
-      <NoticeBanner notices={notices} />
+      <NoticeBanner />
       <ToastContainer
         position={'bottom-right'}
         closeOnClick={false}

@@ -24,7 +24,6 @@
     "@agoric/cosmic-proto": "~0.3.0",
     "@agoric/ertp": "^0.16.2",
     "@agoric/notifier": "^0.6.2",
-    "@agoric/react-components": "0.2.1-dev-45cf5c8.0",
     "@agoric/smart-wallet": "^0.5.3",
     "@agoric/ui-components": "~0.3.8",
     "@agoric/web-components": "~0.6.3",
@@ -78,5 +77,6 @@
     "vite": "^3.2.7",
     "vite-tsconfig-paths": "^3.5.1",
     "vitest": "^0.25.3"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
