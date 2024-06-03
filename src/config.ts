@@ -50,30 +50,3 @@ export const rpcUrl = agoricNetSubdomain =>
  */
 export const archivingAlternative = (chainName: string, defaultRpc: string) =>
   chainName === 'agoric-3' ? 'https://main-a.rpc.agoric.net:443' : defaultRpc;
-
-export const networkConfigs = {
-  mainnet: {
-    label: 'Agoric Mainnet',
-    url: 'https://main.agoric.net/network-config',
-  },
-  testnet: {
-    label: 'Agoric Testnet',
-    url: 'https://testnet.agoric.net/network-config',
-  },
-  devnet: {
-    label: 'Agoric Devnet',
-    url: 'https://devnet.agoric.net/network-config',
-  },
-  ollinet: {
-    label: 'Agoric Ollinet',
-    url: 'https://ollinet.agoric.net/network-config',
-  },
-  emerynet: {
-    label: 'Agoric Emerynet',
-    url: 'https://emerynet.agoric.net/network-config',
-  },
-  localhost: {
-    label: 'Local Network',
-    url: 'https://wallet.agoric.app/wallet/network-config',
-  },
-};

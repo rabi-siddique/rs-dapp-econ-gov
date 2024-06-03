@@ -12,9 +12,6 @@ export type MinimalNetworkConfig = {
   notices?: NetworkNotice[];
 };
 
-export const loadNetworkConfig = (url: string): Promise<MinimalNetworkConfig> =>
-  fetch(url).then(res => res.json());
-
 export const activeNotices = (
   config: Pick<MinimalNetworkConfig, 'notices'>,
 ) => {
@@ -31,4 +28,13 @@ export const activeNotices = (
     return startD < endD;
   });
   return active.map(n => n.message);
+};
+
+export const fetchNetworkConfig = async (url) => {
+  console.log('fetchNetworkConfig: fetch', url); // log net IO
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw Error(`Cannot fetch network: ${res.status}`);
+  }
+  return await res.json();
 };

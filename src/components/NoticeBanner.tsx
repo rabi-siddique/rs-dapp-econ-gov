@@ -1,17 +1,15 @@
 import { FiX } from 'react-icons/fi';
 import { GrAnnounce } from 'react-icons/gr';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { activeNotices } from 'utils/networkConfig';
-import { useAtomValue } from 'jotai';
-import { networkConfigPAtom } from 'store/app';
-import { loadable } from 'jotai/utils';
+import { WalletContext } from 'lib/wallet';
 
 const NoticeBanner = () => {
   const [isDismissed, setIsDismissed] = useState(false);
-  const config = useAtomValue(loadable(networkConfigPAtom));
-  const bannerContent =
-    config.state === 'hasData' && activeNotices(config.data).join(' • ');
+  const { chainKit } = useContext(WalletContext);
+  const config = chainKit.networkConfig;
+  const bannerContent = config && activeNotices(config).join(' • ');
   const isVisible =
     !isDismissed && bannerContent && bannerContent.trim().length;
 
