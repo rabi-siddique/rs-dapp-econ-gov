@@ -30,7 +30,7 @@ export const activeNotices = (
   return active.map(n => n.message);
 };
 
-export const fetchNetworkConfig = async (url) => {
+export const fetchNetworkConfig = async url => {
   console.log('fetchNetworkConfig: fetch', url); // log net IO
   const res = await fetch(url);
   if (!res.ok) {

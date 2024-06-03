@@ -41,7 +41,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
     assert(instance, `no instance ${name} found`);
     return instance;
   };
- 
+
   const makeChainKit = async () => {
     const netConfigURL = networkConfigUrl(agoricNet);
     const networkConfig = await fetchNetworkConfig(netConfigURL);
