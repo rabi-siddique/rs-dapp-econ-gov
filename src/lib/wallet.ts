@@ -21,6 +21,7 @@ import { marshal, RpcUtils } from './rpc';
 import { makeRpcUtils } from './rpc.js';
 import { accountInfoUrl, networkConfigUrl } from 'config.js';
 import { AgoricChainStoragePathKind } from '@agoric/rpc/index.js';
+import { fetchNetworkConfig } from 'utils/networkConfig.js';
 
 export type RelativeTime = { timerBrand: Brand; relValue: bigint };
 
@@ -42,10 +43,13 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
   };
 
   const makeChainKit = async () => {
+    const netConfigURL = networkConfigUrl(agoricNet);
+    const networkConfig = await fetchNetworkConfig(netConfigURL);
+
     const chainInfo: ChainInfo = await suggestChain(
-      networkConfigUrl(agoricNet),
+      netConfigURL,
+      networkConfig,
       {
-        fetch: window.fetch,
         keplr,
       },
     );
@@ -57,6 +61,7 @@ export const makeWalletUtils = async (rpcUtils: RpcUtils, keplr: Keplr) => {
     );
 
     return {
+      networkConfig,
       chainInfo,
       signer,
     };

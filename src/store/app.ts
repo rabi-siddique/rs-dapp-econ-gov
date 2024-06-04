@@ -1,7 +1,6 @@
 import type { Amount, Brand, DisplayInfo } from '@agoric/ertp/src/types';
 import type { Ratio } from '@agoric/zoe/src/contractSupport';
 import { atom } from 'jotai';
-
 import { makeDisplayFunctions } from 'utils/displayFunctions';
 import { mapAtom } from 'utils/helpers';
 

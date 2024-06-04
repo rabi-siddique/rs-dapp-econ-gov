@@ -61,26 +61,22 @@ const makeChainInfo = (networkConfig, rpcAddr, chainId, caption) => {
 };
 
 /**
- * @param {string} networkConfig URL
+ * @param {string} networkConfigURL URL
+ * @param {object} networkConfig
  * @param {object} io
- * @param {typeof fetch} io.fetch
  * @param {import('@keplr-wallet/types').Keplr} io.keplr
  * @param {string} [caption]
  */
 export async function suggestChain(
+  networkConfigURL,
   networkConfig,
-  { fetch, keplr },
+  { keplr },
   caption = undefined,
 ) {
-  console.log('suggestChain: fetch', networkConfig); // log net IO
-  const res = await fetch(networkConfig);
-  if (!res.ok) {
-    throw Error(`Cannot fetch network: ${res.status}`);
-  }
-  const { chainName: chainId, rpcAddrs } = await res.json();
+  const { chainName: chainId, rpcAddrs } = networkConfig;
   const rpcAddr = sample(rpcAddrs);
 
-  const chainInfo = makeChainInfo(networkConfig, rpcAddr, chainId, caption);
+  const chainInfo = makeChainInfo(networkConfigURL, rpcAddr, chainId, caption);
   console.log('chainInfo', chainInfo);
   await keplr.experimentalSuggestChain(chainInfo);
   await keplr.enable(chainId);

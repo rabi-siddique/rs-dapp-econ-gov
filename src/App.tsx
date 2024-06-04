@@ -1,3 +1,4 @@
+import NoticeBanner from 'components/NoticeBanner';
 import { Menu, Transition } from '@headlessui/react';
 import { Fragment, MouseEventHandler, useContext } from 'react';
 import { FiChevronDown, FiExternalLink } from 'react-icons/fi';
@@ -81,6 +82,7 @@ const App = (_props: Props) => {
 
   return (
     <>
+      <NoticeBanner />
       <ToastContainer
         position={'bottom-right'}
         closeOnClick={false}
