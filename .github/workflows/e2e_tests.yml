@@ -38,30 +38,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: 'GCP auth'
-        uses: 'google-github-actions/auth@v2'
-        if: ${{ env.IS_EMERYNET_TEST == 'true' }}
-        with:
-          project_id: 'simulationlab'
-          workload_identity_provider: 'projects/60745596728/locations/global/workloadIdentityPools/github/providers/dapp-econ-gov'
-
       - name: Run e2e tests
         run: |
-          docker-compose -f tests/e2e/docker-compose.yml --profile $SYNPRESS_PROFILE up --build --exit-code-from synpress
+          docker compose -f tests/e2e/docker-compose.yml --profile $SYNPRESS_PROFILE up --build --exit-code-from synpress
         env:
           # conditionals based on github event
           SYNPRESS_PROFILE: ${{ env.IS_EMERYNET_TEST == 'true' && 'daily-tests' || 'synpress' }}
