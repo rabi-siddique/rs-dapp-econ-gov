@@ -22,18 +22,24 @@ describe('Make Proposal Tests', () => {
           cy.visit('/');
         });
         cy.acceptAccess();
-        cy.origin('https://wallet.agoric.app/', () => {
-          cy.visit('/wallet/');
+        cy.origin(
+          'https://wallet.agoric.app/',
+          { args: { networkPhrases } },
+          ({ networkPhrases }) => {
+            cy.visit('/wallet/');
 
-          cy.get('input.PrivateSwitchBase-input').click();
-          cy.contains('Proceed').click();
+            cy.get('input.PrivateSwitchBase-input').click();
+            cy.contains('Proceed').click();
 
-          cy.get('button[aria-label="Settings"]').click();
+            cy.get('button[aria-label="Settings"]').click();
 
-          cy.get('#demo-simple-select').click();
-          cy.get('li[data-value="testnet"]').click();
-          cy.contains('button', 'Connect').click();
-        });
+            cy.get('#demo-simple-select').click();
+            cy.get(
+              `li[data-value="${networkPhrases.walletAppSelector}"]`,
+            ).click();
+            cy.contains('button', 'Connect').click();
+          },
+        );
 
         cy.acceptAccess();
       }
