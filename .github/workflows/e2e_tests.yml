@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    types:
+      - labeled
+      - synchronize
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
@@ -17,6 +20,15 @@ on:
         options:
           - local
           - emerynet
+          - devnet
+      gov1_mnemonic:
+        description: 'Mnemonic for gov1 wallet'
+        required: false
+        type: string
+      gov2_mnemonic:
+        description: 'Mnemonic for gov2 wallet'
+        required: false
+        type: string
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label ||
@@ -32,15 +44,18 @@ jobs:
       id-token: 'write'
 
     env:
-      IS_EMERYNET_TEST: ${{ github.event_name == 'schedule' || inputs.network == 'emerynet' }}
+      NETWORK: ${{ inputs.network || contains(github.event.pull_request.labels.*.name, 'emerynet') && 'emerynet' || contains(github.event.pull_request.labels.*.name, 'devnet') && 'devnet' || github.event_name == 'schedule' && 'emerynet' || 'local' }}
 
     steps:
+      - name: Print network name
+        run: echo "${{ env.NETWORK }}"
+
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: 'GCP auth'
         uses: 'google-github-actions/auth@v2'
-        if: ${{ env.IS_EMERYNET_TEST == 'true' }}
+        if: ${{ env.NETWORK != 'local' }}
         with:
           project_id: 'simulationlab'
           workload_identity_provider: 'projects/60745596728/locations/global/workloadIdentityPools/github/providers/dapp-econ-gov'
@@ -50,8 +65,8 @@ jobs:
           docker compose -f tests/e2e/docker-compose.yml --profile $SYNPRESS_PROFILE up --build --exit-code-from synpress
         env:
           # conditionals based on github event
-          SYNPRESS_PROFILE: ${{ env.IS_EMERYNET_TEST == 'true' && 'daily-tests' || 'synpress' }}
-          CYPRESS_AGORIC_NET: ${{ env.IS_EMERYNET_TEST == 'true' && 'emerynet' || 'local' }}
+          SYNPRESS_PROFILE: ${{ env.NETWORK != 'local' && 'daily-tests' || 'synpress' }}
+          CYPRESS_AGORIC_NET: ${{ env.NETWORK }}
           # for docker-compose.yml
           COMPOSE_DOCKER_CLI_BUILD: 1
           DOCKER_BUILDKIT: 1
@@ -62,8 +77,8 @@ jobs:
           ANVIL_FORK_URL: ${{ secrets.ANVIL_FORK_URL }}
           GH_PAT: ${{ secrets.GH_PAT }}
           GH_USERNAME: ${{ secrets.GH_USERNAME }}
-          GOV1_PHRASE: ${{ secrets.GOV1_PHRASE }}
-          GOV2_PHRASE: ${{ secrets.GOV2_PHRASE }}
+          GOV1_PHRASE: ${{ inputs.gov1_mnemonic || secrets.GOV1_PHRASE }}
+          GOV2_PHRASE: ${{ inputs.gov2_mnemonic || secrets.GOV2_PHRASE }}
           # cypress dashboard
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
@@ -73,7 +88,7 @@ jobs:
 
       - name: Archive e2e artifacts locally
         uses: actions/upload-artifact@v3
-        if: ${{ env.IS_EMERYNET_TEST == 'false' && !cancelled()}}
+        if: ${{ env.NETWORK == 'local' && !cancelled()}}
         with:
           name: e2e-artifacts
           path: |
@@ -83,14 +98,14 @@ jobs:
 
       - name: Archive e2e artifacts to GCS
         uses: google-github-actions/upload-cloud-storage@v2
-        if: ${{ env.IS_EMERYNET_TEST == 'true' && !cancelled() }}
+        if: ${{ env.NETWORK != 'local' && !cancelled() }}
         with:
           path: 'tests/e2e/docker'
           destination: 'github-artifacts/${{ github.repository }}/${{ github.run_id }}/${{ github.event.repository.updated_at }}'
         continue-on-error: true
 
       - name: Log Path to GCS Artifacts
-        if: ${{ env.IS_EMERYNET_TEST == 'true' && !cancelled() }}
+        if: ${{ env.NETWORK != 'local' && !cancelled() }}
         run: echo "https://console.cloud.google.com/storage/browser/github-artifacts/${{ github.repository }}/${{ github.run_id }}/${{ github.event.repository.updated_at }}/docker/videos"
 
       - name: Notify About Failure
