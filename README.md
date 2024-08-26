@@ -41,13 +41,13 @@ Launch pointing to your localhost:
 open http://127.0.0.1:5173/?agoricNet=local
 ```
 
-## Testing
+# E2E Testing
 
 E2E tests have been written in order to test the dapp as well as to perform automated testing on emerynet/devnet when upgrading the chain
 
 There are two ways to run the tests:
 
-### On Local Machine
+## On Local Machine
 
 To run tests on your local machine, first you need to start the frontend server:
 
@@ -71,7 +71,7 @@ docker compose -f tests/e2e/docker-compose.yml up -d agd
 
 Note: the tests use chrome browser by default so they require it to be installed
 
-### On Github
+## On Github
 
 To run the tests on github, you can use the workflow trigger to run the tests.
 
